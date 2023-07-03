@@ -1,12 +1,23 @@
-﻿using System.Security.Cryptography;
-using System.Text;
+﻿using System.Text;
+using EnvironmentManager;
+using System.Security.Cryptography;
 
 namespace Acl.Net.Core.Cryptography;
 
 public class UserTokenManager
 {
-    private static readonly byte[] Key = Encoding.UTF8.GetBytes("Insert a 32 length string here."); // Key needs to be 32 bytes for AES-256.
-    private static readonly byte[] IV = Encoding.UTF8.GetBytes("Insert a 16 length string here."); // IV needs to be 16 bytes.
+    /// <summary>
+    /// Key needs to be 32 bytes for AES-256.
+    /// </summary>
+    private static readonly byte[] Key = Encoding.UTF8.GetBytes(
+        EnvManager.GetEnvironmentValue<string>("ACL_CRYPTOGRAPHY_KEY", true));
+
+    /// <summary>
+    /// // IV (Initialization Vector) needs to be 16 bytes.
+    /// If you encrypt different messages with the same key but with different IVs, you will get different outputs each time, even if the messages are the same.
+    /// </summary>
+    private static readonly byte[] IV = Encoding.UTF8.GetBytes(
+        EnvManager.GetEnvironmentValue<string>("ACL_CRYPTOGRAPHY_IV", true));
 
     public string GenerateToken(string userId)
     {
@@ -14,7 +25,7 @@ public class UserTokenManager
         return EncryptString(uniqueData, Key, IV);
     }
 
-    private string EncryptString(string plainText, byte[] key, byte[] iv)
+    private static string EncryptString(string plainText, byte[] key, byte[] iv)
     {
         byte[] encrypted;
 
@@ -31,6 +42,7 @@ public class UserTokenManager
             }
             encrypted = msEncrypt.ToArray();
         }
+
         return Convert.ToBase64String(encrypted);
     }
 }
