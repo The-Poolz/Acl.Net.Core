@@ -63,6 +63,7 @@ public class AclDbContext<TUser, TRole, TResource, TClaim> : DbContext
         {
             entity.HasKey(c => c.Id);
             entity.Property(c => c.Token).IsRequired();
+            entity.Property(c => c.DateOfCreation).IsRequired();
         });
     }
 }
