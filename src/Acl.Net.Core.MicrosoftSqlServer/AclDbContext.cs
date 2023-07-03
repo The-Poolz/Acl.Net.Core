@@ -10,7 +10,7 @@ public class AclDbContext : AclDbContext<User>
     public AclDbContext(DbContextOptions options) : base(options) { }
 }
 
-public class AclDbContext<TUser> : AclDbContext<TUser, Role, Resource>
+public class AclDbContext<TUser> : AclDbContext<TUser, Role, Resource, Claim>
     where TUser : User
 {
     protected AclDbContext() { }
@@ -18,10 +18,11 @@ public class AclDbContext<TUser> : AclDbContext<TUser, Role, Resource>
     public AclDbContext(DbContextOptions options) : base(options) { }
 }
 
-public class AclDbContext<TUser, TRole, TResource> : DbContext
+public class AclDbContext<TUser, TRole, TResource, TClaim> : DbContext
     where TUser : User
     where TRole : Role
     where TResource : Resource
+    where TClaim : Claim
 {
     protected AclDbContext() { }
     public AclDbContext(DbContextOptions options) : base(options) { }
@@ -29,6 +30,7 @@ public class AclDbContext<TUser, TRole, TResource> : DbContext
     public virtual DbSet<TUser> Users { get; set; } = null!;
     public virtual DbSet<TRole> Roles { get; set; } = null!;
     public virtual DbSet<TResource> Resources { get; set; } = null!;
+    public virtual DbSet<TClaim> Claims { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -40,6 +42,7 @@ public class AclDbContext<TUser, TRole, TResource> : DbContext
             entity.Property(u => u.UserId).IsRequired();
 
             entity.HasMany(u => u.Roles).WithOne().HasForeignKey(ut => ut.UserId).IsRequired();
+            entity.HasMany(u => u.Claims).WithOne().HasForeignKey(ut => ut.UserId).IsRequired();
         });
 
         modelBuilder.Entity<TRole>(entity =>
@@ -54,6 +57,12 @@ public class AclDbContext<TUser, TRole, TResource> : DbContext
         {
             entity.HasKey(r => r.Id);
             entity.Property(r => r.Name).IsRequired();
+        });
+
+        modelBuilder.Entity<TClaim>(entity =>
+        {
+            entity.HasKey(c => c.Id);
+            entity.Property(c => c.Token).IsRequired();
         });
     }
 }
