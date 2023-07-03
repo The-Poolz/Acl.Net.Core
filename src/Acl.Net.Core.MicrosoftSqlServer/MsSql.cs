@@ -1,4 +1,4 @@
-﻿using Acl.Net.Core.Entities;
+using Acl.Net.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Acl.Net.Core.MicrosoftSqlServer;
