@@ -1,5 +1,4 @@
 ﻿using Acl.Net.Core.Entities;
-using Acl.Net.Core.Providers;
 using Microsoft.EntityFrameworkCore;
 
 namespace Acl.Net.Core.MicrosoftSqlServer;
@@ -19,7 +18,7 @@ public class MsSql<TUser> : MsSql<TUser, Role, Resource, Permission>
     { }
 }
 
-public class MsSql<TUser, TRole, TResource, TPermission> : Backend<TUser, TRole>
+public class MsSql<TUser, TRole, TResource, TPermission>
     where TUser : User
     where TRole : Role
     where TResource : Resource
@@ -32,24 +31,24 @@ public class MsSql<TUser, TRole, TResource, TPermission> : Backend<TUser, TRole>
         _context = context;
     }
 
-    public override TRole CreateRole(TRole role)
+    public TRole CreateRole(TRole role)
     {
         _context.Roles.Add(role);
         _context.SaveChanges();
         return role;
     }
 
-    public override TRole? GetRole(string roleName) =>
+    public TRole? GetRole(string roleName) =>
         _context.Roles.Include(r => r.Resources).SingleOrDefault(r => r.Name == roleName);
 
-    public override TRole UpdateRole(TRole role)
+    public TRole UpdateRole(TRole role)
     {
         _context.Roles.Update(role);
         _context.SaveChanges();
         return role;
     }
 
-    public override void DeleteRole(TRole role)
+    public void DeleteRole(TRole role)
     {
         var toDelete = _context.Roles.SingleOrDefault(r => r.Id == role.Id);
         if (toDelete == null) return;
@@ -57,27 +56,27 @@ public class MsSql<TUser, TRole, TResource, TPermission> : Backend<TUser, TRole>
         _context.SaveChanges();
     }
 
-    public override TUser CreateUser(TUser user)
+    public TUser CreateUser(TUser user)
     {
         _context.Users.Add(user);
         _context.SaveChanges();
         return user;
     }
 
-    public override TUser? GetUser(string userId) =>
+    public TUser? GetUser(string userId) =>
         _context.Users.SingleOrDefault(u => u.UserId == userId);
 
-    public override TUser[] GetUsers(string roleName) =>
+    public TUser[] GetUsers(string roleName) =>
         _context.Users.Where(u => u.RoleNames.Contains(roleName)).ToArray();
 
-    public override TUser UpdateUser(TUser user)
+    public TUser UpdateUser(TUser user)
     {
         _context.Users.Update(user);
         _context.SaveChanges();
         return user;
     }
 
-    public override void DeletePermission(string permissionName)
+    public void DeletePermission(string permissionName)
     {
         var roles = _context.Roles.Include(r => r.Resources).ToList();
         foreach (var resource in roles.SelectMany(role => role.Resources))
@@ -87,7 +86,7 @@ public class MsSql<TUser, TRole, TResource, TPermission> : Backend<TUser, TRole>
         _context.SaveChanges();
     }
 
-    public override void DeleteResource(string resourceName)
+    public void DeleteResource(string resourceName)
     {
         var roles = _context.Roles.Include(r => r.Resources).ToList();
         foreach (var role in roles)
