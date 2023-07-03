@@ -11,8 +11,6 @@ public class User
 
     public string UserId { get; set; } = null!;
 
-    public string[] RoleNames { get; set; } = Array.Empty<string>();
-
     public virtual ICollection<Role> Roles { get; set; } = Array.Empty<Role>();
 
     /// <summary>

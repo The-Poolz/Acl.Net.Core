@@ -6,8 +6,6 @@ public class Role
 
     public string Name { get; set; } = null!;
 
-    public string[] Parents { get; set; } = Array.Empty<string>();
-
     public ICollection<Resource> Resources { get; set; } = Array.Empty<Resource>();
 
     public virtual Guid UserId { get; set; }

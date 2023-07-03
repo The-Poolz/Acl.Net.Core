@@ -10,7 +10,7 @@ public class AclDbContext : AclDbContext<User>
     public AclDbContext(DbContextOptions options) : base(options) { }
 }
 
-public class AclDbContext<TUser> : AclDbContext<TUser, Role, Resource, Permission>
+public class AclDbContext<TUser> : AclDbContext<TUser, Role, Resource>
     where TUser : User
 {
     protected AclDbContext() { }
@@ -18,11 +18,10 @@ public class AclDbContext<TUser> : AclDbContext<TUser, Role, Resource, Permissio
     public AclDbContext(DbContextOptions options) : base(options) { }
 }
 
-public class AclDbContext<TUser, TRole, TResource, TPermission> : DbContext
+public class AclDbContext<TUser, TRole, TResource> : DbContext
     where TUser : User
     where TRole : Role
     where TResource : Resource
-    where TPermission : Permission
 {
     protected AclDbContext() { }
     public AclDbContext(DbContextOptions options) : base(options) { }
@@ -30,7 +29,6 @@ public class AclDbContext<TUser, TRole, TResource, TPermission> : DbContext
     public virtual DbSet<TUser> Users { get; set; } = null!;
     public virtual DbSet<TRole> Roles { get; set; } = null!;
     public virtual DbSet<TResource> Resources { get; set; } = null!;
-    public virtual DbSet<TPermission> Permissions { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -40,7 +38,6 @@ public class AclDbContext<TUser, TRole, TResource, TPermission> : DbContext
         {
             entity.HasKey(u => u.Id);
             entity.Property(u => u.UserId).IsRequired();
-            entity.Ignore(u => u.RoleNames);
 
             entity.HasMany(u => u.Roles).WithOne().HasForeignKey(ut => ut.UserId).IsRequired();
         });
@@ -49,7 +46,6 @@ public class AclDbContext<TUser, TRole, TResource, TPermission> : DbContext
         {
             entity.HasKey(r => r.Id);
             entity.Property(r => r.Name).IsRequired();
-            entity.Ignore(r => r.Parents);
 
             entity.HasMany(r => r.Resources).WithOne().HasForeignKey(res => res.RoleId).IsRequired();
         });
@@ -58,14 +54,6 @@ public class AclDbContext<TUser, TRole, TResource, TPermission> : DbContext
         {
             entity.HasKey(r => r.Id);
             entity.Property(r => r.Name).IsRequired();
-
-            entity.HasMany(r => r.Permissions).WithOne().HasForeignKey(p => p.ResourceId).IsRequired();
-        });
-
-        modelBuilder.Entity<TPermission>(entity =>
-        {
-            entity.HasKey(p => p.Id);
-            entity.Property(p => p.Name).IsRequired();
         });
     }
 }
