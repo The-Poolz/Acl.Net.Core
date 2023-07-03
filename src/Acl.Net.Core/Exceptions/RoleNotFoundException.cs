@@ -2,19 +2,11 @@
 
 namespace Acl.Net.Core.Exceptions;
 
-internal class RoleNotFoundException : Exception
+[Serializable]
+public class RoleNotFoundException : Exception
 {
-    public RoleNotFoundException()
-    {
-    }
-
     public RoleNotFoundException(string message)
         : base(message)
-    {
-    }
-
-    public RoleNotFoundException(string message, Exception innerException)
-        : base(message, innerException)
     {
     }
 
