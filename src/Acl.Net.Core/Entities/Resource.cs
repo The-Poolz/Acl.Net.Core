@@ -6,7 +6,5 @@ public class Resource
 
     public string Name { get; set; } = null!;
 
-    public virtual ICollection<Permission> Permissions { get; set; } = Array.Empty<Permission>();
-
     public virtual Guid RoleId { get; set; }
 }
