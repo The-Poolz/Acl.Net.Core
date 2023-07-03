@@ -12,6 +12,7 @@ public class User
     public string UserId { get; set; } = null!;
 
     public virtual ICollection<Role> Roles { get; set; } = Array.Empty<Role>();
+    public virtual ICollection<Claim> Claims { get; set; } = Array.Empty<Claim>();
 
     /// <summary>
     /// Returns the <see cref="UserId"/> for this user.

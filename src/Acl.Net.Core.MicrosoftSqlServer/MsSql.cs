@@ -10,7 +10,7 @@ public class MsSql : MsSql<User>
     { }
 }
 
-public class MsSql<TUser> : MsSql<TUser, Role, Resource>
+public class MsSql<TUser> : MsSql<TUser, Role, Resource, Claim>
     where TUser : User
 {
     public MsSql(AclDbContext<TUser> context)
@@ -18,14 +18,15 @@ public class MsSql<TUser> : MsSql<TUser, Role, Resource>
     { }
 }
 
-public class MsSql<TUser, TRole, TResource>
+public class MsSql<TUser, TRole, TResource, TClaim>
     where TUser : User
     where TRole : Role
     where TResource : Resource
+    where TClaim : Claim
 {
-    private readonly AclDbContext<TUser, TRole, TResource> _context;
+    private readonly AclDbContext<TUser, TRole, TResource, TClaim> _context;
 
-    public MsSql(AclDbContext<TUser, TRole, TResource> context)
+    public MsSql(AclDbContext<TUser, TRole, TResource, TClaim> context)
     {
         _context = context;
     }
