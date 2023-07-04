@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 
 namespace Acl.Net.Core.Cryptography;
 
-public class UserTokenManager
+public static class UserTokenManager
 {
     /// <summary>
     /// Key needs to be 32 bytes for AES-256.
@@ -16,10 +16,9 @@ public class UserTokenManager
     /// // IV (Initialization Vector) needs to be 16 bytes.
     /// If you encrypt different messages with the same key but with different IVs, you will get different outputs each time, even if the messages are the same.
     /// </summary>
-    private static readonly byte[] IV = Encoding.UTF8.GetBytes(
-        EnvManager.GetEnvironmentValue<string>("ACL_CRYPTOGRAPHY_IV", true));
+    private static readonly byte[] IV = Encoding.UTF8.GetBytes(Guid.NewGuid().ToString());
 
-    public string GenerateToken(string userId)
+    public static string GenerateToken(Guid userId)
     {
         var uniqueData = $"{userId}-{DateTime.Now.Ticks}";
         return EncryptString(uniqueData, Key, IV);
