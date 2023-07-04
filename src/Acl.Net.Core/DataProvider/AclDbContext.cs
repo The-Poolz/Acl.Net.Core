@@ -3,6 +3,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Acl.Net.Core.DataProvider;
 
+public class AclDbContext : AclDbContext<int, User, Role, Resource, Claim>
+{
+    public AclDbContext() { }
+    public AclDbContext(DbContextOptions options) : base(options) { }
+}
+
 public abstract class AclDbContext<TKey, TUser> : AclDbContext<TKey, TUser, Role<TKey>, Resource<TKey>, Claim<TKey>>
     where TKey : IEquatable<TKey>
     where TUser : User<TKey>
