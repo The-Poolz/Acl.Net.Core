@@ -18,7 +18,7 @@ public static class UserTokenManager
         }
 
         var iv = GenerateRandomBytes(16);
-        var uniqueData = $"{userId}-{Guid.NewGuid()}-{DateTime.Now.Ticks}";
+        var uniqueData = $"{userId}-{Guid.NewGuid()}-{DateTime.UtcNow.Ticks}";
         return EncryptString(uniqueData, keyBytes, iv);
     }
 
