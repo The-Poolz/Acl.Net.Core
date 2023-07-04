@@ -43,6 +43,7 @@ public class AclManager<TKey, TUser, TRole, TResource, TClaim>
         var userRoles  = context.Roles
             .Where(r => r.Id.Equals(resource.Id) && r.UserId.Equals(user.Id))
             .ToList();
+
         return userRoles.Count != 0 && userRoles
             .Select(role => context.Resources.Any(r => r.RoleId.Equals(role.Id) && r.Id.Equals(resource.Id)))
             .Any(roleHasResource => roleHasResource);

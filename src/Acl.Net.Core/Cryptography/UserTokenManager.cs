@@ -6,41 +6,35 @@ namespace Acl.Net.Core.Cryptography;
 
 public static class UserTokenManager
 {
-    /// <summary>
-    /// Key needs to be 32 bytes for AES-256.
-    /// </summary>
-    private static readonly byte[] Key = Encoding.UTF8.GetBytes(
-        EnvManager.GetEnvironmentValue<string>("ACL_CRYPTOGRAPHY_KEY", true));
-
-    /// <summary>
-    /// // IV (Initialization Vector) needs to be 16 bytes.
-    /// If you encrypt different messages with the same key but with different IVs, you will get different outputs each time, even if the messages are the same.
-    /// </summary>
-    private static readonly byte[] IV = GenerateRandomBytes(16);
+    private static readonly string Key =
+        EnvManager.GetEnvironmentValue<string>("ACL_CRYPTOGRAPHY_KEY", true);
 
     public static string GenerateToken<TKey>(TKey userId)
     {
-        var uniqueData = $"{userId}-{DateTime.Now.Ticks}";
-        return EncryptString(uniqueData, Key, IV);
+        var keyBytes = Encoding.UTF8.GetBytes(Key);
+        if (keyBytes.Length != 32)
+        {
+            throw new ArgumentException("ACL_CRYPTOGRAPHY_KEY must be exactly 32 bytes (256 bits) for AES-256.");
+        }
+
+        var iv = GenerateRandomBytes(16);
+        var uniqueData = $"{userId}-{Guid.NewGuid()}-{DateTime.Now.Ticks}";
+        return EncryptString(uniqueData, keyBytes, iv);
     }
 
     private static string EncryptString(string plainText, byte[] key, byte[] iv)
     {
-        byte[] encrypted;
-
-        using (var aes = Aes.Create())
+        using var aes = Aes.Create();
+        aes.Key = key;
+        aes.IV = iv;
+        var encrypt = aes.CreateEncryptor(aes.Key, aes.IV);
+        using var msEncrypt = new MemoryStream();
+        using var csEncrypt = new CryptoStream(msEncrypt, encrypt, CryptoStreamMode.Write);
+        using (var swEncrypt = new StreamWriter(csEncrypt))
         {
-            aes.Key = key;
-            aes.IV = iv;
-            var encrypt = aes.CreateEncryptor(aes.Key, aes.IV);
-            using var msEncrypt = new MemoryStream();
-            using var csEncrypt = new CryptoStream(msEncrypt, encrypt, CryptoStreamMode.Write);
-            using (var swEncrypt = new StreamWriter(csEncrypt))
-            {
-                swEncrypt.Write(plainText);
-            }
-            encrypted = msEncrypt.ToArray();
+            swEncrypt.Write(plainText);
         }
+        var encrypted = msEncrypt.ToArray();
 
         return Convert.ToBase64String(encrypted);
     }
