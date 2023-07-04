@@ -16,7 +16,7 @@ public static class UserTokenManager
     /// // IV (Initialization Vector) needs to be 16 bytes.
     /// If you encrypt different messages with the same key but with different IVs, you will get different outputs each time, even if the messages are the same.
     /// </summary>
-    private static readonly byte[] IV = Encoding.UTF8.GetBytes(Guid.NewGuid().ToString());
+    private static readonly byte[] IV = GenerateRandomBytes(16);
 
     public static string GenerateToken(Guid userId)
     {
@@ -43,5 +43,13 @@ public static class UserTokenManager
         }
 
         return Convert.ToBase64String(encrypted);
+    }
+
+    public static byte[] GenerateRandomBytes(int length)
+    {
+        byte[] randomBytes = new byte[length];
+        using var rng = RandomNumberGenerator.Create();
+        rng.GetBytes(randomBytes);
+        return randomBytes;
     }
 }

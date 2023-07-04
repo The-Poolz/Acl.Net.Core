@@ -1,8 +1,17 @@
 ﻿using Acl.Net.Core.Entities;
 using Acl.Net.Core.Services;
 using Acl.Net.Core.DataProvider;
+using Microsoft.EntityFrameworkCore;
 
 namespace Acl.Net.Core;
+
+public class AclManager<TUser> : AclManager<TUser, Role, Resource, Claim>
+    where TUser : User
+{
+    public AclManager(AclDbContext<TUser, Role, Resource, Claim> context)
+        : base(context)
+    { }
+}
 
 public class AclManager<TUser, TRole, TResource, TClaim>
     where TUser : User
@@ -11,7 +20,7 @@ public class AclManager<TUser, TRole, TResource, TClaim>
     where TClaim : Claim, new()
 {
     private readonly AclDbContext<TUser, TRole, TResource, TClaim> context;
-    private readonly IUserService<TUser> userService;
+    private readonly IUserService<TUser, TRole> userService;
     private readonly IClaimService<TUser, TClaim> claimService;
 
     public AclManager(AclDbContext<TUser, TRole, TResource, TClaim> context)
@@ -21,18 +30,32 @@ public class AclManager<TUser, TRole, TResource, TClaim>
         claimService = new ClaimService<TUser, TRole, TResource, TClaim>(context);
     }
 
-    public virtual bool IsPermitted(string userToken, string resourceName) =>
-        throw new NotImplementedException();
+    public virtual bool IsPermitted(string userToken, string resourceName)
+    {
+        var user = userService.GetUser(userToken);
+        var resource = context.Resources.FirstOrDefault(r => r.Name == resourceName);
 
-    public virtual bool IsPermitted(TUser user, string resourceName) =>
-        throw new NotImplementedException();
+        if (user == null || resource == null)
+            return false;
+
+        return IsPermitted(user, resource);
+    }
 
     public virtual bool IsPermitted(TUser user, TResource resource)
     {
-        return context.Users
-            .Where(u => u.Id == user.Id)
-            .SelectMany(u => u.Roles)
-            .Any(r => r.Resources.Any(res => res.Id == resource.Id));
+        var userRoles = userService.GetUserRoles(user.Id);
+
+        if (userRoles == null) return false;
+
+        foreach (var role in userRoles)
+        {
+            var roleHasResource = context.Resources.Any(r => r.RoleId == role.Id && r.Id == resource.Id);
+
+            if (roleHasResource)
+                return true;
+        }
+
+        return false;
     }
 
     public virtual void TokenProcessing(TUser user, TResource resource) =>

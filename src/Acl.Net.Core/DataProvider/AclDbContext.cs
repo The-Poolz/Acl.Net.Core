@@ -3,12 +3,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Acl.Net.Core.DataProvider;
 
-public class AclDbContext : AclDbContext<User>
-{
-    protected AclDbContext() { }
-    public AclDbContext(DbContextOptions options) : base(options) { }
-}
-
 public class AclDbContext<TUser> : AclDbContext<TUser, Role, Resource, Claim>
     where TUser : User
 {
@@ -38,8 +32,8 @@ public class AclDbContext<TUser, TRole, TResource, TClaim> : DbContext
         {
             entity.HasKey(u => u.Id);
 
-            entity.HasMany(u => u.Roles).WithOne().HasForeignKey(ut => ut.UserId).IsRequired();
-            entity.HasMany(u => u.Claims).WithOne().HasForeignKey(ut => ut.UserId).IsRequired();
+            entity.HasMany<TRole>().WithOne().HasForeignKey(ut => ut.UserId).IsRequired();
+            entity.HasMany<TClaim>().WithOne().HasForeignKey(ut => ut.UserId).IsRequired();
         });
 
         modelBuilder.Entity<TRole>(entity =>
@@ -47,7 +41,7 @@ public class AclDbContext<TUser, TRole, TResource, TClaim> : DbContext
             entity.HasKey(r => r.Id);
             entity.Property(r => r.Name).IsRequired();
 
-            entity.HasMany(r => r.Resources).WithOne().HasForeignKey(res => res.RoleId).IsRequired();
+            entity.HasMany<TResource>().WithOne().HasForeignKey(res => res.RoleId).IsRequired();
         });
 
         modelBuilder.Entity<TResource>(entity =>
