@@ -4,15 +4,16 @@ using Acl.Net.Core.DataProvider;
 
 namespace Acl.Net.Core.Services;
 
-public class ClaimService<TUser, TRole, TResource, TClaim> : IClaimService<TUser, TClaim>
-    where TUser : User
-    where TRole : Role
-    where TResource : Resource
-    where TClaim : Claim, new()
+public class ClaimService<TKey, TUser, TRole, TResource, TClaim>
+    where TKey : IEquatable<TKey>
+    where TUser : User<TKey>
+    where TRole : Role<TKey>
+    where TResource : Resource<TKey>
+    where TClaim : Claim<TKey>, new()
 {
-    private readonly AclDbContext<TUser, TRole, TResource, TClaim> _context;
+    private readonly AclDbContext<TKey, TUser, TRole, TResource, TClaim> _context;
 
-    public ClaimService(AclDbContext<TUser, TRole, TResource, TClaim> context)
+    public ClaimService(AclDbContext<TKey, TUser, TRole, TResource, TClaim> context)
     {
         _context = context;
     }
@@ -20,7 +21,7 @@ public class ClaimService<TUser, TRole, TResource, TClaim> : IClaimService<TUser
     public virtual TClaim? GetClaim(TUser user) =>
         _context.Claims
             .OrderByDescending(x => x.DateOfCreation)
-            .FirstOrDefault(x => x.UserId == user.Id);
+            .FirstOrDefault(x => x.UserId.Equals(user.Id));
 
     public virtual TClaim AddClaim(TUser user)
     {

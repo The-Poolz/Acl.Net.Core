@@ -1,10 +1,11 @@
 ﻿namespace Acl.Net.Core.Entities;
 
-public class Resource
+public class Resource<TKey>
+    where TKey : IEquatable<TKey>
 {
-    public Guid Id { get; set; }
+    public TKey Id { get; set; } = default!;
 
     public string Name { get; set; } = null!;
 
-    public virtual Guid RoleId { get; set; }
+    public virtual TKey RoleId { get; set; } = default!;
 }

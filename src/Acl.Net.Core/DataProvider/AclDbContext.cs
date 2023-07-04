@@ -3,18 +3,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Acl.Net.Core.DataProvider;
 
-public class AclDbContext<TUser> : AclDbContext<TUser, Role, Resource, Claim>
-    where TUser : User
+public class AclDbContext<TKey, TUser> : AclDbContext<TKey, TUser, Role<TKey>, Resource<TKey>, Claim<TKey>>
+    where TKey : IEquatable<TKey>
+    where TUser : User<TKey>
 {
     protected AclDbContext() { }
     public AclDbContext(DbContextOptions options) : base(options) { }
 }
 
-public class AclDbContext<TUser, TRole, TResource, TClaim> : DbContext
-    where TUser : User
-    where TRole : Role
-    where TResource : Resource
-    where TClaim : Claim
+public class AclDbContext<TKey, TUser, TRole, TResource, TClaim> : DbContext
+    where TKey : IEquatable<TKey>
+    where TUser : User<TKey>
+    where TRole : Role<TKey>
+    where TResource : Resource<TKey>
+    where TClaim : Claim<TKey>
 {
     protected AclDbContext() { }
     public AclDbContext(DbContextOptions options) : base(options) { }

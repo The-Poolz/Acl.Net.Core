@@ -1,6 +1,7 @@
 ﻿namespace Acl.Net.Core.Entities;
 
-public class User
+public class User<TKey>
+    where TKey : IEquatable<TKey>
 {
-    public Guid Id { get; set; }
+    public TKey Id { get; set; } = default!;
 }

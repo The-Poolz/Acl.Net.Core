@@ -18,7 +18,7 @@ public static class UserTokenManager
     /// </summary>
     private static readonly byte[] IV = GenerateRandomBytes(16);
 
-    public static string GenerateToken(Guid userId)
+    public static string GenerateToken<TKey>(TKey userId)
     {
         var uniqueData = $"{userId}-{DateTime.Now.Ticks}";
         return EncryptString(uniqueData, Key, IV);
@@ -47,7 +47,7 @@ public static class UserTokenManager
 
     public static byte[] GenerateRandomBytes(int length)
     {
-        byte[] randomBytes = new byte[length];
+        var randomBytes = new byte[length];
         using var rng = RandomNumberGenerator.Create();
         rng.GetBytes(randomBytes);
         return randomBytes;
