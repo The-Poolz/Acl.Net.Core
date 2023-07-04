@@ -1,5 +1,7 @@
 ﻿namespace Acl.Net.Core.Entities;
 
+public class Role : Role<int> { }
+
 public class Role<TKey>
     where TKey : IEquatable<TKey>
 {

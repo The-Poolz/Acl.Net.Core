@@ -1,5 +1,7 @@
 ﻿namespace Acl.Net.Core.Entities;
 
+public class Resource : Resource<int> { }
+
 public class Resource<TKey>
     where TKey : IEquatable<TKey>
 {

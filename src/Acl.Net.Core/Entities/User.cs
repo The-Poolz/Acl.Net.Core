@@ -1,5 +1,7 @@
 ﻿namespace Acl.Net.Core.Entities;
 
+public class User : User<int> { }
+
 public class User<TKey>
     where TKey : IEquatable<TKey>
 {
