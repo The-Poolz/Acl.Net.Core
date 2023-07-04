@@ -3,6 +3,13 @@ using Acl.Net.Core.DataProvider;
 
 namespace Acl.Net.Core;
 
+public class AclManager : AclManager<int, User, Role, Resource, Claim>
+{
+    public AclManager(AclDbContext<int, User, Role, Resource, Claim> context)
+        : base(context)
+    { }
+}
+
 public class AclManager<TKey, TUser> : AclManager<TKey, TUser, Role<TKey>, Resource<TKey>, Claim<TKey>>
     where TKey : IEquatable<TKey>
     where TUser : User<TKey>
