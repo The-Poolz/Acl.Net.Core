@@ -3,9 +3,9 @@ using Acl.Net.Core.DataProvider;
 
 namespace Acl.Net.Core;
 
-public class AclManager<TUser, TKey> : AclManager<TKey, TUser, Role<TKey>, Resource<TKey>, Claim<TKey>>
-    where TUser : User<TKey>
+public class AclManager<TKey, TUser> : AclManager<TKey, TUser, Role<TKey>, Resource<TKey>, Claim<TKey>>
     where TKey : IEquatable<TKey>
+    where TUser : User<TKey>
 {
     public AclManager(AclDbContext<TKey, TUser, Role<TKey>, Resource<TKey>, Claim<TKey>> context)
         : base(context)
@@ -41,19 +41,11 @@ public class AclManager<TKey, TUser, TRole, TResource, TClaim>
     public virtual bool IsPermitted(TUser user, TResource resource)
     {
         var userRoles  = context.Roles
-            .Where(r => r.Id.Equals(resource.Id))
+            .Where(r => r.Id.Equals(resource.Id) && r.UserId.Equals(user.Id))
             .ToList();
-        if (userRoles.Count == 0) return false;
-
-        foreach (var role in userRoles)
-        {
-            var roleHasResource = context.Resources.Any(r => r.RoleId.Equals(role.Id) && r.Id.Equals(resource.Id));
-
-            if (roleHasResource)
-                return true;
-        }
-
-        return false;
+        return userRoles.Count != 0 && userRoles
+            .Select(role => context.Resources.Any(r => r.RoleId.Equals(role.Id) && r.Id.Equals(resource.Id)))
+            .Any(roleHasResource => roleHasResource);
     }
 
     public virtual void TokenProcessing(TUser user, TResource resource) =>
