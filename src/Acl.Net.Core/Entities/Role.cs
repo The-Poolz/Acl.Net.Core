@@ -6,7 +6,7 @@ public class Role
 
     public string Name { get; set; } = null!;
 
-    public ICollection<Resource> Resources { get; set; } = Array.Empty<Resource>();
+    public ICollection<Resource> Resources { get; set; } = new HashSet<Resource>();
 
     public virtual Guid UserId { get; set; }
 }
