@@ -6,12 +6,10 @@ namespace Acl.Net.Core.Cryptography;
 
 public static class UserTokenManager
 {
-    private static readonly string Key =
-        EnvManager.GetEnvironmentValue<string>("ACL_CRYPTOGRAPHY_KEY", true);
-
     public static string GenerateToken<TKey>(TKey userId)
     {
-        var keyBytes = Encoding.UTF8.GetBytes(Key);
+        var key = EnvManager.GetEnvironmentValue<string>("ACL_CRYPTOGRAPHY_KEY", true);
+        var keyBytes = Encoding.UTF8.GetBytes(key);
         if (keyBytes.Length != 32)
         {
             throw new ArgumentException("ACL_CRYPTOGRAPHY_KEY must be exactly 32 bytes (256 bits) for AES-256.");
@@ -39,7 +37,7 @@ public static class UserTokenManager
         return Convert.ToBase64String(encrypted);
     }
 
-    public static byte[] GenerateRandomBytes(int length)
+    private static byte[] GenerateRandomBytes(int length)
     {
         var randomBytes = new byte[length];
         using var rng = RandomNumberGenerator.Create();
