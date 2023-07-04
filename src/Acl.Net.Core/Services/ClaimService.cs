@@ -1,8 +1,8 @@
 ﻿using Acl.Net.Core.Entities;
-using Acl.Net.Core.Services;
 using Acl.Net.Core.Cryptography;
+using Acl.Net.Core.DataProvider;
 
-namespace Acl.Net.Core.MicrosoftSqlServer.Services;
+namespace Acl.Net.Core.Services;
 
 public class ClaimService<TUser, TRole, TResource, TClaim> : IClaimService<TUser, TClaim>
     where TUser : User

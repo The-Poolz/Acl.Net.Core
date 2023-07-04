@@ -1,12 +1,11 @@
 using Acl.Net.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Acl.Net.Core.MicrosoftSqlServer;
+namespace Acl.Net.Core.DataProvider;
 
 public class AclDbContext : AclDbContext<User>
 {
     protected AclDbContext() { }
-
     public AclDbContext(DbContextOptions options) : base(options) { }
 }
 
@@ -14,7 +13,6 @@ public class AclDbContext<TUser> : AclDbContext<TUser, Role, Resource, Claim>
     where TUser : User
 {
     protected AclDbContext() { }
-
     public AclDbContext(DbContextOptions options) : base(options) { }
 }
 

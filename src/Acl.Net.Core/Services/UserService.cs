@@ -1,7 +1,7 @@
 ﻿using Acl.Net.Core.Entities;
-using Acl.Net.Core.Services;
+using Acl.Net.Core.DataProvider;
 
-namespace Acl.Net.Core.MicrosoftSqlServer.Services;
+namespace Acl.Net.Core.Services;
 
 public class UserService<TUser, TRole, TResource, TClaim> : IUserService<TUser>
     where TUser : User
