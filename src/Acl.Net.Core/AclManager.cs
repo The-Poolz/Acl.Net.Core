@@ -1,4 +1,6 @@
-﻿using Acl.Net.Core.Entities;
+﻿using System.Diagnostics;
+using System.Text.Json;
+using Acl.Net.Core.Entities;
 using Acl.Net.Core.DataProvider;
 
 namespace Acl.Net.Core;
@@ -38,11 +40,9 @@ public class AclManager<TKey, TUser, TRole, TResource, TClaim>
         var claim = context.Claims.FirstOrDefault(c => c.Token == userToken);
         if (claim == null) return false;
 
-        var user = context.Users.FirstOrDefault(u => u.Id.Equals(claim.UserId));
+        var user = context.Users.FirstOrDefault(u => u.Id.Equals(claim.UserId))!;
         var resource = context.Resources.FirstOrDefault(r => r.Name == resourceName);
-        if (user == null || resource == null) return false;
-
-        return IsPermitted(user, resource);
+        return resource != null && IsPermitted(user, resource);
     }
 
     public virtual bool IsPermitted(TUser user, TResource resource)

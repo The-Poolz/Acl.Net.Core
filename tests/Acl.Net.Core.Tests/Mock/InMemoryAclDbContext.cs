@@ -1,5 +1,4 @@
 ﻿using Acl.Net.Core.Entities;
-using Acl.Net.Core.Cryptography;
 using Acl.Net.Core.DataProvider;
 using Microsoft.EntityFrameworkCore;
 
@@ -36,28 +35,28 @@ internal static class InMemoryAclDbContext
                 new()
                 {
                     Id = 1,
-                    Token = UserTokenManager.GenerateToken(1),
+                    Token = "z2UM1bk+CEmkBFTupu40wPopntPcdA3GsD8kNeFk0qOIZu9DQ6/w/GUd4+STM+nPxvqfqBGCt2nH+hu56RlitQ==",
                     DateOfCreation = DateTime.UtcNow.AddDays(-1),
                     UserId = 1
                 },
                 new()
                 {
                     Id = 2,
-                    Token = UserTokenManager.GenerateToken(1),
+                    Token = "e6ZrelrEpQSYzZoJ4gZEcpa2LMdnTLeD7dv2tcsGk1tbNlC4aU4AKy4mCwlXwy760syEy/ifi0KuI7mTCT/GDA==",
                     DateOfCreation = DateTime.UtcNow,
                     UserId = 1
                 },
                 new()
                 {
                     Id = 3,
-                    Token = UserTokenManager.GenerateToken(2),
+                    Token = "A4fPmeCsxOcfJZxsHDuabX2Js8UQNtz2K+B6Fv3Ze6EQYXeQR5nN4Zv4jIlyZHrUB8sAstZTYjeOce4/3Jas2g==",
                     DateOfCreation = DateTime.UtcNow.AddDays(-1),
                     UserId = 2
                 },
                 new()
                 {
                     Id = 4,
-                    Token = UserTokenManager.GenerateToken(2),
+                    Token = "le66WawxfMKdAQ5t5M++TxHMe3yBY+GIns7lNDmbY1FoKjLyOS29hDw73VIH4MHw+/YcRONs1KFtDylYG1ptuA==",
                     DateOfCreation = DateTime.UtcNow,
                     UserId = 2
                 }
