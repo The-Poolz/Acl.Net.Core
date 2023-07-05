@@ -1,5 +1,6 @@
 ﻿using Xunit;
 using Acl.Net.Core.Tests.Mock;
+using Acl.Net.Core.Entities;
 
 namespace Acl.Net.Core.Tests;
 
@@ -41,6 +42,22 @@ public class AclManagerTests
     public void IsPermitted_StringParameters_UserWithAccess_ReturnsTrue()
     {
         var result = aclManager.IsPermitted(InMemoryAclDbContext.Claims[0].Token, "publicResource");
+
+        Assert.True(result);
+    }
+
+    [Fact]
+    public void IsPermitted_ObjectParameters_UserWithoutAccess_ReturnsFalse()
+    {
+        var result = aclManager.IsPermitted(InMemoryAclDbContext.Users[0], InMemoryAclDbContext.Resources[1]);
+
+        Assert.False(result);
+    }
+
+    [Fact]
+    public void IsPermitted_ObjectParameters_UserWithAccess_ReturnsTrue()
+    {
+        var result = aclManager.IsPermitted(InMemoryAclDbContext.Users[0], InMemoryAclDbContext.Resources[0]);
 
         Assert.True(result);
     }
