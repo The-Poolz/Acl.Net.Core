@@ -5,13 +5,21 @@ namespace Acl.Net.Core.Tests.Cryptography;
 
 public class UserTokenManagerTests
 {
+    private readonly UserTokenManager userTokenManager;
+
+    public UserTokenManagerTests()
+    {
+        var secretsProvider = new SecretsProvider();
+        userTokenManager = new UserTokenManager(secretsProvider);
+    }
+
     [Fact]
     internal void GenerateToken_ShouldReturnDifferentTokensForDifferentUsers()
     {
         Environment.SetEnvironmentVariable("ACL_CRYPTOGRAPHY_KEY", "12345678123456781234567812345678");
 
-        var user1Token = UserTokenManager.GenerateToken(1);
-        var user2Token = UserTokenManager.GenerateToken(2);
+        var user1Token = userTokenManager.GenerateToken(1);
+        var user2Token = userTokenManager.GenerateToken(2);
 
         Assert.NotEqual(user1Token, user2Token);
     }
@@ -21,8 +29,8 @@ public class UserTokenManagerTests
     {
         Environment.SetEnvironmentVariable("ACL_CRYPTOGRAPHY_KEY", "12345678123456781234567812345678");
 
-        var user1Token1 = UserTokenManager.GenerateToken(1);
-        var user1Token2 = UserTokenManager.GenerateToken(1);
+        var user1Token1 = userTokenManager.GenerateToken(1);
+        var user1Token2 = userTokenManager.GenerateToken(1);
 
         Assert.NotEqual(user1Token1, user1Token2);
     }
@@ -32,9 +40,9 @@ public class UserTokenManagerTests
     {
         Environment.SetEnvironmentVariable("ACL_CRYPTOGRAPHY_KEY", "1234567812345678");
 
-        static void testCode() => UserTokenManager.GenerateToken(1);
+        void TestCode() => userTokenManager.GenerateToken(1);
 
-        Exception ex = Assert.Throws<ArgumentException>(testCode);
+        Exception ex = Assert.Throws<ArgumentException>(TestCode);
         Assert.Equal("ACL_CRYPTOGRAPHY_KEY must be exactly 32 bytes (256 bits) for AES-256.", ex.Message);
     }
 }
