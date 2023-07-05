@@ -40,7 +40,7 @@ public abstract class AclDbContext<TKey, TUser, TRole, TResource, TClaim> : DbCo
         {
             entity.HasKey(u => u.Id);
 
-            entity.HasMany<TRole>().WithOne().HasForeignKey(ut => ut.UserId).IsRequired();
+            entity.HasOne<TRole>().WithMany().HasForeignKey(ut => ut.RoleId).IsRequired();
             entity.HasMany<TClaim>().WithOne().HasForeignKey(ut => ut.UserId).IsRequired();
         });
 
