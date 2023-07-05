@@ -1,7 +1,7 @@
 using Acl.Net.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Acl.Net.Core.DataProvider;
+namespace Acl.Net.Core.DataProvider; 
 
 public class AclDbContext : AclDbContext<int, User>
 {
