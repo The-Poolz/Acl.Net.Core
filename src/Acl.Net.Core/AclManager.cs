@@ -53,7 +53,4 @@ public class AclManager<TKey, TUser, TRole, TResource, TClaim>
             .Select(role => context.Resources.Any(r => r.RoleId.Equals(role.Id) && r.Id.Equals(resource.Id)))
             .Any(roleHasResource => roleHasResource);
     }
-
-    public virtual void TokenProcessing(TUser user, TResource resource) =>
-        throw new NotImplementedException();
 }
