@@ -1,13 +1,11 @@
-﻿using System.Diagnostics;
-using System.Text.Json;
-using Acl.Net.Core.Entities;
+﻿using Acl.Net.Core.Entities;
 using Acl.Net.Core.DataProvider;
 
 namespace Acl.Net.Core;
 
-public class AclManager : AclManager<int, User, Role, Resource, Claim>
+public class AclManager : AclManager<int, User>
 {
-    public AclManager(AclDbContext<int, User, Role, Resource, Claim> context)
+    public AclManager(AclDbContext context)
         : base(context)
     { }
 }

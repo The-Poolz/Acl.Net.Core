@@ -1,6 +1,5 @@
 ﻿using Xunit;
 using Acl.Net.Core.Tests.Mock;
-using Acl.Net.Core.Entities;
 
 namespace Acl.Net.Core.Tests;
 
