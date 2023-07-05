@@ -39,6 +39,7 @@ public abstract class AclDbContext<TKey, TUser, TRole, TResource, TClaim> : DbCo
         modelBuilder.Entity<TUser>(entity =>
         {
             entity.HasKey(u => u.Id);
+            entity.Property(u => u.Name).IsRequired();
 
             entity.HasOne<TRole>().WithMany().HasForeignKey(ut => ut.RoleId).IsRequired();
             entity.HasMany<TClaim>().WithOne().HasForeignKey(ut => ut.UserId).IsRequired();
