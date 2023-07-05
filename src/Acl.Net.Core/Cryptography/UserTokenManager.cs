@@ -1,14 +1,21 @@
 ﻿using System.Text;
-using EnvironmentManager;
+using Acl.Net.Core.Secrets;
 using System.Security.Cryptography;
 
 namespace Acl.Net.Core.Cryptography;
 
-public static class UserTokenManager
+public class UserTokenManager
 {
-    public static string GenerateToken<TKey>(TKey userId)
+    private readonly ISecretsProvider secretsProvider;
+
+    public UserTokenManager(ISecretsProvider secretsProvider)
     {
-        var key = EnvManager.GetEnvironmentValue<string>("ACL_CRYPTOGRAPHY_KEY", true);
+        this.secretsProvider = secretsProvider;
+    }
+
+    public virtual string GenerateToken<TKey>(TKey userId)
+    {
+        var key = secretsProvider.Secret;
         var keyBytes = Encoding.UTF8.GetBytes(key);
         if (keyBytes.Length != 32)
         {
