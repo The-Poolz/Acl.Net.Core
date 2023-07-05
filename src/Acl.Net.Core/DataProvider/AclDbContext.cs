@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Acl.Net.Core.DataProvider;
 
-public class AclDbContext : AclDbContext<int, User, Role, Resource, Claim>
+public class AclDbContext : AclDbContext<int, User>
 {
     public AclDbContext() { }
     public AclDbContext(DbContextOptions options) : base(options) { }
