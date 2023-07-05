@@ -1,14 +1,9 @@
 ﻿namespace Acl.Net.Core.Entities;
 
-public class User
+public class User : User<int> { }
+
+public class User<TKey>
+    where TKey : IEquatable<TKey>
 {
-    public User()
-    {
-        Id = Guid.NewGuid();
-    }
-
-    public Guid Id { get; set; }
-
-    public virtual ICollection<Role> Roles { get; set; } = Array.Empty<Role>();
-    public virtual ICollection<Claim> Claims { get; set; } = Array.Empty<Claim>();
+    public TKey Id { get; set; } = default!;
 }

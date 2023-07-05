@@ -1,9 +1,15 @@
 ﻿namespace Acl.Net.Core.Entities;
 
-public class Claim
+public class Claim : Claim<int> { }
+
+public class Claim<TKey>
+    where TKey : IEquatable<TKey>
 {
-    public Guid Id { get; set; }
+    public TKey Id { get; set; } = default!;
+
     public string Token { get; set; } = null!;
+
     public DateTime DateOfCreation { get; set; }
-    public Guid UserId { get; set; }
+
+    public TKey UserId { get; set; } = default!;
 }

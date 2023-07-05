@@ -1,31 +1,31 @@
 using Acl.Net.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Acl.Net.Core.MicrosoftSqlServer;
+namespace Acl.Net.Core.DataProvider;
 
-public class AclDbContext : AclDbContext<User>
+public class AclDbContext : AclDbContext<int, User>
 {
-    protected AclDbContext() { }
-
+    public AclDbContext() { }
     public AclDbContext(DbContextOptions options) : base(options) { }
 }
 
-public class AclDbContext<TUser> : AclDbContext<TUser, Role, Resource, Claim>
-    where TUser : User
+public abstract class AclDbContext<TKey, TUser> : AclDbContext<TKey, TUser, Role<TKey>, Resource<TKey>, Claim<TKey>>
+    where TKey : IEquatable<TKey>
+    where TUser : User<TKey>
 {
     protected AclDbContext() { }
-
-    public AclDbContext(DbContextOptions options) : base(options) { }
+    protected AclDbContext(DbContextOptions options) : base(options) { }
 }
 
-public class AclDbContext<TUser, TRole, TResource, TClaim> : DbContext
-    where TUser : User
-    where TRole : Role
-    where TResource : Resource
-    where TClaim : Claim
+public abstract class AclDbContext<TKey, TUser, TRole, TResource, TClaim> : DbContext
+    where TKey : IEquatable<TKey>
+    where TUser : User<TKey>
+    where TRole : Role<TKey>
+    where TResource : Resource<TKey>
+    where TClaim : Claim<TKey>
 {
     protected AclDbContext() { }
-    public AclDbContext(DbContextOptions options) : base(options) { }
+    protected AclDbContext(DbContextOptions options) : base(options) { }
 
     public virtual DbSet<TUser> Users { get; set; } = null!;
     public virtual DbSet<TRole> Roles { get; set; } = null!;
@@ -40,8 +40,8 @@ public class AclDbContext<TUser, TRole, TResource, TClaim> : DbContext
         {
             entity.HasKey(u => u.Id);
 
-            entity.HasMany(u => u.Roles).WithOne().HasForeignKey(ut => ut.UserId).IsRequired();
-            entity.HasMany(u => u.Claims).WithOne().HasForeignKey(ut => ut.UserId).IsRequired();
+            entity.HasMany<TRole>().WithOne().HasForeignKey(ut => ut.UserId).IsRequired();
+            entity.HasMany<TClaim>().WithOne().HasForeignKey(ut => ut.UserId).IsRequired();
         });
 
         modelBuilder.Entity<TRole>(entity =>
@@ -49,7 +49,7 @@ public class AclDbContext<TUser, TRole, TResource, TClaim> : DbContext
             entity.HasKey(r => r.Id);
             entity.Property(r => r.Name).IsRequired();
 
-            entity.HasMany(r => r.Resources).WithOne().HasForeignKey(res => res.RoleId).IsRequired();
+            entity.HasMany<TResource>().WithOne().HasForeignKey(res => res.RoleId).IsRequired();
         });
 
         modelBuilder.Entity<TResource>(entity =>

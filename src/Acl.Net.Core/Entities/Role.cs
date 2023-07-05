@@ -1,12 +1,13 @@
 ﻿namespace Acl.Net.Core.Entities;
 
-public class Role
+public class Role : Role<int> { }
+
+public class Role<TKey>
+    where TKey : IEquatable<TKey>
 {
-    public Guid Id { get; set; }
+    public TKey Id { get; set; } = default!;
 
     public string Name { get; set; } = null!;
 
-    public ICollection<Resource> Resources { get; set; } = Array.Empty<Resource>();
-
-    public virtual Guid UserId { get; set; }
+    public virtual TKey UserId { get; set; } = default!;
 }
