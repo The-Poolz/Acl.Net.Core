@@ -59,14 +59,14 @@ internal static class InMemoryAclDbContext
 
     internal static List<User> Users => new()
     {
-        new User { Id = 1 },
-        new User { Id = 2 }
+        new User { Id = 1, RoleId = 1},
+        new User { Id = 2, RoleId = 2}
     };
 
     internal static List<Role> Roles => new()
     {
-        new Role { Id = 1, UserId = 1, Name = "User" },
-        new Role { Id = 2, UserId = 2, Name = "Admin" }
+        new Role { Id = 1, Name = "User" },
+        new Role { Id = 2, Name = "Admin" }
     };
 
     internal static List<Resource> Resources => new()
