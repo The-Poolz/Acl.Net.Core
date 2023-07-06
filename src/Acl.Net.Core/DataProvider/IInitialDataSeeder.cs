@@ -6,5 +6,6 @@ public interface IInitialDataSeeder<out TRole, TKey>
     where TRole : Role<TKey>
     where TKey : IEquatable<TKey>
 {
-    TRole[] SeedRoles();
+    TRole SeedAdminRole();
+    TRole SeedUserRole();
 }

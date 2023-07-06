@@ -32,9 +32,9 @@ public class AclManager<TKey, TUser, TRole, TResource>
         this.context = context;
     }
 
-    public virtual bool IsPermitted(string userName, string resourceName, string? roleNameForNewUsers = null)
+    public virtual bool IsPermitted(string userName, string resourceName, IInitialDataSeeder<TRole, TKey> initialDataSeeder)
     {
-        var user = UserProcessing(userName, roleNameForNewUsers);
+        var user = UserProcessing(userName, initialDataSeeder.SeedUserRole().Name);
 
         var resource = context.Resources.FirstOrDefault(r => r.Name == resourceName)
             ?? throw new InvalidOperationException($"Resource with name '{resourceName}' not found.");
@@ -47,7 +47,7 @@ public class AclManager<TKey, TUser, TRole, TResource>
         return context.Resources.Any(r => r.RoleId.Equals(user.RoleId) && r.Id.Equals(resource.Id));
     }
 
-    public virtual TUser UserProcessing(string userName, string? roleNameForNewUsers = null)
+    public virtual TUser UserProcessing(string userName, string roleNameForNewUsers)
     {
         var user = context.Users.FirstOrDefault(x => x.Name == userName);
         if (user != null) return user;

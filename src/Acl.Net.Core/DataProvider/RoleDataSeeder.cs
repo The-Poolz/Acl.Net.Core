@@ -4,12 +4,13 @@ namespace Acl.Net.Core.DataProvider;
 
 public class RoleDataSeeder : IInitialDataSeeder<Role<int>, int>
 {
-    public Role<int>[] SeedRoles()
+    public Role<int> SeedAdminRole()
     {
-        return new[]
-        {
-            new Role<int> { Id = 1, Name = "AdminRole" },
-            new Role<int> { Id = 2, Name = "UserRole" }
-        };
+        return new Role<int> { Id = 1, Name = "AdminRole" };
+    }
+
+    public Role<int> SeedUserRole()
+    {
+        return new Role<int> { Id = 2, Name = "UserRole" };
     }
 }
