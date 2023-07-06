@@ -1,40 +1,35 @@
-﻿using Acl.Net.Core.Secrets;
-using Acl.Net.Core.Entities;
+﻿using Acl.Net.Core.Entities;
 using Acl.Net.Core.DataProvider;
-using Acl.Net.Core.Cryptography;
 
 namespace Acl.Net.Core;
 
 public class AclManager : AclManager<int, User>
 {
-    public AclManager(AclDbContext context, ISecretsProvider secretsProvider)
-        : base(context, secretsProvider)
+    public AclManager(AclDbContext context)
+        : base(context)
     { }
 }
 
-public class AclManager<TKey, TUser> : AclManager<TKey, TUser, Role<TKey>, Resource<TKey>, Claim<TKey>>
+public class AclManager<TKey, TUser> : AclManager<TKey, TUser, Role<TKey>, Resource<TKey>>
     where TKey : IEquatable<TKey>
     where TUser : User<TKey>, new()
 {
-    public AclManager(AclDbContext<TKey, TUser, Role<TKey>, Resource<TKey>, Claim<TKey>> context, ISecretsProvider secretsProvider)
-        : base(context, secretsProvider)
+    public AclManager(AclDbContext<TKey, TUser, Role<TKey>, Resource<TKey>> context)
+        : base(context)
     { }
 }
 
-public class AclManager<TKey, TUser, TRole, TResource, TClaim>
+public class AclManager<TKey, TUser, TRole, TResource>
     where TKey : IEquatable<TKey>
     where TUser : User<TKey>, new()
     where TRole : Role<TKey>
     where TResource : Resource<TKey>
-    where TClaim : Claim<TKey>, new()
 {
-    private readonly AclDbContext<TKey, TUser, TRole, TResource, TClaim> context;
-    private readonly UserTokenManager userTokenManager;
+    private readonly AclDbContext<TKey, TUser, TRole, TResource> context;
 
-    public AclManager(AclDbContext<TKey, TUser, TRole, TResource, TClaim> context, ISecretsProvider secretsProvider)
+    public AclManager(AclDbContext<TKey, TUser, TRole, TResource> context)
     {
         this.context = context;
-        userTokenManager = new UserTokenManager(secretsProvider);
     }
 
     public virtual bool IsPermitted(string userName, string resourceName, string? roleNameForNewUsers = null)
@@ -43,8 +38,6 @@ public class AclManager<TKey, TUser, TRole, TResource, TClaim>
 
         var resource = context.Resources.FirstOrDefault(r => r.Name == resourceName)
             ?? throw new InvalidOperationException($"Resource with name '{resourceName}' not found.");
-
-        _ = ClaimProcessing(user, resource);
 
         return IsPermitted(user, resource);
     }
@@ -75,29 +68,5 @@ public class AclManager<TKey, TUser, TRole, TResource, TClaim>
         context.SaveChanges();
 
         return newUser;
-    }
-
-    public virtual TClaim ClaimProcessing(TUser user, TResource resource)
-    {
-        var existingClaim = context.Claims
-            .OrderByDescending(x => x.DateOfCreation)
-            .FirstOrDefault(x => x.UserId.Equals(user.Id));
-
-        if (existingClaim != null && DateTime.UtcNow <= existingClaim.DateOfCreation.AddDays(1))
-            return existingClaim;
-
-        var newToken = userTokenManager.GenerateToken(user.Id);
-
-        var newClaim = new TClaim
-        {
-            Token = newToken,
-            DateOfCreation = DateTime.UtcNow,
-            UserId = user.Id
-        };
-
-        context.Claims.Add(newClaim);
-        context.SaveChanges();
-
-        return newClaim;
     }
 }

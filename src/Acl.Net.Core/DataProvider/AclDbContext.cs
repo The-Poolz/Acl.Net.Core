@@ -9,7 +9,7 @@ public class AclDbContext : AclDbContext<int, User>
     public AclDbContext(DbContextOptions options) : base(options) { }
 }
 
-public abstract class AclDbContext<TKey, TUser> : AclDbContext<TKey, TUser, Role<TKey>, Resource<TKey>, Claim<TKey>>
+public abstract class AclDbContext<TKey, TUser> : AclDbContext<TKey, TUser, Role<TKey>, Resource<TKey>>
     where TKey : IEquatable<TKey>
     where TUser : User<TKey>
 {
@@ -17,12 +17,11 @@ public abstract class AclDbContext<TKey, TUser> : AclDbContext<TKey, TUser, Role
     protected AclDbContext(DbContextOptions options) : base(options) { }
 }
 
-public abstract class AclDbContext<TKey, TUser, TRole, TResource, TClaim> : DbContext
+public abstract class AclDbContext<TKey, TUser, TRole, TResource> : DbContext
     where TKey : IEquatable<TKey>
     where TUser : User<TKey>
     where TRole : Role<TKey>
     where TResource : Resource<TKey>
-    where TClaim : Claim<TKey>
 {
     protected AclDbContext() { }
     protected AclDbContext(DbContextOptions options) : base(options) { }
@@ -30,7 +29,6 @@ public abstract class AclDbContext<TKey, TUser, TRole, TResource, TClaim> : DbCo
     public virtual DbSet<TUser> Users { get; set; } = null!;
     public virtual DbSet<TRole> Roles { get; set; } = null!;
     public virtual DbSet<TResource> Resources { get; set; } = null!;
-    public virtual DbSet<TClaim> Claims { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -42,7 +40,6 @@ public abstract class AclDbContext<TKey, TUser, TRole, TResource, TClaim> : DbCo
             entity.Property(u => u.Name).IsRequired();
 
             entity.HasOne<TRole>().WithMany().HasForeignKey(ut => ut.RoleId).IsRequired();
-            entity.HasMany<TClaim>().WithOne().HasForeignKey(ut => ut.UserId).IsRequired();
         });
 
         modelBuilder.Entity<TRole>(entity =>
@@ -57,13 +54,6 @@ public abstract class AclDbContext<TKey, TUser, TRole, TResource, TClaim> : DbCo
         {
             entity.HasKey(r => r.Id);
             entity.Property(r => r.Name).IsRequired();
-        });
-
-        modelBuilder.Entity<TClaim>(entity =>
-        {
-            entity.HasKey(c => c.Id);
-            entity.Property(c => c.Token).IsRequired();
-            entity.Property(c => c.DateOfCreation).IsRequired();
         });
     }
 }
