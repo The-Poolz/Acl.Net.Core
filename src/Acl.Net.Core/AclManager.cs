@@ -3,18 +3,17 @@ using Acl.Net.Core.DataProvider;
 
 namespace Acl.Net.Core;
 
-public class AclManager : AclManager<int, User>
+public class AclManager : AclManager<int>
 {
     public AclManager(AclDbContext context)
         : base(context, new RoleDataSeeder())
     { }
 }
 
-public class AclManager<TKey, TUser> : AclManager<TKey, TUser, Role<TKey>, Resource<TKey>>
+public class AclManager<TKey> : AclManager<TKey, User<TKey>, Role<TKey>, Resource<TKey>>
     where TKey : IEquatable<TKey>
-    where TUser : User<TKey>, new()
 {
-    public AclManager(AclDbContext<TKey, TUser, Role<TKey>, Resource<TKey>> context, IInitialDataSeeder<TKey, Role<TKey>> initialDataSeeder)
+    public AclManager(AclDbContext<TKey, User<TKey>, Role<TKey>, Resource<TKey>> context, IInitialDataSeeder<TKey, Role<TKey>> initialDataSeeder)
         : base(context, initialDataSeeder)
     { }
 }

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Acl.Net.Core.DataProvider;
 
-public class AclDbContext : AclDbContext<int, User>
+public class AclDbContext : AclDbContext<int>
 {
     public AclDbContext()
         : base(new RoleDataSeeder())
@@ -14,9 +14,8 @@ public class AclDbContext : AclDbContext<int, User>
     { }
 }
 
-public abstract class AclDbContext<TKey, TUser> : AclDbContext<TKey, TUser, Role<TKey>, Resource<TKey>>
+public abstract class AclDbContext<TKey> : AclDbContext<TKey, User<TKey>, Role<TKey>, Resource<TKey>>
     where TKey : IEquatable<TKey>
-    where TUser : User<TKey>
 {
     protected AclDbContext(IInitialDataSeeder<TKey, Role<TKey>> seeder)
         : base(seeder)
