@@ -1,5 +1,6 @@
 ﻿using Xunit;
 using Acl.Net.Core.Tests.Mock;
+using Acl.Net.Core.Tests.Cryptography;
 
 namespace Acl.Net.Core.Tests;
 
@@ -9,8 +10,9 @@ public class AclManagerTests
 
     public AclManagerTests()
     {
+        Environment.SetEnvironmentVariable("ACL_CRYPTOGRAPHY_KEY", "12345678123456781234567812345678");
         var context = InMemoryAclDbContext.CreateContext();
-        aclManager = new AclManager(context);
+        aclManager = new AclManager(context, new SecretsProvider());
     }
 
     [Fact]

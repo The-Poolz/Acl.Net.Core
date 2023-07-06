@@ -19,7 +19,7 @@ public class UserTokenManager
         var keyBytes = Encoding.UTF8.GetBytes(key);
         if (keyBytes.Length != 32)
         {
-            throw new ArgumentException("ACL_CRYPTOGRAPHY_KEY must be exactly 32 bytes (256 bits) for AES-256.");
+            throw new ArgumentException("Secret key from ISecretsProvider must be exactly 32 bytes (256 bits) for AES-256.");
         }
 
         var iv = GenerateRandomBytes(16);
