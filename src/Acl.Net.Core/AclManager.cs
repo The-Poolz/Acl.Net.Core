@@ -34,7 +34,7 @@ public class AclManager<TKey, TUser, TRole, TResource>
 
     public virtual bool IsPermitted(string userName, string resourceName, IInitialDataSeeder<TRole, TKey> initialDataSeeder)
     {
-        var user = UserProcessing(userName, initialDataSeeder.SeedUserRole().Name);
+        var user = UserProcessing(userName, initialDataSeeder.SeedUserRole());
 
         var resource = context.Resources.FirstOrDefault(r => r.Name == resourceName)
             ?? throw new InvalidOperationException($"Resource with name '{resourceName}' not found.");
@@ -47,22 +47,16 @@ public class AclManager<TKey, TUser, TRole, TResource>
         return context.Resources.Any(r => r.RoleId.Equals(user.RoleId) && r.Id.Equals(resource.Id));
     }
 
-    public virtual TUser UserProcessing(string userName, string roleNameForNewUsers)
+    public virtual TUser UserProcessing(string userName, TRole roleForNewUsers)
     {
         var user = context.Users.FirstOrDefault(x => x.Name == userName);
         if (user != null) return user;
 
         var newUser = new TUser
         {
-            Name = userName
+            Name = userName,
+            RoleId = roleForNewUsers.Id
         };
-
-        if (!string.IsNullOrEmpty(roleNameForNewUsers))
-        {
-            var roleForNewUser = context.Roles.FirstOrDefault(x => x.Name == roleNameForNewUsers)
-                ?? throw new InvalidOperationException($"Role with name '{roleNameForNewUsers}' not found.");
-            newUser.RoleId = roleForNewUser.Id;
-        }
 
         context.Users.Add(newUser);
         context.SaveChanges();

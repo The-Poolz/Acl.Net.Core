@@ -6,6 +6,10 @@ namespace Acl.Net.Core.Tests.Mock;
 
 internal static class InMemoryAclDbContext
 {
+    private static readonly RoleDataSeeder roleDataSeeder = new();
+    private static readonly Role<int> userRole = roleDataSeeder.SeedUserRole();
+    private static readonly Role<int> adminRole = roleDataSeeder.SeedAdminRole();
+
     internal static AclDbContext CreateContext()
     {
         var options = new DbContextOptionsBuilder<AclDbContext>()
@@ -15,7 +19,6 @@ internal static class InMemoryAclDbContext
         var context = new AclDbContext(options);
 
         context.Users.AddRange(Users);
-        context.Roles.AddRange(Roles);
         context.Resources.AddRange(Resources);
 
         context.SaveChanges();
@@ -25,19 +28,13 @@ internal static class InMemoryAclDbContext
 
     internal static List<User> Users => new()
     {
-        new User { Id = 1, Name = "UserAccount", RoleId = 1},
-        new User { Id = 2, Name = "AdminAccount", RoleId = 2}
-    };
-
-    internal static List<Role> Roles => new()
-    {
-        new Role { Id = 1, Name = "UserRole" },
-        new Role { Id = 2, Name = "AdminRole" }
+        new User { Id = 1, Name = "UserAccount", RoleId = userRole.Id},
+        new User { Id = 2, Name = "AdminAccount", RoleId = adminRole.Id}
     };
 
     internal static List<Resource> Resources => new()
     {
-        new Resource { Id = 1, Name = "PublicResource", RoleId = 1 },
-        new Resource { Id = 2, Name = "PrivateResource", RoleId = 2 }
+        new Resource { Id = 1, Name = "PublicResource", RoleId = userRole.Id },
+        new Resource { Id = 2, Name = "PrivateResource", RoleId = adminRole.Id }
     };
 }
