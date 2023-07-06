@@ -47,12 +47,7 @@ public class AclManager<TKey, TUser, TRole, TResource>
     {
         var adminRoleId = initialDataSeeder.SeedAdminRole().Id;
 
-        if (user.RoleId.Equals(adminRoleId))
-        {
-            return true;
-        }
-
-        return context.Resources.Any(r => r.RoleId.Equals(user.RoleId) && r.Id.Equals(resource.Id));
+        return user.RoleId.Equals(adminRoleId) || context.Resources.Any(r => r.RoleId.Equals(user.RoleId) && r.Id.Equals(resource.Id));
     }
 
     public virtual TUser UserProcessing(string userName, TRole roleForNewUsers)
