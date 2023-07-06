@@ -18,11 +18,11 @@ public abstract class AclDbContext<TKey, TUser> : AclDbContext<TKey, TUser, Role
     where TKey : IEquatable<TKey>
     where TUser : User<TKey>
 {
-    protected AclDbContext(IInitialDataSeeder<Role<TKey>, TKey> seeder)
+    protected AclDbContext(IInitialDataSeeder<TKey, Role<TKey>> seeder)
         : base(seeder)
     { }
 
-    protected AclDbContext(DbContextOptions options, IInitialDataSeeder<Role<TKey>, TKey> seeder)
+    protected AclDbContext(DbContextOptions options, IInitialDataSeeder<TKey, Role<TKey>> seeder)
         : base(options, seeder)
     { }
 }
@@ -33,14 +33,14 @@ public abstract class AclDbContext<TKey, TUser, TRole, TResource> : DbContext
     where TRole : Role<TKey>
     where TResource : Resource<TKey>
 {
-    private readonly IInitialDataSeeder<TRole, TKey> seeder;
+    private readonly IInitialDataSeeder<TKey, TRole> seeder;
 
-    protected AclDbContext(IInitialDataSeeder<TRole, TKey> seeder)
+    protected AclDbContext(IInitialDataSeeder<TKey, TRole> seeder)
     {
         this.seeder = seeder;
     }
 
-    protected AclDbContext(DbContextOptions options, IInitialDataSeeder<TRole, TKey> seeder) : base(options)
+    protected AclDbContext(DbContextOptions options, IInitialDataSeeder<TKey, TRole> seeder) : base(options)
     {
         this.seeder = seeder;
     }

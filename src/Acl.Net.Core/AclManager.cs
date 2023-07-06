@@ -6,7 +6,7 @@ namespace Acl.Net.Core;
 public class AclManager : AclManager<int, User>
 {
     public AclManager(AclDbContext context)
-        : base(context)
+        : base(context, new RoleDataSeeder())
     { }
 }
 
@@ -14,8 +14,8 @@ public class AclManager<TKey, TUser> : AclManager<TKey, TUser, Role<TKey>, Resou
     where TKey : IEquatable<TKey>
     where TUser : User<TKey>, new()
 {
-    public AclManager(AclDbContext<TKey, TUser, Role<TKey>, Resource<TKey>> context)
-        : base(context)
+    public AclManager(AclDbContext<TKey, TUser, Role<TKey>, Resource<TKey>> context, IInitialDataSeeder<TKey, Role<TKey>> initialDataSeeder)
+        : base(context, initialDataSeeder)
     { }
 }
 
@@ -26,13 +26,15 @@ public class AclManager<TKey, TUser, TRole, TResource>
     where TResource : Resource<TKey>
 {
     private readonly AclDbContext<TKey, TUser, TRole, TResource> context;
+    private readonly IInitialDataSeeder<TKey, TRole> initialDataSeeder;
 
-    public AclManager(AclDbContext<TKey, TUser, TRole, TResource> context)
+    public AclManager(AclDbContext<TKey, TUser, TRole, TResource> context, IInitialDataSeeder<TKey, TRole> initialDataSeeder)
     {
         this.context = context;
+        this.initialDataSeeder = initialDataSeeder;
     }
 
-    public virtual bool IsPermitted(string userName, string resourceName, IInitialDataSeeder<TRole, TKey> initialDataSeeder)
+    public virtual bool IsPermitted(string userName, string resourceName)
     {
         var user = UserProcessing(userName, initialDataSeeder.SeedUserRole());
 

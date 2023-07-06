@@ -2,7 +2,7 @@
 
 namespace Acl.Net.Core.DataProvider;
 
-public class RoleDataSeeder : IInitialDataSeeder<Role<int>, int>
+public class RoleDataSeeder : IInitialDataSeeder<int, Role<int>>
 {
     public Role<int> SeedAdminRole()
     {

@@ -2,9 +2,9 @@
 
 namespace Acl.Net.Core.DataProvider;
 
-public interface IInitialDataSeeder<out TRole, TKey>
-    where TRole : Role<TKey>
+public interface IInitialDataSeeder<TKey, out TRole>
     where TKey : IEquatable<TKey>
+    where TRole : Role<TKey>
 {
     TRole SeedAdminRole();
     TRole SeedUserRole();

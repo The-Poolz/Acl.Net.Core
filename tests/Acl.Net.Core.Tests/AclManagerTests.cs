@@ -12,20 +12,20 @@ public class AclManagerTests
     public AclManagerTests()
     {
         var context = InMemoryAclDbContext.CreateContext();
-        aclManager = new AclManager(context);
         initialDataSeeder = new RoleDataSeeder();
+        aclManager = new AclManager(context);
     }
 
     [Fact]
     public void IsPermitted_StringParameters_NoMatchingResource_ThrowsInvalidOperationException()
     {
-        Assert.Throws<InvalidOperationException>(() => aclManager.IsPermitted("UserAccount", "NonExistentResource", initialDataSeeder));
+        Assert.Throws<InvalidOperationException>(() => aclManager.IsPermitted("UserAccount", "NonExistentResource"));
     }
 
     [Fact]
     public void IsPermitted_StringParameters_ValidUserAndResource_ReturnsTrue()
     {
-        var result = aclManager.IsPermitted("UserAccount", "PublicResource", initialDataSeeder);
+        var result = aclManager.IsPermitted("UserAccount", "PublicResource");
 
         Assert.True(result);
     }
