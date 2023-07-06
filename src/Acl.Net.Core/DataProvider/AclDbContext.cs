@@ -5,16 +5,26 @@ namespace Acl.Net.Core.DataProvider;
 
 public class AclDbContext : AclDbContext<int, User>
 {
-    public AclDbContext() { }
-    public AclDbContext(DbContextOptions options) : base(options) { }
+    public AclDbContext()
+        : base(new RoleDataSeeder())
+    { }
+
+    public AclDbContext(DbContextOptions options)
+        : base(options, new RoleDataSeeder())
+    { }
 }
 
 public abstract class AclDbContext<TKey, TUser> : AclDbContext<TKey, TUser, Role<TKey>, Resource<TKey>>
     where TKey : IEquatable<TKey>
     where TUser : User<TKey>
 {
-    protected AclDbContext() { }
-    protected AclDbContext(DbContextOptions options) : base(options) { }
+    protected AclDbContext(IInitialDataSeeder<Role<TKey>, TKey> seeder)
+        : base(seeder)
+    { }
+
+    protected AclDbContext(DbContextOptions options, IInitialDataSeeder<Role<TKey>, TKey> seeder)
+        : base(options, seeder)
+    { }
 }
 
 public abstract class AclDbContext<TKey, TUser, TRole, TResource> : DbContext
@@ -23,8 +33,17 @@ public abstract class AclDbContext<TKey, TUser, TRole, TResource> : DbContext
     where TRole : Role<TKey>
     where TResource : Resource<TKey>
 {
-    protected AclDbContext() { }
-    protected AclDbContext(DbContextOptions options) : base(options) { }
+    private readonly IInitialDataSeeder<TRole, TKey> seeder;
+
+    protected AclDbContext(IInitialDataSeeder<TRole, TKey> seeder)
+    {
+        this.seeder = seeder;
+    }
+
+    protected AclDbContext(DbContextOptions options, IInitialDataSeeder<TRole, TKey> seeder) : base(options)
+    {
+        this.seeder = seeder;
+    }
 
     public virtual DbSet<TUser> Users { get; set; } = null!;
     public virtual DbSet<TRole> Roles { get; set; } = null!;
@@ -48,6 +67,8 @@ public abstract class AclDbContext<TKey, TUser, TRole, TResource> : DbContext
             entity.Property(r => r.Name).IsRequired();
 
             entity.HasMany<TResource>().WithOne().HasForeignKey(res => res.RoleId).IsRequired();
+
+            entity.HasData(seeder.SeedRoles());
         });
 
         modelBuilder.Entity<TResource>(entity =>
