@@ -64,7 +64,7 @@ public class AclManager<TKey, TUser, TRole, TResource, TClaim>
             Name = userName
         };
 
-        if (string.IsNullOrEmpty(roleNameForNewUsers))
+        if (!string.IsNullOrEmpty(roleNameForNewUsers))
         {
             var roleForNewUser = context.Roles.FirstOrDefault(x => x.Name == roleNameForNewUsers)
                 ?? throw new InvalidOperationException($"Role with name '{roleNameForNewUsers}' not found.");
