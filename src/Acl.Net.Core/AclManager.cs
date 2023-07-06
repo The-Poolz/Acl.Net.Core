@@ -45,6 +45,13 @@ public class AclManager<TKey, TUser, TRole, TResource>
 
     public virtual bool IsPermitted(TUser user, TResource resource)
     {
+        var adminRoleId = initialDataSeeder.SeedAdminRole().Id;
+
+        if (user.RoleId.Equals(adminRoleId))
+        {
+            return true;
+        }
+
         return context.Resources.Any(r => r.RoleId.Equals(user.RoleId) && r.Id.Equals(resource.Id));
     }
 
