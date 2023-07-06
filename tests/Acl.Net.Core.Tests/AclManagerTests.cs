@@ -71,4 +71,17 @@ public class AclManagerTests
 
         Assert.True(result);
     }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(1)]
+    public void IsPermitted_ObjectParameters_AdminCall_ReturnsTrue(int index)
+    {
+        var user = InMemoryAclDbContext.Users[1];
+        var resource = InMemoryAclDbContext.Resources[index];
+
+        var result = aclManager.IsPermitted(user, resource);
+
+        Assert.True(result);
+    }
 }
