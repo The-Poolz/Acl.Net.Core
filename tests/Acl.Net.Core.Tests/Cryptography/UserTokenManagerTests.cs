@@ -43,6 +43,6 @@ public class UserTokenManagerTests
         void TestCode() => userTokenManager.GenerateToken(1);
 
         Exception ex = Assert.Throws<ArgumentException>(TestCode);
-        Assert.Equal("ACL_CRYPTOGRAPHY_KEY must be exactly 32 bytes (256 bits) for AES-256.", ex.Message);
+        Assert.Equal("Secret key from ISecretsProvider must be exactly 32 bytes (256 bits) for AES-256.", ex.Message);
     }
 }
