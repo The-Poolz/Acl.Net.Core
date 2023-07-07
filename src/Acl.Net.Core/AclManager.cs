@@ -55,7 +55,7 @@ public class AclManager<TKey, TUser, TRole, TResource>
             context.Resources.Any(r => r.RoleId.Equals(user.RoleId) && r.Id.Equals(resource.Id));
     }
 
-    private TUser UserProcessing(string userName, TRole roleForNewUsers)
+    public virtual TUser UserProcessing(string userName, TRole roleForNewUsers)
     {
         var user = context.Users.FirstOrDefault(x => x.Name == userName);
         if (user != null) return user;
