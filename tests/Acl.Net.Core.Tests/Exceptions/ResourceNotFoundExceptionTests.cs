@@ -5,7 +5,7 @@ using Acl.Net.Core.Tests.Exceptions.Testable;
 
 namespace Acl.Net.Core.Tests.Exceptions;
 
-public class UserNotFoundExceptionTests : ExceptionSerializationTestBase<UserNotFoundException, TestableUserNotFoundException>
+public class ResourceNotFoundExceptionTests : ExceptionSerializationTestBase<ResourceNotFoundException, TestableResourceNotFoundException>
 {
     [Fact]
     internal void GasPriceExceededException_SerializationTest()
@@ -18,6 +18,5 @@ public class UserNotFoundExceptionTests : ExceptionSerializationTestBase<UserNot
         Assert.Equal(expectedMessage, actualMessage);
     }
 
-    protected override TestableUserNotFoundException CreateTestableException(SerializationInfo info, StreamingContext context) =>
-        new(info, context);
+    protected override TestableResourceNotFoundException CreateTestableException(SerializationInfo info, StreamingContext context) => new(info, context);
 }

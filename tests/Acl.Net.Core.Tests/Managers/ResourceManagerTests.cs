@@ -2,6 +2,7 @@
 using Acl.Net.Core.Entities;
 using Acl.Net.Core.Managers;
 using Acl.Net.Core.Tests.Mock;
+using Acl.Net.Core.Exceptions;
 
 namespace Acl.Net.Core.Tests.Managers;
 
@@ -55,10 +56,10 @@ public class ResourceManagerTests
     }
 
     [Fact]
-    public void GetResourceByName_ShouldThrowInvalidOperationException_WhenResourceDoesNotExist()
+    public void GetResourceByName_ShouldThrowResourceNotFoundException_WhenResourceDoesNotExist()
     {
         const string nonExistentResourceName = "NonExistentResource";
-        Assert.Throws<InvalidOperationException>(() => _resourceManager.GetResourceByName(nonExistentResourceName));
+        Assert.Throws<ResourceNotFoundException>(() => _resourceManager.GetResourceByName(nonExistentResourceName));
     }
 
     [Fact]
@@ -71,9 +72,9 @@ public class ResourceManagerTests
     }
 
     [Fact]
-    public async Task GetResourceByNameAsync_ShouldThrowInvalidOperationException_WhenResourceDoesNotExist()
+    public async Task GetResourceByNameAsync_ShouldThrowResourceNotFoundException_WhenResourceDoesNotExist()
     {
         const string nonExistentResourceName = "NonExistentResource";
-        await Assert.ThrowsAsync<InvalidOperationException>(() => _resourceManager.GetResourceByNameAsync(nonExistentResourceName));
+        await Assert.ThrowsAsync<ResourceNotFoundException>(() => _resourceManager.GetResourceByNameAsync(nonExistentResourceName));
     }
 }
