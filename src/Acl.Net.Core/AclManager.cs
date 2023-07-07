@@ -35,6 +35,9 @@ public class AclManager<TKey, TUser, TRole, TResource>
 
     public virtual bool IsPermitted(string userName, string resourceName)
     {
+        if (string.IsNullOrWhiteSpace(userName)) throw new ArgumentNullException(nameof(userName));
+        if (string.IsNullOrWhiteSpace(resourceName)) throw new ArgumentNullException(nameof(resourceName));
+
         var user = UserProcessing(userName, initialDataSeeder.SeedUserRole());
 
         var resource = context.Resources.FirstOrDefault(r => r.Name == resourceName)
@@ -45,11 +48,14 @@ public class AclManager<TKey, TUser, TRole, TResource>
 
     public virtual bool IsPermitted(TUser user, TResource resource)
     {
+        if (user == null) throw new ArgumentNullException(nameof(user));
+        if (resource == null) throw new ArgumentNullException(nameof(resource));
+
         return user.RoleId.Equals(initialDataSeeder.SeedAdminRole().Id) ||
             context.Resources.Any(r => r.RoleId.Equals(user.RoleId) && r.Id.Equals(resource.Id));
     }
 
-    public virtual TUser UserProcessing(string userName, TRole roleForNewUsers)
+    private TUser UserProcessing(string userName, TRole roleForNewUsers)
     {
         var user = context.Users.FirstOrDefault(x => x.Name == userName);
         if (user != null) return user;
