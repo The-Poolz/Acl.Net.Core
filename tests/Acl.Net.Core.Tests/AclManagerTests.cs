@@ -17,6 +17,18 @@ public class AclManagerTests
     }
 
     [Fact]
+    public void IsPermitted_StringParameters_UserNameIsNullOrEmpty_ThrowsArgumentNullException()
+    {
+        Assert.Throws<ArgumentNullException>(() => aclManager.IsPermitted("    ", "NonExistentResource"));
+    }
+
+    [Fact]
+    public void IsPermitted_StringParameters_ResourceNameIsNullOrEmpty_ThrowsArgumentNullException()
+    {
+        Assert.Throws<ArgumentNullException>(() => aclManager.IsPermitted("UserAccount", "    "));
+    }
+
+    [Fact]
     public void IsPermitted_StringParameters_NoMatchingResource_ThrowsInvalidOperationException()
     {
         Assert.Throws<InvalidOperationException>(() => aclManager.IsPermitted("UserAccount", "NonExistentResource"));
@@ -51,12 +63,21 @@ public class AclManagerTests
     }
 
     [Fact]
+    public void IsPermitted_ObjectParameters_UserIsNull_ThrowsArgumentNullException()
+    {
+        Assert.Throws<ArgumentNullException>(() => aclManager.IsPermitted(null!, InMemoryAclDbContext.Resources[1]));
+    }
+
+    [Fact]
+    public void IsPermitted_ObjectParameters_ResourceIsNull_ThrowsArgumentNullException()
+    {
+        Assert.Throws<ArgumentNullException>(() => aclManager.IsPermitted(InMemoryAclDbContext.Users[0], null!));
+    }
+
+    [Fact]
     public void IsPermitted_ObjectParameters_UserWithoutAccess_ReturnsFalse()
     {
-        var user = InMemoryAclDbContext.Users[0];
-        var resource = InMemoryAclDbContext.Resources[1];
-
-        var result = aclManager.IsPermitted(user, resource);
+        var result = aclManager.IsPermitted(InMemoryAclDbContext.Users[0], InMemoryAclDbContext.Resources[1]);
 
         Assert.False(result);
     }
@@ -64,10 +85,7 @@ public class AclManagerTests
     [Fact]
     public void IsPermitted_ObjectParameters_UserWithAccess_ReturnsTrue()
     {
-        var user = InMemoryAclDbContext.Users[0];
-        var resource = InMemoryAclDbContext.Resources[0];
-
-        var result = aclManager.IsPermitted(user, resource);
+        var result = aclManager.IsPermitted(InMemoryAclDbContext.Users[0], InMemoryAclDbContext.Resources[0]);
 
         Assert.True(result);
     }
@@ -77,10 +95,7 @@ public class AclManagerTests
     [InlineData(1)]
     public void IsPermitted_ObjectParameters_AdminCall_ReturnsTrue(int index)
     {
-        var user = InMemoryAclDbContext.Users[1];
-        var resource = InMemoryAclDbContext.Resources[index];
-
-        var result = aclManager.IsPermitted(user, resource);
+        var result = aclManager.IsPermitted(InMemoryAclDbContext.Users[1], InMemoryAclDbContext.Resources[index]);
 
         Assert.True(result);
     }
