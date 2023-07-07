@@ -4,6 +4,25 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Acl.Net.Core.Managers;
 
+public class ResourceManager : ResourceManager<int>
+{
+    public ResourceManager(
+        AclDbContext<int> context)
+        : base(context, new RoleDataSeeder())
+    { }
+}
+
+public class ResourceManager<TKey> : ResourceManager<TKey, User<TKey>, Role<TKey>, Resource<TKey>>
+    where TKey : IEquatable<TKey>
+{
+    public ResourceManager(
+        AclDbContext<TKey, User<TKey>, Role<TKey>, Resource<TKey>> context,
+        IInitialDataSeeder<TKey, Role<TKey>> initialDataSeeder
+    )
+        : base(context, initialDataSeeder)
+    { }
+}
+
 public class ResourceManager<TKey, TUser, TRole, TResource>
     where TKey : IEquatable<TKey>
     where TUser : User<TKey>, new()

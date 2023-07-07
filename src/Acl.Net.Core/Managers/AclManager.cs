@@ -1,21 +1,27 @@
 ﻿using Acl.Net.Core.Entities;
 using Acl.Net.Core.DataProvider;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Acl.Net.Core.Managers;
 
 public class AclManager : AclManager<int>
 {
-    public AclManager(AclDbContext context)
-        : base(context, new RoleDataSeeder())
+    public AclManager(
+        UserManager<int, User<int>, Role<int>, Resource<int>> userManager,
+        ResourceManager<int, User<int>, Role<int>, Resource<int>> resourceManager
+    )
+        : base(new RoleDataSeeder(), userManager, resourceManager)
     { }
 }
 
 public class AclManager<TKey> : AclManager<TKey, User<TKey>, Role<TKey>, Resource<TKey>>
     where TKey : IEquatable<TKey>
 {
-    public AclManager(AclDbContext<TKey, User<TKey>, Role<TKey>, Resource<TKey>> context, IInitialDataSeeder<TKey, Role<TKey>> initialDataSeeder)
-        : base(context, initialDataSeeder)
+    public AclManager(
+        IInitialDataSeeder<TKey, Role<TKey>> initialDataSeeder,
+        UserManager<TKey, User<TKey>, Role<TKey>, Resource<TKey>> userManager,
+        ResourceManager<TKey, User<TKey>, Role<TKey>, Resource<TKey>> resourceManager
+    )
+        : base(initialDataSeeder, userManager, resourceManager)
     { }
 }
 
@@ -29,15 +35,15 @@ public class AclManager<TKey, TUser, TRole, TResource>
     private readonly UserManager<TKey, TUser, TRole, TResource> userManager;
     private readonly ResourceManager<TKey, TUser, TRole, TResource> resourceManager;
 
-    public AclManager(IServiceProvider serviceProvider)
+    public AclManager(
+        IInitialDataSeeder<TKey, TRole> initialDataSeeder,
+        UserManager<TKey, TUser, TRole, TResource> userManager,
+        ResourceManager<TKey, TUser, TRole, TResource> resourceManager
+    )
     {
-        AclDbContext<TKey, TUser, TRole, TResource> context = serviceProvider.GetRequiredService<AclDbContext<TKey, TUser, TRole, TResource>>();
-        initialDataSeeder = serviceProvider.GetRequiredService<IInitialDataSeeder<TKey, TRole>>();
-
-        userManager = serviceProvider.GetService<UserManager<TKey, TUser, TRole, TResource>>()
-            ?? new UserManager<TKey, TUser, TRole, TResource>(context);
-        resourceManager = serviceProvider.GetService<ResourceManager<TKey, TUser, TRole, TResource>>()
-            ?? new ResourceManager<TKey, TUser, TRole, TResource>(context, initialDataSeeder);
+        this.initialDataSeeder = initialDataSeeder;
+        this.userManager = userManager;
+        this.resourceManager = resourceManager;
     }
 
     public bool IsPermitted(string userName, string resourceName)

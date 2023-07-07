@@ -4,6 +4,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Acl.Net.Core.Managers;
 
+public class UserManager : UserManager<int>
+{
+    public UserManager(AclDbContext<int> context)
+        : base(context)
+    { }
+}
+
+public class UserManager<TKey> : UserManager<TKey, User<TKey>, Role<TKey>, Resource<TKey>>
+    where TKey : IEquatable<TKey>
+{
+    public UserManager(AclDbContext<TKey, User<TKey>, Role<TKey>, Resource<TKey>> context)
+        : base(context)
+    { }
+}
+
 public class UserManager<TKey, TUser, TRole, TResource>
     where TKey : IEquatable<TKey>
     where TUser : User<TKey>, new()
