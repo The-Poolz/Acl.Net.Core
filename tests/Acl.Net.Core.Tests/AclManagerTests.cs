@@ -1,6 +1,7 @@
 ﻿using Xunit;
 using Acl.Net.Core.Tests.Mock;
 using Acl.Net.Core.DataProvider;
+using Acl.Net.Core.Managers;
 
 namespace Acl.Net.Core.Tests;
 

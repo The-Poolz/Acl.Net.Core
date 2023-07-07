@@ -30,4 +30,16 @@ public class ResourceManager<TKey, TUser, TRole, TResource>
         return user.RoleId.Equals(initialDataSeeder.SeedAdminRole().Id) ||
             await context.Resources.AnyAsync(r => r.RoleId.Equals(user.RoleId) && r.Id.Equals(resource.Id));
     }
+
+    public TResource GetResourceByName(string resourceName)
+    {
+        return context.Resources.FirstOrDefault(r => r.Name == resourceName)
+            ?? throw new InvalidOperationException($"Resource with name '{resourceName}' not found.");
+    }
+
+    public async Task<TResource> GetResourceByNameAsync(string resourceName)
+    {
+        return await context.Resources.FirstOrDefaultAsync(r => r.Name == resourceName)
+            ?? throw new InvalidOperationException($"Resource with name '{resourceName}' not found.");
+    }
 }
