@@ -16,6 +16,7 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <Version>1.0.0</Version>
     <PackageId>Acl.Net.Core</PackageId>
+    <Product>Acl.Net.Core</Product>
   </PropertyGroup>
 
   <ItemGroup>
