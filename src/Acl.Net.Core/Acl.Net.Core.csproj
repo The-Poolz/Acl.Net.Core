@@ -15,6 +15,7 @@
     <RepositoryUrl>https://github.com/The-Poolz/Acl.Net.Core</RepositoryUrl>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <Version>1.0.0</Version>
+    <PackageId>Acl.Net.Core</PackageId>
   </PropertyGroup>
 
   <ItemGroup>
