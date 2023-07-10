@@ -95,7 +95,7 @@ In this example, `MyDbContext` is a subclass of `AclDbContext` that uses `Guid` 
 ## `IInitialDataSeeder` Interface
 
 The `IInitialDataSeeder` interface is a crucial part of the `Acl.Net.Core` library.
-It is used to seed initial data into the database when the application starts.
+It is used to seed initial data into the database when the migrations applied.
 The library provides a default implementation, `RoleDataSeeder`, which seeds two roles: `AdminRole` and `UserRole`.
 
 The `IInitialDataSeeder` interface is used in the `AclDbContext` and `AclManager` classes to seed the initial roles and to check permissions.
