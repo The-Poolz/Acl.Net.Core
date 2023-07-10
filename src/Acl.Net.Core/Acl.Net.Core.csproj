@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Title>A comprehensive .NET Core library for managing Access Control Lists (ACL) designed to be used with Entity Framework Core</Title>
-    <Description>A comprehensive .NET Core library for managing Access Control Lists (ACL)</Description>
+    <Description>A comprehensive .NET Core library for managing Access Control Lists (ACL) designed to be used with Entity Framework Core</Description>
     <Authors>Lomet, ArdenHide</Authors>
     <Company>The-Poolz</Company>
     <PackageProjectUrl>https://www.nuget.org/packages/Acl.Net.Core</PackageProjectUrl>
