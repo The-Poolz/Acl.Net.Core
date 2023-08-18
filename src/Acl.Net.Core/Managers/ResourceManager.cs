@@ -41,25 +41,25 @@ public class ResourceManager<TKey, TUser, TRole, TResource> : IResourceManager<T
         this.initialDataSeeder = initialDataSeeder;
     }
 
-    public bool IsPermitted(TUser user, TResource resource)
+    public virtual bool IsPermitted(TUser user, TResource resource)
     {
         return user.RoleId.Equals(initialDataSeeder.SeedAdminRole().Id) ||
             context.Resources.Any(r => r.RoleId.Equals(user.RoleId) && r.Id.Equals(resource.Id));
     }
 
-    public async Task<bool> IsPermittedAsync(TUser user, TResource resource)
+    public virtual async Task<bool> IsPermittedAsync(TUser user, TResource resource)
     {
         return user.RoleId.Equals(initialDataSeeder.SeedAdminRole().Id) ||
             await context.Resources.AnyAsync(r => r.RoleId.Equals(user.RoleId) && r.Id.Equals(resource.Id));
     }
 
-    public TResource GetResourceByName(string resourceName)
+    public virtual TResource GetResourceByName(string resourceName)
     {
         return context.Resources.FirstOrDefault(r => r.Name == resourceName)
             ?? throw new ResourceNotFoundException(resourceName);
     }
 
-    public async Task<TResource> GetResourceByNameAsync(string resourceName)
+    public virtual async Task<TResource> GetResourceByNameAsync(string resourceName)
     {
         return await context.Resources.FirstOrDefaultAsync(r => r.Name == resourceName)
             ?? throw new ResourceNotFoundException(resourceName);
