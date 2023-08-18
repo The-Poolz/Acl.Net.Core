@@ -4,22 +4,22 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Acl.Net.Core.Managers;
 
-public class UserManager : UserManager<int>
+public class UserManager : UserManager<int>, IUserManager
 {
-    public UserManager(AclDbContext<int> context)
+    public UserManager(AclDbContext context)
         : base(context)
     { }
 }
 
-public class UserManager<TKey> : UserManager<TKey, User<TKey>, Role<TKey>, Resource<TKey>>
+public class UserManager<TKey> : UserManager<TKey, User<TKey>, Role<TKey>, Resource<TKey>>, IUserManager<TKey>
     where TKey : IEquatable<TKey>
 {
-    public UserManager(AclDbContext<TKey, User<TKey>, Role<TKey>, Resource<TKey>> context)
+    public UserManager(AclDbContext<TKey> context)
         : base(context)
     { }
 }
 
-public class UserManager<TKey, TUser, TRole, TResource>
+public class UserManager<TKey, TUser, TRole, TResource> : IUserManager<TKey, TUser, TRole>
     where TKey : IEquatable<TKey>
     where TUser : User<TKey>, new()
     where TRole : Role<TKey>
@@ -32,7 +32,7 @@ public class UserManager<TKey, TUser, TRole, TResource>
         this.context = context;
     }
 
-    public TUser UserProcessing(string userName, TRole roleForNewUsers)
+    public virtual TUser UserProcessing(string userName, TRole roleForNewUsers)
     {
         var user = context.Users.FirstOrDefault(x => x.Name == userName)
             ?? new TUser { Name = userName, RoleId = roleForNewUsers.Id };
@@ -44,7 +44,7 @@ public class UserManager<TKey, TUser, TRole, TResource>
         return user;
     }
 
-    public async Task<TUser> UserProcessingAsync(string userName, TRole roleForNewUsers)
+    public virtual async Task<TUser> UserProcessingAsync(string userName, TRole roleForNewUsers)
     {
         var user = await context.Users.FirstOrDefaultAsync(x => x.Name == userName)
             ?? new TUser { Name = userName, RoleId = roleForNewUsers.Id };
