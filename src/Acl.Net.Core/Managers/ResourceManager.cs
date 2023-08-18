@@ -1,30 +1,29 @@
 ﻿using Acl.Net.Core.Entities;
+using Acl.Net.Core.Exceptions;
 using Acl.Net.Core.DataProvider;
 using Microsoft.EntityFrameworkCore;
-using Acl.Net.Core.Exceptions;
 
 namespace Acl.Net.Core.Managers;
 
-public class ResourceManager : ResourceManager<int>
+public class ResourceManager : ResourceManager<int>, IResourceManager
 {
-    public ResourceManager(
-        AclDbContext<int> context)
+    public ResourceManager(AclDbContext context)
         : base(context, new RoleDataSeeder())
     { }
 }
 
-public class ResourceManager<TKey> : ResourceManager<TKey, User<TKey>, Role<TKey>, Resource<TKey>>
+public class ResourceManager<TKey> : ResourceManager<TKey, User<TKey>, Role<TKey>, Resource<TKey>>, IResourceManager<TKey>
     where TKey : IEquatable<TKey>
 {
     public ResourceManager(
-        AclDbContext<TKey, User<TKey>, Role<TKey>, Resource<TKey>> context,
+        AclDbContext<TKey> context,
         IInitialDataSeeder<TKey, Role<TKey>> initialDataSeeder
     )
         : base(context, initialDataSeeder)
     { }
 }
 
-public class ResourceManager<TKey, TUser, TRole, TResource>
+public class ResourceManager<TKey, TUser, TRole, TResource> : IResourceManager<TKey, TUser, TResource>
     where TKey : IEquatable<TKey>
     where TUser : User<TKey>, new()
     where TRole : Role<TKey>
@@ -33,7 +32,10 @@ public class ResourceManager<TKey, TUser, TRole, TResource>
     private readonly AclDbContext<TKey, TUser, TRole, TResource> context;
     private readonly IInitialDataSeeder<TKey, TRole> initialDataSeeder;
 
-    public ResourceManager(AclDbContext<TKey, TUser, TRole, TResource> context, IInitialDataSeeder<TKey, TRole> initialDataSeeder)
+    public ResourceManager(
+        AclDbContext<TKey, TUser, TRole, TResource> context,
+        IInitialDataSeeder<TKey, TRole> initialDataSeeder
+    )
     {
         this.context = context;
         this.initialDataSeeder = initialDataSeeder;
