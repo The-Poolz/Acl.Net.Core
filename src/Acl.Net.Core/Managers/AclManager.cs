@@ -25,7 +25,7 @@ public class AclManager<TKey> : AclManager<TKey, User<TKey>, Role<TKey>, Resourc
     { }
 }
 
-public class AclManager<TKey, TUser, TRole, TResource>
+public class AclManager<TKey, TUser, TRole, TResource> : IAclManager
     where TKey : IEquatable<TKey>
     where TUser : User<TKey>, new()
     where TRole : Role<TKey>
@@ -46,14 +46,14 @@ public class AclManager<TKey, TUser, TRole, TResource>
         this.resourceManager = resourceManager;
     }
 
-    public bool IsPermitted(string userName, string resourceName)
+    public virtual bool IsPermitted(string userName, string resourceName)
     {
         var user = userManager.UserProcessing(userName, initialDataSeeder.SeedUserRole());
         var resource = resourceManager.GetResourceByName(resourceName);
         return resourceManager.IsPermitted(user, resource);
     }
 
-    public async Task<bool> IsPermittedAsync(string userName, string resourceName)
+    public virtual async Task<bool> IsPermittedAsync(string userName, string resourceName)
     {
         var user = await userManager.UserProcessingAsync(userName, initialDataSeeder.SeedUserRole());
         var resource = await resourceManager.GetResourceByNameAsync(resourceName);
