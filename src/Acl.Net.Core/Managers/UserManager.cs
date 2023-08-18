@@ -32,7 +32,7 @@ public class UserManager<TKey, TUser, TRole, TResource> : IUserManager<TKey, TUs
         this.context = context;
     }
 
-    public TUser UserProcessing(string userName, TRole roleForNewUsers)
+    public virtual TUser UserProcessing(string userName, TRole roleForNewUsers)
     {
         var user = context.Users.FirstOrDefault(x => x.Name == userName)
             ?? new TUser { Name = userName, RoleId = roleForNewUsers.Id };
@@ -44,7 +44,7 @@ public class UserManager<TKey, TUser, TRole, TResource> : IUserManager<TKey, TUs
         return user;
     }
 
-    public async Task<TUser> UserProcessingAsync(string userName, TRole roleForNewUsers)
+    public virtual async Task<TUser> UserProcessingAsync(string userName, TRole roleForNewUsers)
     {
         var user = await context.Users.FirstOrDefaultAsync(x => x.Name == userName)
             ?? new TUser { Name = userName, RoleId = roleForNewUsers.Id };
