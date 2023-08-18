@@ -6,7 +6,7 @@ namespace Acl.Net.Core.Managers;
 public class AclManager : AclManager<int>
 {
     public AclManager(
-        UserManager<int> userManager,
+        IUserManager userManager,
         IResourceManager resourceManager
     )
         : base(new RoleDataSeeder(), userManager, resourceManager)
@@ -18,7 +18,7 @@ public class AclManager<TKey> : AclManager<TKey, User<TKey>, Role<TKey>, Resourc
 {
     public AclManager(
         IInitialDataSeeder<TKey, Role<TKey>> initialDataSeeder,
-        UserManager<TKey, User<TKey>, Role<TKey>, Resource<TKey>> userManager,
+        IUserManager<TKey> userManager,
         IResourceManager<TKey> resourceManager
     )
         : base(initialDataSeeder, userManager, resourceManager)
@@ -32,12 +32,12 @@ public class AclManager<TKey, TUser, TRole, TResource>
     where TResource : Resource<TKey>
 {
     private readonly IInitialDataSeeder<TKey, TRole> initialDataSeeder;
-    private readonly UserManager<TKey, TUser, TRole, TResource> userManager;
+    private readonly IUserManager<TKey, TUser, TRole> userManager;
     private readonly IResourceManager<TKey, TUser, TResource> resourceManager;
 
     public AclManager(
         IInitialDataSeeder<TKey, TRole> initialDataSeeder,
-        UserManager<TKey, TUser, TRole, TResource> userManager,
+        IUserManager<TKey, TUser, TRole> userManager,
         IResourceManager<TKey, TUser, TResource> resourceManager
     )
     {
