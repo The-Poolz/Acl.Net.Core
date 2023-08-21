@@ -83,13 +83,13 @@ public class ResourceManager<TKey, TUser, TRole, TResource> : IResourceManager<T
     public virtual TResource GetResourceByName(string resourceName)
     {
         return context.Resources.FirstOrDefault(r => r.Name == resourceName)
-               ?? throw new ResourceNotFoundException(resourceName);
+            ?? throw new ResourceNotFoundException(resourceName);
     }
 
     public virtual async Task<TResource> GetResourceByNameAsync(string resourceName)
     {
         return await context.Resources.FirstOrDefaultAsync(r => r.Name == resourceName)
-               ?? throw new ResourceNotFoundException(resourceName);
+            ?? throw new ResourceNotFoundException(resourceName);
     }
 
     public virtual IEnumerable<TResource> GetResourcesByName(string resourceName)
