@@ -1,6 +1,5 @@
 ﻿using Acl.Net.Core.Entities;
 using Acl.Net.Core.Exceptions;
-using Acl.Net.Core.Extensions;
 using Acl.Net.Core.DataProvider;
 using Microsoft.EntityFrameworkCore;
 
@@ -54,10 +53,14 @@ public class ResourceManager<TKey, TUser, TRole, TResource> : IResourceManager<T
             context.Resources.Any(r => r.RoleId.Equals(user.RoleId) && r.Id.Equals(resource.Id));
     }
 
-    public virtual bool IsPermitted(TUser user, IEnumerable<TResource> resources)
+    public virtual IEnumerable<TResource> IsPermitted(TUser user, IEnumerable<string> resourceNames)
     {
-        return user.RoleId.Equals(initialDataSeeder.SeedAdminRole().Id) ||
-            resources.Any(resource => context.Resources.Any(r => r.RoleId.Equals(user.RoleId) && r.Id.Equals(resource.Id)));
+        return resourceNames.Select(GetResourceByName).Where(resource => IsPermitted(user, resource));
+    }
+
+    public virtual IEnumerable<TResource> IsPermitted(TUser user, IEnumerable<TResource> resources)
+    {
+        return resources.Where(resource => IsPermitted(user, resource));
     }
     
     public virtual async Task<bool> IsPermittedAsync(TUser user, string resourceName)
@@ -72,12 +75,31 @@ public class ResourceManager<TKey, TUser, TRole, TResource> : IResourceManager<T
             await context.Resources.AnyAsync(r => r.RoleId.Equals(user.RoleId) && r.Id.Equals(resource.Id));
     }
 
-    public virtual async Task<bool> IsPermittedAsync(TUser user, IEnumerable<TResource> resources)
+    public virtual async Task<IEnumerable<TResource>> IsPermittedAsync(TUser user, IEnumerable<string> resourceNames)
     {
-        if (user.RoleId.Equals(initialDataSeeder.SeedAdminRole().Id)) return true;
+        var permittedResources = new List<TResource>();
+        foreach (var resourceName in resourceNames)
+        {
+            var resource = await GetResourceByNameAsync(resourceName);
+            if (await IsPermittedAsync(user, resource))
+            {
+                permittedResources.Add(resource);
+            }
+        }
+        return permittedResources.AsEnumerable();
+    }
 
-        return await resources.AnyAsync(async resource =>
-            await context.Resources.AnyAsync(r => r.RoleId.Equals(user.RoleId) && r.Id.Equals(resource.Id)));
+    public virtual async Task<IEnumerable<TResource>> IsPermittedAsync(TUser user, IEnumerable<TResource> resources)
+    {
+        var permittedResources = new List<TResource>();
+        foreach (var resource in resources)
+        {
+            if (await IsPermittedAsync(user, resource))
+            {
+                permittedResources.Add(resource);
+            }
+        }
+        return permittedResources.AsEnumerable();
     }
 
     public virtual TResource GetResourceByName(string resourceName)
@@ -89,12 +111,6 @@ public class ResourceManager<TKey, TUser, TRole, TResource> : IResourceManager<T
     public virtual async Task<TResource> GetResourceByNameAsync(string resourceName)
     {
         return await context.Resources.FirstOrDefaultAsync(r => r.Name == resourceName)
-            ?? throw new ResourceNotFoundException(resourceName);
-    }
-
-    public virtual IEnumerable<TResource> GetResourcesByName(string resourceName)
-    {
-        return context.Resources.Where(r => r.Name == resourceName)
             ?? throw new ResourceNotFoundException(resourceName);
     }
 }
