@@ -3,7 +3,7 @@ using Acl.Net.Core.DataProvider;
 
 namespace Acl.Net.Core.Managers;
 
-public class AclManager : AclManager<int>
+public class AclManager : AclManager<int>, IAclManager
 {
     public AclManager(
         IUserManager userManager,
@@ -13,7 +13,7 @@ public class AclManager : AclManager<int>
     { }
 }
 
-public class AclManager<TKey> : AclManager<TKey, User<TKey>, Role<TKey>, Resource<TKey>>
+public class AclManager<TKey> : AclManager<TKey, User<TKey>, Role<TKey>, Resource<TKey>>, IAclManager<TKey>
     where TKey : IEquatable<TKey>
 {
     public AclManager(
@@ -25,7 +25,7 @@ public class AclManager<TKey> : AclManager<TKey, User<TKey>, Role<TKey>, Resourc
     { }
 }
 
-public class AclManager<TKey, TUser, TRole, TResource> : IAclManager
+public class AclManager<TKey, TUser, TRole, TResource> : IAclManager<TKey, TResource>
     where TKey : IEquatable<TKey>
     where TUser : User<TKey>, new()
     where TRole : Role<TKey>
@@ -52,9 +52,21 @@ public class AclManager<TKey, TUser, TRole, TResource> : IAclManager
         return resourceManager.IsPermitted(user, resourceName);
     }
 
+    public virtual IEnumerable<TResource> IsPermitted(string userName, IEnumerable<string> resourceNames)
+    {
+        var user = userManager.UserProcessing(userName, initialDataSeeder.SeedUserRole());
+        return resourceManager.IsPermitted(user, resourceNames);
+    }
+
     public virtual async Task<bool> IsPermittedAsync(string userName, string resourceName)
     {
         var user = await userManager.UserProcessingAsync(userName, initialDataSeeder.SeedUserRole());
         return await resourceManager.IsPermittedAsync(user, resourceName);
+    }
+
+    public virtual async Task<IEnumerable<TResource>> IsPermittedAsync(string userName, IEnumerable<string> resourceNames)
+    {
+        var user = await userManager.UserProcessingAsync(userName, initialDataSeeder.SeedUserRole());
+        return await resourceManager.IsPermittedAsync(user, resourceNames);
     }
 }
