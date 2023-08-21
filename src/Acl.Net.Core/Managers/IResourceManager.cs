@@ -16,7 +16,11 @@ public interface IResourceManager<TKey, in TUser, TResource>
     where TUser : User<TKey>
     where TResource : Resource<TKey>
 {
+    public bool IsPermitted(TUser user, string resourceName);
+
     public bool IsPermitted(TUser user, TResource resource);
+
+    public Task<bool> IsPermittedAsync(TUser user, string resourceName);
 
     public Task<bool> IsPermittedAsync(TUser user, TResource resource);
 
