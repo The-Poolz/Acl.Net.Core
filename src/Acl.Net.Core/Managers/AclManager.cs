@@ -25,7 +25,7 @@ public class AclManager<TKey> : AclManager<TKey, User<TKey>, Role<TKey>, Resourc
     { }
 }
 
-public class AclManager<TKey, TUser, TRole, TResource> : IAclManager
+public class AclManager<TKey, TUser, TRole, TResource> : IAclManager<TKey, TUser, TResource>
     where TKey : IEquatable<TKey>
     where TUser : User<TKey>, new()
     where TRole : Role<TKey>
@@ -52,9 +52,41 @@ public class AclManager<TKey, TUser, TRole, TResource> : IAclManager
         return resourceManager.IsPermitted(user, resourceName);
     }
 
+    public virtual bool IsPermitted(TUser user, string resourceName)
+    {
+        return resourceManager.IsPermitted(user, resourceName);
+    }
+
+    public virtual bool IsPermitted(string userName, TResource resource)
+    {
+        var user = userManager.UserProcessing(userName, initialDataSeeder.SeedUserRole());
+        return resourceManager.IsPermitted(user, resource);
+    }
+
+    public virtual bool IsPermitted(TUser user, TResource resource)
+    {
+        return resourceManager.IsPermitted(user, resource);
+    }
+
     public virtual async Task<bool> IsPermittedAsync(string userName, string resourceName)
     {
         var user = await userManager.UserProcessingAsync(userName, initialDataSeeder.SeedUserRole());
         return await resourceManager.IsPermittedAsync(user, resourceName);
+    }
+
+    public virtual async Task<bool> IsPermittedAsync(TUser user, string resourceName)
+    {
+        return await resourceManager.IsPermittedAsync(user, resourceName);
+    }
+
+    public virtual async Task<bool> IsPermittedAsync(string userName, TResource resource)
+    {
+        var user = await userManager.UserProcessingAsync(userName, initialDataSeeder.SeedUserRole());
+        return await resourceManager.IsPermittedAsync(user, resource);
+    }
+
+    public virtual async Task<bool> IsPermittedAsync(TUser user, TResource resource)
+    {
+        return await resourceManager.IsPermittedAsync(user, resource);
     }
 }
