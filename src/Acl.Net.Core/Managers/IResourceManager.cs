@@ -16,6 +16,8 @@ public interface IResourceManager<TKey, in TUser, TResource>
     where TUser : User<TKey>
     where TResource : Resource<TKey>
 {
+    public bool IsPermitted(TUser user, string resourceName);
+
     public bool IsPermitted(TUser user, TResource resource);
 
     /// <summary>
@@ -25,6 +27,8 @@ public interface IResourceManager<TKey, in TUser, TResource>
     /// <param name="resources">Resources that will be checked for the user.</param>
     /// <returns>Return <see langword="true" /> if at least one resource is allowed to the user, otherwise <see langword="false" />.</returns>
     public bool IsPermitted(TUser user, IEnumerable<TResource> resources);
+    
+    public Task<bool> IsPermittedAsync(TUser user, string resourceName);
 
     public Task<bool> IsPermittedAsync(TUser user, TResource resource);
 

@@ -49,14 +49,12 @@ public class AclManager<TKey, TUser, TRole, TResource> : IAclManager
     public virtual bool IsPermitted(string userName, string resourceName)
     {
         var user = userManager.UserProcessing(userName, initialDataSeeder.SeedUserRole());
-        var resource = resourceManager.GetResourceByName(resourceName);
-        return resourceManager.IsPermitted(user, resource);
+        return resourceManager.IsPermitted(user, resourceName);
     }
 
     public virtual async Task<bool> IsPermittedAsync(string userName, string resourceName)
     {
         var user = await userManager.UserProcessingAsync(userName, initialDataSeeder.SeedUserRole());
-        var resource = await resourceManager.GetResourceByNameAsync(resourceName);
-        return await resourceManager.IsPermittedAsync(user, resource);
+        return await resourceManager.IsPermittedAsync(user, resourceName);
     }
 }
