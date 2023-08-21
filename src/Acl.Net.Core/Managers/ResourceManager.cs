@@ -1,5 +1,6 @@
 ﻿using Acl.Net.Core.Entities;
 using Acl.Net.Core.Exceptions;
+using Acl.Net.Core.Extensions;
 using Acl.Net.Core.DataProvider;
 using Microsoft.EntityFrameworkCore;
 
@@ -44,24 +45,56 @@ public class ResourceManager<TKey, TUser, TRole, TResource> : IResourceManager<T
     public virtual bool IsPermitted(TUser user, TResource resource)
     {
         return user.RoleId.Equals(initialDataSeeder.SeedAdminRole().Id) ||
-            context.Resources.Any(r => r.RoleId.Equals(user.RoleId) && r.Id.Equals(resource.Id));
+               context.Resources.Any(r => r.RoleId.Equals(user.RoleId) && r.Id.Equals(resource.Id));
+    }
+
+    /// <summary>
+    /// Check if the user is permitted for at least one resource in resources.
+    /// </summary>
+    /// <param name="user">User for whom resources are being checked.</param>
+    /// <param name="resources">Resources that will be checked for the user.</param>
+    /// <returns>Return <see langword="true" /> if at least one resource is allowed to the user, otherwise <see langword="false" />.</returns>
+    public virtual bool IsPermitted(TUser user, IEnumerable<TResource> resources)
+    {
+        return user.RoleId.Equals(initialDataSeeder.SeedAdminRole().Id) ||
+               resources.Any(resource => context.Resources.Any(r => r.RoleId.Equals(user.RoleId) && r.Id.Equals(resource.Id)));
     }
 
     public virtual async Task<bool> IsPermittedAsync(TUser user, TResource resource)
     {
         return user.RoleId.Equals(initialDataSeeder.SeedAdminRole().Id) ||
-            await context.Resources.AnyAsync(r => r.RoleId.Equals(user.RoleId) && r.Id.Equals(resource.Id));
+               await context.Resources.AnyAsync(r => r.RoleId.Equals(user.RoleId) && r.Id.Equals(resource.Id));
+    }
+
+    /// <summary>
+    /// Check if the user is permitted for at least one resource in resources.
+    /// </summary>
+    /// <param name="user">User for whom resources are being checked.</param>
+    /// <param name="resources">Resources that will be checked for the user.</param>
+    /// <returns>Return <see langword="true" /> if at least one resource is allowed to the user, otherwise <see langword="false" />.</returns>
+    public virtual async Task<bool> IsPermittedAsync(TUser user, IEnumerable<TResource> resources)
+    {
+        if (user.RoleId.Equals(initialDataSeeder.SeedAdminRole().Id)) return true;
+
+        return await resources.AnyAsync(async resource =>
+            await context.Resources.AnyAsync(r => r.RoleId.Equals(user.RoleId) && r.Id.Equals(resource.Id)));
     }
 
     public virtual TResource GetResourceByName(string resourceName)
     {
         return context.Resources.FirstOrDefault(r => r.Name == resourceName)
-            ?? throw new ResourceNotFoundException(resourceName);
+               ?? throw new ResourceNotFoundException(resourceName);
     }
 
     public virtual async Task<TResource> GetResourceByNameAsync(string resourceName)
     {
         return await context.Resources.FirstOrDefaultAsync(r => r.Name == resourceName)
+               ?? throw new ResourceNotFoundException(resourceName);
+    }
+
+    public virtual IEnumerable<TResource> GetResourcesByName(string resourceName)
+    {
+        return context.Resources.Where(r => r.Name == resourceName)
             ?? throw new ResourceNotFoundException(resourceName);
     }
 }
