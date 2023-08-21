@@ -35,6 +35,34 @@ public class ResourceManagerTests
     }
 
     [Fact]
+    public void IsPermitted_ShouldReturnPermittedResources_WhenGivenResourceNames()
+    {
+        var resourceNames = new[] { "PrivateResource", "PublicResource" };
+        var resources = _resourceManager.IsPermitted(_adminUser, resourceNames).ToArray();
+
+        Assert.Equal(2, resources.Length);
+    }
+
+    [Fact]
+    public void IsPermitted_ShouldReturnEmpty_WhenGivenResourceNotAllowed()
+    {
+        var resourceNames = new[] { "PrivateResource" };
+        var resources = _resourceManager.IsPermitted(_normalUser, resourceNames).ToArray();
+
+        Assert.Empty(resources);
+    }
+
+    [Fact]
+    public void IsPermitted_ShouldReturnPermittedResources_WhenGivenResources()
+    {
+        var resourcesList = new[] { _privateResource };
+        var resources = _resourceManager.IsPermitted(_adminUser, resourcesList).ToArray();
+
+        Assert.Single(resources);
+        Assert.Equal(_privateResource, resources[0]);
+    }
+
+    [Fact]
     public async Task IsPermittedAsync_ShouldReturnTrue_WhenAdminAccessPrivateResource()
     {
         Assert.True(await _resourceManager.IsPermittedAsync(_adminUser, _privateResource));
@@ -44,6 +72,18 @@ public class ResourceManagerTests
     public async Task IsPermittedAsync_ShouldReturnFalse_WhenUserAccessPrivateResource()
     {
         Assert.False(await _resourceManager.IsPermittedAsync(_normalUser, _privateResource));
+    }
+
+    [Fact]
+    public async Task IsPermittedAsync_ShouldReturnPermittedResources_WhenGivenResourceNames()
+    {
+        Assert.Single(await _resourceManager.IsPermittedAsync(_adminUser, new[] { "PrivateResource" }));
+    }
+
+    [Fact]
+    public async Task IsPermittedAsync_ShouldReturnPermittedResources_WhenGivenResources()
+    {
+        Assert.Single(await _resourceManager.IsPermittedAsync(_adminUser, new[] { _privateResource }));
     }
 
     [Fact]
