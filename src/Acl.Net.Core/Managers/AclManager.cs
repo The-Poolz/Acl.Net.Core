@@ -11,9 +11,10 @@ namespace Acl.Net.Core.Managers;
 public class AclManager : AclManager<int>, IAclManager
 {
     /// <summary>
-    /// Manages access control lists (ACLs) using integer keys.
-    /// This class provides a simplified interface for managing ACLs with integer keys, by extending the more generic AclManager with TKey.
+    /// Initializes a new instance of the <see cref="AclManager"/> class with the provided user manager and resource manager.
     /// </summary>
+    /// <param name="userManager">An implementation of <see cref="IUserManager"/>.</param>
+    /// <param name="resourceManager">An implementation of <see cref="IResourceManager"/>.</param>
     public AclManager(
         IUserManager userManager,
         IResourceManager resourceManager
