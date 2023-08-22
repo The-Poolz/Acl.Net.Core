@@ -11,7 +11,7 @@ public interface IAclManager<TKey> : IAclManager<TKey, User<TKey>, Resource<TKey
 {
 }
 
-public interface IAclManager<TKey, in TUser, in TResource>
+public interface IAclManager<TKey, in TUser, TResource>
     where TKey : IEquatable<TKey>
     where TUser : User<TKey>
     where TResource : Resource<TKey>
