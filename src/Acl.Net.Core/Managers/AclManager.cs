@@ -233,7 +233,7 @@ public class AclManager<TKey, TUser, TRole, TResource> : IAclManager<TKey, TUser
     /// <exception cref="ObjectDisposedException">
     /// Thrown if this method is called after the object has already been disposed of.
     /// </exception>
-    protected virtual void Dispose(bool disposing)
+    protected virtual void DisposeManagers(bool disposing)
     {
         if (isDisposed) throw new ObjectDisposedException(nameof(AclManager<TKey, TUser, TRole, TResource>));
         if (disposing)
@@ -246,14 +246,14 @@ public class AclManager<TKey, TUser, TRole, TResource> : IAclManager<TKey, TUser
 
     /// <summary>
     /// Releases all resources used by the current instance of the <see cref="AclManager{TKey, TUser, TRole, TResource}"/> class.<br/>
-    /// This method calls <see cref="Dispose(bool)"/> with <see langword="true"/> and then suppresses finalization.
+    /// This method calls <see cref="DisposeManagers(bool)"/> with <see langword="true"/> and then suppresses finalization.
     /// </summary>
     /// <exception cref="ObjectDisposedException">
     /// Thrown if this method is called after the object has already been disposed of.
     /// </exception>
     public void Dispose()
     {
-        Dispose(disposing: true);
+        DisposeManagers(disposing: true);
         GC.SuppressFinalize(this);
     }
 }
