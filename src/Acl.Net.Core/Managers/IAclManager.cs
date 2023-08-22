@@ -11,7 +11,7 @@ public interface IAclManager<TKey> : IAclManager<TKey, User<TKey>, Resource<TKey
 {
 }
 
-public interface IAclManager<TKey, in TUser, in TResource>
+public interface IAclManager<TKey, in TUser, TResource>
     where TKey : IEquatable<TKey>
     where TUser : User<TKey>
     where TResource : Resource<TKey>
@@ -23,6 +23,8 @@ public interface IAclManager<TKey, in TUser, in TResource>
     public bool IsPermitted(string userName, TResource resource);
 
     public bool IsPermitted(TUser user, TResource resource);
+    
+    public IEnumerable<TResource> IsPermitted(string userName, IEnumerable<string> resourceNames);
 
     public Task<bool> IsPermittedAsync(string userName, string resourceName);
 
@@ -31,4 +33,6 @@ public interface IAclManager<TKey, in TUser, in TResource>
     public Task<bool> IsPermittedAsync(string userName, TResource resource);
 
     public Task<bool> IsPermittedAsync(TUser user, TResource resource);
+    
+    public Task<IEnumerable<TResource>> IsPermittedAsync(string userName, IEnumerable<string> resourceNames);
 }

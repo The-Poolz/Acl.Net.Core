@@ -53,6 +53,16 @@ public class ResourceManager<TKey, TUser, TRole, TResource> : IResourceManager<T
             context.Resources.Any(r => r.RoleId.Equals(user.RoleId) && r.Id.Equals(resource.Id));
     }
 
+    public virtual IEnumerable<TResource> IsPermitted(TUser user, IEnumerable<string> resourceNames)
+    {
+        return resourceNames.Select(GetResourceByName).Where(resource => IsPermitted(user, resource));
+    }
+
+    public virtual IEnumerable<TResource> IsPermitted(TUser user, IEnumerable<TResource> resources)
+    {
+        return resources.Where(resource => IsPermitted(user, resource));
+    }
+    
     public virtual async Task<bool> IsPermittedAsync(TUser user, string resourceName)
     {
         var resource = await GetResourceByNameAsync(resourceName);
@@ -63,6 +73,33 @@ public class ResourceManager<TKey, TUser, TRole, TResource> : IResourceManager<T
     {
         return user.RoleId.Equals(initialDataSeeder.SeedAdminRole().Id) ||
             await context.Resources.AnyAsync(r => r.RoleId.Equals(user.RoleId) && r.Id.Equals(resource.Id));
+    }
+
+    public virtual async Task<IEnumerable<TResource>> IsPermittedAsync(TUser user, IEnumerable<string> resourceNames)
+    {
+        var permittedResources = new List<TResource>();
+        foreach (var resourceName in resourceNames)
+        {
+            var resource = await GetResourceByNameAsync(resourceName);
+            if (await IsPermittedAsync(user, resource))
+            {
+                permittedResources.Add(resource);
+            }
+        }
+        return permittedResources.AsEnumerable();
+    }
+
+    public virtual async Task<IEnumerable<TResource>> IsPermittedAsync(TUser user, IEnumerable<TResource> resources)
+    {
+        var permittedResources = new List<TResource>();
+        foreach (var resource in resources)
+        {
+            if (await IsPermittedAsync(user, resource))
+            {
+                permittedResources.Add(resource);
+            }
+        }
+        return permittedResources.AsEnumerable();
     }
 
     public virtual TResource GetResourceByName(string resourceName)

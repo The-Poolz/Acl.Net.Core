@@ -29,15 +29,9 @@ public class AclManagerTests
     }
 
     [Fact]
-    public async Task IsPermittedAsync_ShouldReturnTrue_WhenAdminAccessPrivateResource()
+    public void IsPermitted_ShouldReturnPermittedResources_WhenGivenResourceNames()
     {
-        Assert.True(await _aclManager.IsPermittedAsync("AdminAccount", "PrivateResource"));
-    }
-
-    [Fact]
-    public async Task IsPermittedAsync_ShouldReturnFalse_WhenUserAccessPrivateResource()
-    {
-        Assert.False(await _aclManager.IsPermittedAsync("UserAccount", "PrivateResource"));
+        Assert.Single(_aclManager.IsPermitted("AdminAccount", new[] { "PrivateResource" }));
     }
 
     [Fact]
@@ -74,6 +68,24 @@ public class AclManagerTests
         var privateResource = InMemoryAclDbContext.PrivateResource;
         var user = InMemoryAclDbContext.UserAccount;
         Assert.False(_aclManager.IsPermitted(user, privateResource));
+    }
+
+    [Fact]
+    public async Task IsPermittedAsync_ShouldReturnPermittedResources_WhenGivenResourceNames()
+    {
+        Assert.Single(await _aclManager.IsPermittedAsync("AdminAccount", new[] { "PrivateResource" }));
+    }
+
+    [Fact]
+    public async Task IsPermittedAsync_ShouldReturnFalse_WhenUserAccessPrivateResource()
+    {
+        Assert.False(await _aclManager.IsPermittedAsync("UserAccount", "PrivateResource"));
+    }
+
+    [Fact]
+    public async Task IsPermittedAsync_ShouldReturnTrue_WhenAdminAccessPrivateResource()
+    {
+        Assert.True(await _aclManager.IsPermittedAsync("AdminAccount", "PrivateResource"));
     }
 
     [Fact]

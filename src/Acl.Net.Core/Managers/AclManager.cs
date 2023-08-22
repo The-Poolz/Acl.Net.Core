@@ -8,7 +8,7 @@ namespace Acl.Net.Core.Managers;
 /// Manages access control lists (ACLs) using integer keys.
 /// This class provides a simplified interface for managing ACLs with integer keys, by extending the more generic AclManager with TKey.
 /// </summary>
-public class AclManager : AclManager<int>
+public class AclManager : AclManager<int>, IAclManager
 {
     /// <summary>
     /// Manages access control lists (ACLs) using integer keys.
@@ -27,7 +27,7 @@ public class AclManager : AclManager<int>
 /// This class provides the base functionality for managing ACLs with specified key types.
 /// </summary>
 /// <typeparam name="TKey">The type of the key, which must implement <see cref="IEquatable{TKey}"/>.</typeparam>
-public class AclManager<TKey> : AclManager<TKey, User<TKey>, Role<TKey>, Resource<TKey>>
+public class AclManager<TKey> : AclManager<TKey, User<TKey>, Role<TKey>, Resource<TKey>>, IAclManager<TKey>
     where TKey : IEquatable<TKey>
 {
     /// <summary>
@@ -94,7 +94,7 @@ public class AclManager<TKey, TUser, TRole, TResource> : IAclManager<TKey, TUser
         var user = userManager.UserProcessing(userName, initialDataSeeder.SeedUserRole());
         return resourceManager.IsPermitted(user, resourceName);
     }
-
+    
     /// <summary>
     /// Determines if the specified user object is permitted to access the specified resource by name.
     /// </summary>
@@ -130,6 +130,22 @@ public class AclManager<TKey, TUser, TRole, TResource> : IAclManager<TKey, TUser
     public virtual bool IsPermitted(TUser user, TResource resource)
     {
         return resourceManager.IsPermitted(user, resource);
+    }
+
+    /// <summary>
+    /// Determines the resources that the specified user name is permitted to access from a collection of resource names.
+    /// </summary>
+    /// <param name="userName">The name of the user to check permission for.</param>
+    /// <param name="resourceNames">The collection of resource names to check permissions against.</param>
+    /// <returns>A collection of <see cref="TResource"/> objects that the user is permitted to access;
+    /// an empty collection if the user is not permitted to access any of the resources.</returns>
+    /// <exception cref="ResourceNotFoundException">
+    /// Thrown when one or more of the specified resource names do not exist.
+    /// </exception>
+    public virtual IEnumerable<TResource> IsPermitted(string userName, IEnumerable<string> resourceNames)
+    {
+        var user = userManager.UserProcessing(userName, initialDataSeeder.SeedUserRole());
+        return resourceManager.IsPermitted(user, resourceNames);
     }
 
     /// <summary>
@@ -186,5 +202,22 @@ public class AclManager<TKey, TUser, TRole, TResource> : IAclManager<TKey, TUser
     public virtual async Task<bool> IsPermittedAsync(TUser user, TResource resource)
     {
         return await resourceManager.IsPermittedAsync(user, resource);
+    }
+
+    /// <summary>
+    /// Determines asynchronously the resources that the specified user name is permitted to access from a collection of resource names.
+    /// </summary>
+    /// <param name="userName">The name of the user to check permission for.</param>
+    /// <param name="resourceNames">The collection of resource names to check permissions against.</param>
+    /// <returns>A task that represents the asynchronous operation.
+    /// The task result contains a collection of <see cref="TResource"/> objects that the user is permitted to access;
+    /// an empty collection if the user is not permitted to access any of the resources.</returns>
+    /// <exception cref="ResourceNotFoundException">
+    /// Thrown when one or more of the specified resource names do not exist.
+    /// </exception>
+    public virtual async Task<IEnumerable<TResource>> IsPermittedAsync(string userName, IEnumerable<string> resourceNames)
+    {
+        var user = await userManager.UserProcessingAsync(userName, initialDataSeeder.SeedUserRole());
+        return await resourceManager.IsPermittedAsync(user, resourceNames);
     }
 }
