@@ -48,7 +48,7 @@ public class UserManager<TKey, TUser, TRole, TResource> : IUserManager<TKey, TUs
     where TResource : Resource<TKey>
 {
     private readonly AclDbContext<TKey, TUser, TRole, TResource> context;
-    private bool isDisposed;
+    protected bool isDisposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="UserManager{TKey, TUser, TRole, TResource}"/> class.
@@ -95,6 +95,16 @@ public class UserManager<TKey, TUser, TRole, TResource> : IUserManager<TKey, TUs
         return user;
     }
 
+    /// <summary>
+    /// Releases the unmanaged resources used by the <see cref="UserManager{TKey, TUser, TRole, TResource}"/> class and optionally releases the managed resources.
+    /// </summary>
+    /// <param name="disposing">
+    /// <see langword="true"/> to release both managed and unmanaged resources; 
+    /// <see langword="false"/> to release only unmanaged resources.
+    /// </param>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown if this method is called after the object has already been disposed of.
+    /// </exception>
     protected virtual void Dispose(bool disposing)
     {
         if (isDisposed) throw new ObjectDisposedException(nameof(UserManager<TKey, TUser, TRole, TResource>));
@@ -105,6 +115,13 @@ public class UserManager<TKey, TUser, TRole, TResource> : IUserManager<TKey, TUs
         isDisposed = true;
     }
 
+    /// <summary>
+    /// Releases all resources used by the current instance of the <see cref="UserManager{TKey, TUser, TRole, TResource}"/> class.<br/>
+    /// This method calls <see cref="Dispose(bool)"/> with <see langword="true"/> and then suppresses finalization.
+    /// </summary>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown if this method is called after the object has already been disposed of.
+    /// </exception>
     public void Dispose()
     {
         Dispose(disposing: true);
