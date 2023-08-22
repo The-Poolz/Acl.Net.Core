@@ -1,6 +1,6 @@
 ﻿using Acl.Net.Core.Entities;
-using Acl.Net.Core.DataProvider;
 using Acl.Net.Core.Exceptions;
+using Acl.Net.Core.DataProvider;
 
 namespace Acl.Net.Core.Managers;
 
