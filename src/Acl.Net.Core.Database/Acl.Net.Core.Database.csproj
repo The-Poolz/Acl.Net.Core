@@ -4,7 +4,29 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <Title>A comprehensive .NET Core library for managing Access Control Lists (ACL) designed to be used with Entity Framework Core.</Title>
+    <Authors>Lomet, ArdenHide</Authors>
+    <Company>The-Poolz</Company>
+    <Description>Part of package representing database of ACL system.</Description>
+    <PackageProjectUrl>https://www.nuget.org/packages/Acl.Net.Core.Database</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/The-Poolz/Acl.Net.Core</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>ACL, EFCore, Access Control Lists</PackageTags>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <Version>1.0.0</Version>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.10" />
