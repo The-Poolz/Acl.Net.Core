@@ -97,7 +97,7 @@ public class UserManager<TKey, TUser, TRole, TResource> : IUserManager<TKey, TUs
 
     protected virtual void Dispose(bool disposing)
     {
-        if (isDisposed) return;
+        if (isDisposed) throw new ObjectDisposedException(nameof(UserManager<TKey, TUser, TRole, TResource>));
         if (disposing)
         {
             context.Dispose();

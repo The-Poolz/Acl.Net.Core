@@ -46,7 +46,7 @@ public class ResourceManager<TKey> : ResourceManager<TKey, User<TKey>, Role<TKey
 /// <typeparam name="TUser">The type of the user.</typeparam>
 /// <typeparam name="TRole">The type of the role.</typeparam>
 /// <typeparam name="TResource">The type of the resource.</typeparam>
-public class ResourceManager<TKey, TUser, TRole, TResource> : IResourceManager<TKey, TUser, TResource>
+public class ResourceManager<TKey, TUser, TRole, TResource> : IResourceManager<TKey, TUser, TResource>, IDisposable
     where TKey : IEquatable<TKey>
     where TUser : User<TKey>, new()
     where TRole : Role<TKey>
@@ -54,6 +54,7 @@ public class ResourceManager<TKey, TUser, TRole, TResource> : IResourceManager<T
 {
     private readonly AclDbContext<TKey, TUser, TRole, TResource> context;
     private readonly IInitialDataSeeder<TKey, TRole> initialDataSeeder;
+    private bool isDisposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ResourceManager{TKey, TUser, TRole, TResource}"/> class.
@@ -221,5 +222,21 @@ public class ResourceManager<TKey, TUser, TRole, TResource> : IResourceManager<T
     {
         return await context.Resources.FirstOrDefaultAsync(r => r.Name == resourceName)
             ?? throw new ResourceNotFoundException(resourceName);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (isDisposed) throw new ObjectDisposedException(nameof(ResourceManager<TKey, TUser, TRole, TResource>));
+        if (disposing)
+        {
+            context.Dispose();
+        }
+        isDisposed = true;
+    }
+
+    public void Dispose()
+    {
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
     }
 }
