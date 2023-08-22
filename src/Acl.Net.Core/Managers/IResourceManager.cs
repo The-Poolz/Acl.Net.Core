@@ -24,7 +24,7 @@ public interface IResourceManager<TKey> : IResourceManager<TKey, User<TKey>, Res
 /// <typeparam name="TKey">The type of the key.</typeparam>
 /// <typeparam name="TUser">The type of the user.</typeparam>
 /// <typeparam name="TResource">The type of the resource.</typeparam>
-public interface IResourceManager<TKey, in TUser, TResource>
+public interface IResourceManager<TKey, in TUser, TResource> : IDisposable
     where TKey : IEquatable<TKey>
     where TUser : User<TKey>
     where TResource : Resource<TKey>

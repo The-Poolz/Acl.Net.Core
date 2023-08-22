@@ -41,7 +41,7 @@ public class UserManager<TKey> : UserManager<TKey, User<TKey>, Role<TKey>, Resou
 /// <typeparam name="TUser">The type of the user.</typeparam>
 /// <typeparam name="TRole">The type of the role.</typeparam>
 /// <typeparam name="TResource">The type of the resource.</typeparam>
-public class UserManager<TKey, TUser, TRole, TResource> : IUserManager<TKey, TUser, TRole>, IDisposable
+public class UserManager<TKey, TUser, TRole, TResource> : IUserManager<TKey, TUser, TRole>
     where TKey : IEquatable<TKey>
     where TUser : User<TKey>, new()
     where TRole : Role<TKey>

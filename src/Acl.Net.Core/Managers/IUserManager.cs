@@ -24,7 +24,7 @@ public interface IUserManager<TKey> : IUserManager<TKey, User<TKey>, Role<TKey>>
 /// <typeparam name="TKey">The type of the key.</typeparam>
 /// <typeparam name="TUser">The type of the user.</typeparam>
 /// <typeparam name="TRole">The type of the role.</typeparam>
-public interface IUserManager<TKey, TUser, in TRole>
+public interface IUserManager<TKey, TUser, in TRole> : IDisposable
     where TKey : IEquatable<TKey>
     where TUser : User<TKey>
     where TRole : Role<TKey>
