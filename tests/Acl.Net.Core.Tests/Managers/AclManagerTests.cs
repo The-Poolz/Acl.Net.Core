@@ -69,6 +69,14 @@ public class AclManagerTests
     }
 
     [Fact]
+    public void IsPermitted_ShouldReturnFalse_WhenUserAccessPrivateResourceByResourceObjectAndUserObject()
+    {
+        var privateResource = InMemoryAclDbContext.PrivateResource;
+        var user = InMemoryAclDbContext.UserAccount;
+        Assert.False(_aclManager.IsPermitted(user, privateResource));
+    }
+
+    [Fact]
     public async Task IsPermittedAsync_ShouldReturnTrue_WhenAdminAccessPrivateResourceByUserObject()
     {
         var adminUser = InMemoryAclDbContext.AdminAccount;
@@ -94,5 +102,13 @@ public class AclManagerTests
     {
         var privateResource = InMemoryAclDbContext.PrivateResource;
         Assert.False(await _aclManager.IsPermittedAsync("UserAccount", privateResource));
+    }
+
+    [Fact]
+    public async Task IsPermittedAsync_ShouldReturnFalse_WhenUserAccessPrivateResourceByResourceObjectAndUserObject()
+    {
+        var privateResource = InMemoryAclDbContext.PrivateResource;
+        var user = InMemoryAclDbContext.UserAccount;
+        Assert.False(await _aclManager.IsPermittedAsync(user, privateResource));
     }
 }
