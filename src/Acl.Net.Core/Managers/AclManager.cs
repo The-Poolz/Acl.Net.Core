@@ -1,5 +1,6 @@
 ﻿using Acl.Net.Core.Entities;
 using Acl.Net.Core.DataProvider;
+using Acl.Net.Core.Exceptions;
 
 namespace Acl.Net.Core.Managers;
 
@@ -85,6 +86,9 @@ public class AclManager<TKey, TUser, TRole, TResource> : IAclManager<TKey, TUser
     /// <param name="userName">The name of the user to check permission for.</param>
     /// <param name="resourceName">The name of the resource to check permission against.</param>
     /// <returns><see langword="true"/> if the user is permitted to access the resource; otherwise, <see langword="false"/>.</returns>
+    /// <exception cref="ResourceNotFoundException">
+    /// Thrown when the specified resource name does not exist.
+    /// </exception>
     public virtual bool IsPermitted(string userName, string resourceName)
     {
         var user = userManager.UserProcessing(userName, initialDataSeeder.SeedUserRole());
@@ -97,6 +101,9 @@ public class AclManager<TKey, TUser, TRole, TResource> : IAclManager<TKey, TUser
     /// <param name="user">The user object to check permission for.</param>
     /// <param name="resourceName">The name of the resource to check permission against.</param>
     /// <returns><see langword="true"/> if the user is permitted to access the resource; otherwise, <see langword="false"/>.</returns>
+    /// <exception cref="ResourceNotFoundException">
+    /// Thrown when the specified resource name does not exist.
+    /// </exception>
     public virtual bool IsPermitted(TUser user, string resourceName)
     {
         return resourceManager.IsPermitted(user, resourceName);
@@ -132,6 +139,9 @@ public class AclManager<TKey, TUser, TRole, TResource> : IAclManager<TKey, TUser
     /// <param name="resourceName">The name of the resource to check permission against.</param>
     /// <returns>A task that represents the asynchronous operation.
     /// The task result contains <see langword="true"/> if the user is permitted to access the resource; otherwise, <see langword="false"/>.</returns>
+    /// <exception cref="ResourceNotFoundException">
+    /// Thrown when the specified resource name does not exist.
+    /// </exception>
     public virtual async Task<bool> IsPermittedAsync(string userName, string resourceName)
     {
         var user = await userManager.UserProcessingAsync(userName, initialDataSeeder.SeedUserRole());
@@ -145,6 +155,9 @@ public class AclManager<TKey, TUser, TRole, TResource> : IAclManager<TKey, TUser
     /// <param name="resourceName">The name of the resource to check permission against.</param>
     /// <returns>A task that represents the asynchronous operation.
     /// The task result contains <see langword="true"/> if the user is permitted to access the resource; otherwise, <see langword="false"/>.</returns>
+    /// <exception cref="ResourceNotFoundException">
+    /// Thrown when the specified resource name does not exist.
+    /// </exception>
     public virtual async Task<bool> IsPermittedAsync(TUser user, string resourceName)
     {
         return await resourceManager.IsPermittedAsync(user, resourceName);
