@@ -41,13 +41,14 @@ public class UserManager<TKey> : UserManager<TKey, User<TKey>, Role<TKey>, Resou
 /// <typeparam name="TUser">The type of the user.</typeparam>
 /// <typeparam name="TRole">The type of the role.</typeparam>
 /// <typeparam name="TResource">The type of the resource.</typeparam>
-public class UserManager<TKey, TUser, TRole, TResource> : IUserManager<TKey, TUser, TRole>
+public class UserManager<TKey, TUser, TRole, TResource> : IUserManager<TKey, TUser, TRole>, IDisposable
     where TKey : IEquatable<TKey>
     where TUser : User<TKey>, new()
     where TRole : Role<TKey>
     where TResource : Resource<TKey>
 {
     private readonly AclDbContext<TKey, TUser, TRole, TResource> context;
+    private bool isDisposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="UserManager{TKey, TUser, TRole, TResource}"/> class.
@@ -92,5 +93,21 @@ public class UserManager<TKey, TUser, TRole, TResource> : IUserManager<TKey, TUs
         await context.SaveChangesAsync();
 
         return user;
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (isDisposed) return;
+        if (disposing)
+        {
+            context.Dispose();
+        }
+        isDisposed = true;
+    }
+
+    public void Dispose()
+    {
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
     }
 }
