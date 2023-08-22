@@ -131,7 +131,17 @@ public class AclManager<TKey, TUser, TRole, TResource> : IAclManager<TKey, TUser
     {
         return resourceManager.IsPermitted(user, resource);
     }
-    
+
+    /// <summary>
+    /// Determines the resources that the specified user name is permitted to access from a collection of resource names.
+    /// </summary>
+    /// <param name="userName">The name of the user to check permission for.</param>
+    /// <param name="resourceNames">The collection of resource names to check permissions against.</param>
+    /// <returns>A collection of <see cref="TResource"/> objects that the user is permitted to access;
+    /// an empty collection if the user is not permitted to access any of the resources.</returns>
+    /// <exception cref="ResourceNotFoundException">
+    /// Thrown when one or more of the specified resource names do not exist.
+    /// </exception>
     public virtual IEnumerable<TResource> IsPermitted(string userName, IEnumerable<string> resourceNames)
     {
         var user = userManager.UserProcessing(userName, initialDataSeeder.SeedUserRole());
@@ -193,7 +203,18 @@ public class AclManager<TKey, TUser, TRole, TResource> : IAclManager<TKey, TUser
     {
         return await resourceManager.IsPermittedAsync(user, resource);
     }
-    
+
+    /// <summary>
+    /// Determines asynchronously the resources that the specified user name is permitted to access from a collection of resource names.
+    /// </summary>
+    /// <param name="userName">The name of the user to check permission for.</param>
+    /// <param name="resourceNames">The collection of resource names to check permissions against.</param>
+    /// <returns>A task that represents the asynchronous operation.
+    /// The task result contains a collection of <see cref="TResource"/> objects that the user is permitted to access;
+    /// an empty collection if the user is not permitted to access any of the resources.</returns>
+    /// <exception cref="ResourceNotFoundException">
+    /// Thrown when one or more of the specified resource names do not exist.
+    /// </exception>
     public virtual async Task<IEnumerable<TResource>> IsPermittedAsync(string userName, IEnumerable<string> resourceNames)
     {
         var user = await userManager.UserProcessingAsync(userName, initialDataSeeder.SeedUserRole());
