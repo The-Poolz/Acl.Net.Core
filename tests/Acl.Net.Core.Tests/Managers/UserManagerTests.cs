@@ -1,4 +1,5 @@
 ﻿using Xunit;
+using FluentAssertions;
 using Acl.Net.Core.Entities;
 using Acl.Net.Core.Managers;
 using Acl.Net.Core.Tests.Mock;
@@ -42,5 +43,20 @@ public class UserManagerTests
     {
         var user = await _userManager.UserProcessingAsync("NewUser", _roleForNewUsers);
         Assert.Equal(_roleForNewUsers.Id, user.RoleId);
+    }
+
+    [Fact]
+    public void Dispose_ShouldNotThrowException_WhenCalledOnce()
+    {
+        var action = () => _userManager.Dispose();
+        action.Should().NotThrow();
+    }
+
+    [Fact]
+    public void Dispose_ShouldThrowObjectDisposedException_WhenCalledTwice()
+    {
+        _userManager.Dispose();
+
+        Assert.Throws<ObjectDisposedException>(() => _userManager.Dispose());
     }
 }

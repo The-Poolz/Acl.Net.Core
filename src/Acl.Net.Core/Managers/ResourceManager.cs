@@ -54,6 +54,7 @@ public class ResourceManager<TKey, TUser, TRole, TResource> : IResourceManager<T
 {
     private readonly AclDbContext<TKey, TUser, TRole, TResource> context;
     private readonly IInitialDataSeeder<TKey, TRole> initialDataSeeder;
+    protected bool isDisposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ResourceManager{TKey, TUser, TRole, TResource}"/> class.
@@ -221,5 +222,38 @@ public class ResourceManager<TKey, TUser, TRole, TResource> : IResourceManager<T
     {
         return await context.Resources.FirstOrDefaultAsync(r => r.Name == resourceName)
             ?? throw new ResourceNotFoundException(resourceName);
+    }
+
+    /// <summary>
+    /// Releases the unmanaged resources used by the <see cref="ResourceManager{TKey, TUser, TRole, TResource}"/> class and optionally releases the managed resources.
+    /// </summary>
+    /// <param name="disposing">
+    /// <see langword="true"/> to release both managed and unmanaged resources; 
+    /// <see langword="false"/> to release only unmanaged resources.
+    /// </param>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown if this method is called after the object has already been disposed of.
+    /// </exception>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (isDisposed) throw new ObjectDisposedException(nameof(ResourceManager<TKey, TUser, TRole, TResource>));
+        if (disposing)
+        {
+            context.Dispose();
+        }
+        isDisposed = true;
+    }
+
+    /// <summary>
+    /// Releases all resources used by the current instance of the <see cref="ResourceManager{TKey, TUser, TRole, TResource}"/> class.<br/>
+    /// This method calls <see cref="Dispose(bool)"/> with <see langword="true"/> and then suppresses finalization.
+    /// </summary>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown if this method is called after the object has already been disposed of.
+    /// </exception>
+    public void Dispose()
+    {
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
     }
 }

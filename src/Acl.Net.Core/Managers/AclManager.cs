@@ -63,6 +63,7 @@ public class AclManager<TKey, TUser, TRole, TResource> : IAclManager<TKey, TUser
     private readonly IInitialDataSeeder<TKey, TRole> initialDataSeeder;
     private readonly IUserManager<TKey, TUser, TRole> userManager;
     private readonly IResourceManager<TKey, TUser, TResource> resourceManager;
+    protected bool isDisposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AclManager{TKey, TUser, TRole, TResource}"/> class with the provided initial data seeder, user manager, and resource manager.
@@ -220,5 +221,39 @@ public class AclManager<TKey, TUser, TRole, TResource> : IAclManager<TKey, TUser
     {
         var user = await userManager.UserProcessingAsync(userName, initialDataSeeder.SeedUserRole());
         return await resourceManager.IsPermittedAsync(user, resourceNames);
+    }
+
+    /// <summary>
+    /// Releases the unmanaged resources used by the <see cref="AclManager{TKey, TUser, TRole, TResource}"/> class and optionally releases the managed resources.
+    /// </summary>
+    /// <param name="disposing">
+    /// <see langword="true"/> to release both managed and unmanaged resources; 
+    /// <see langword="false"/> to release only unmanaged resources.
+    /// </param>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown if this method is called after the object has already been disposed of.
+    /// </exception>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (isDisposed) throw new ObjectDisposedException(nameof(AclManager<TKey, TUser, TRole, TResource>));
+        if (disposing)
+        {
+            userManager.Dispose();
+            resourceManager.Dispose();
+        }
+        isDisposed = true;
+    }
+
+    /// <summary>
+    /// Releases all resources used by the current instance of the <see cref="AclManager{TKey, TUser, TRole, TResource}"/> class.<br/>
+    /// This method calls <see cref="Dispose(bool)"/> with <see langword="true"/> and then suppresses finalization.
+    /// </summary>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown if this method is called after the object has already been disposed of.
+    /// </exception>
+    public void Dispose()
+    {
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
     }
 }

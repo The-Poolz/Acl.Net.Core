@@ -24,7 +24,7 @@ public interface IAclManager<TKey> : IAclManager<TKey, User<TKey>, Resource<TKey
 /// <typeparam name="TKey">The type of key used to identify users and resources.</typeparam>
 /// <typeparam name="TUser">The type representing a user.</typeparam>
 /// <typeparam name="TResource">The type representing a resource.</typeparam>
-public interface IAclManager<TKey, in TUser, TResource>
+public interface IAclManager<TKey, in TUser, TResource> : IDisposable
     where TKey : IEquatable<TKey>
     where TUser : User<TKey>
     where TResource : Resource<TKey>
