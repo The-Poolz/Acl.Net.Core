@@ -11,9 +11,7 @@ public class AclManagerTests
     public AclManagerTests()
     {
         var context = InMemoryAclDbContext.CreateContext();
-        var userManager = new UserManager(context);
-        var resourceManager = new ResourceManager(context);
-        _aclManager = new AclManager(userManager, resourceManager);
+        _aclManager = new AclManager(context);
     }
 
     [Fact]
