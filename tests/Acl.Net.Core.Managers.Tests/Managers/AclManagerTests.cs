@@ -15,6 +15,24 @@ public class AclManagerTests
     }
 
     [Fact]
+    public void Ctor_WithContextParameter()
+    {
+        var context = InMemoryAclDbContext.CreateContext();
+        var aclManager = new AclManager(context);
+
+        Assert.NotNull(aclManager);
+    }
+
+    [Fact]
+    public void Ctor_WithManagersParameters()
+    {
+        var context = InMemoryAclDbContext.CreateContext();
+        var aclManager = new AclManager(new UserManager(context), new ResourceManager(context));
+
+        Assert.NotNull(aclManager);
+    }
+
+    [Fact]
     public void IsPermitted_ShouldReturnTrue_WhenAdminAccessPrivateResource()
     {
         Assert.True(_aclManager.IsPermitted("AdminAccount", "PrivateResource"));
