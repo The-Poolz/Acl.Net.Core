@@ -2,19 +2,27 @@
 
 Acl.Net.Core is a C# library that provides a simple and flexible way to manage Access Control Lists (ACLs). It is designed to be used with Entity Framework Core and allows you to easily define and manage Users, Roles, and Resources in your application.
 
+> **Note**
+> 
+> `Acl.Net.Core` NuGet package not supporting starting with v1.0.0. This package has been split to two package `Acl.Net.Core.Database` and `Acl.Net.Core.Managers`
+
 ## Installation
 
-To use `Acl.Net.Core`, you will need to add it as a dependency to your project.
-You can do this by adding it as a NuGet package:
+To use `Acl.Net.Core`, need to install one of two package `Acl.Net.Core.Database` or `Acl.Net.Core.Managers`
+
+- `Acl.Net.Core.Database`: provides EFCore DbContext for ACL system.
+- `Acl.Net.Core.Managers`: provides managers for AclDbContext.
 
 .NET CLI
 ```powershell
-dotnet add package Acl.Net.Core
+dotnet add package Acl.Net.Core.Database
+dotnet add package Acl.Net.Core.Managers
 ```
 
 Package Manager
 ```powershell
-Install-Package Acl.Net.Core
+Install-Package Acl.Net.Core.Database
+Install-Package Acl.Net.Core.Managers
 ```
 
 ## Usage
@@ -135,7 +143,7 @@ public class RoleDataSeeder : IInitialDataSeeder<int, Role<int>>
 ## Managers
 
 The library provides a `AclManager` class that you can use to manage access control in your application.
-This class provides methods to check if a user is permitted to access a resource.
+This class provides methods to check if a user is permitted to access a resource or resource list.
 
 The `AclManager` class also has a generic version that allows you to specify the types of the entities.
 This can be useful if you want to use your own entity classes that inherit from the provided entities.
@@ -144,11 +152,16 @@ The `AclManager` class uses a `UserManager` and a `ResourceManager` to manage us
 These classes provide methods to process users and resources, and to check if a user is permitted to access a resource.
 
 ```csharp
-var aclManager = new AclManager<Guid, MyUser, MyRole, MyResource>(seeder, userManager, resourceManager);
+// Check if user "userName" permitted for call "resourceName"
+using var aclManager = new AclManager<Guid, MyUser, MyRole, MyResource>(seeder, userManager, resourceManager);
 bool isPermitted = aclManager.IsPermitted("userName", "resourceName");
+
+// Check if user "userName" permitted for call "resourceName1" and "resourceName2"
+using var aclManager = new AclManager<Guid, MyUser, MyRole, MyResource>(seeder, userManager, resourceManager);
+List<MyResource> permittedResources = aclManager.IsPermitted("userName", new[] { "resourceName1", "resourceName2" });
 ```
 
-In this example, `userName` is the name of the user and `resourceName` is the name of the resource.
+In first example, `userName` is the name of the user and `resourceName` is the name of the resource.
 The `IsPermitted` method returns `true` if the user is permitted to access the resource, and `false` otherwise.
 
 ## Conclusion
@@ -156,3 +169,8 @@ The `IsPermitted` method returns `true` if the user is permitted to access the r
 `Acl.Net.Core` is a powerful and flexible library for managing access control in C# applications.
 It provides a simple and intuitive API, and it integrates seamlessly with Entity Framework Core.
 Whether you are building a small application or a large enterprise system, `Acl.Net.Core` can help you manage access control effectively and efficiently.
+
+## Other documentation
+
+- Acl.Net.Core.Database [docs](https://github.com/The-Poolz/Acl.Net.Core/blob/master/docs/Acl.Net.Core.Database.md)
+- Acl.Net.Core.Managers [docs](https://github.com/The-Poolz/Acl.Net.Core/blob/master/docs/Acl.Net.Core.Managers.md)
