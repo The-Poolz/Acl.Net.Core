@@ -1,5 +1,6 @@
 ﻿using Xunit;
 using FluentAssertions;
+using Acl.Net.Core.Database;
 using Acl.Net.Core.Managers.Tests.Mock;
 
 namespace Acl.Net.Core.Managers.Tests.Managers;
@@ -28,6 +29,15 @@ public class AclManagerTests
     {
         var context = InMemoryAclDbContext.CreateContext();
         var aclManager = new AclManager(new UserManager(context), new ResourceManager(context));
+
+        Assert.NotNull(aclManager);
+    }
+
+    [Fact]
+    public void Ctor_WithManagersAndInitialDataSeederParameters()
+    {
+        var context = InMemoryAclDbContext.CreateContext();
+        var aclManager = new AclManager(new RoleDataSeeder(), new UserManager(context), new ResourceManager(context));
 
         Assert.NotNull(aclManager);
     }
