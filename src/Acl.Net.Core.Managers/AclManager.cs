@@ -11,7 +11,35 @@ namespace Acl.Net.Core.Managers;
 public class AclManager : AclManager<int>, IAclManager
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="AclManager"/> class with the provided user manager and resource manager.
+    /// Initializes a new instance of the <see cref="AclManager"/> class
+    /// with the default <see cref="RoleDataSeeder"/>
+    /// and with default <see cref="UserManager"/> and <see cref="ResourceManager"/>.
+    /// </summary>
+    /// <param name="context">An implementation, or default <see cref="AclDbContext"/>.</param>
+    public AclManager(
+        AclDbContext context
+    )
+        : this(new RoleDataSeeder(), context)
+    { }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AclManager"/> class
+    /// with the provided <see cref="IInitialDataSeeder{TKey,TRole}"/>
+    /// and with default <see cref="UserManager"/> and <see cref="ResourceManager"/>.
+    /// </summary>
+    /// <param name="initialDataSeeder">An implementation of <see cref="IInitialDataSeeder{TKey,TRole}"/> used to seed initial role data.</param>
+    /// <param name="context">An implementation, or default <see cref="AclDbContext"/>.</param>
+    public AclManager(
+        IInitialDataSeeder<int, Role<int>> initialDataSeeder,
+        AclDbContext context
+    )
+        : base(initialDataSeeder, context)
+    { }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AclManager"/> class
+    /// with the default <see cref="RoleDataSeeder"/>
+    /// and with the provided <see cref="IUserManager"/>, and <see cref="IResourceManager"/>.
     /// </summary>
     /// <param name="userManager">An implementation of <see cref="IUserManager"/>.</param>
     /// <param name="resourceManager">An implementation of <see cref="IResourceManager"/>.</param>
@@ -20,6 +48,21 @@ public class AclManager : AclManager<int>, IAclManager
         IResourceManager resourceManager
     )
         : base(new RoleDataSeeder(), userManager, resourceManager)
+    { }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AclManager"/> class
+    /// with the provided <see cref="IInitialDataSeeder{TKey,TRole}"/>, <see cref="IUserManager"/>, and <see cref="IResourceManager"/>.
+    /// </summary>
+    /// <param name="initialDataSeeder">An implementation of <see cref="IInitialDataSeeder{TKey,TRole}"/> used to seed initial role data.</param>
+    /// <param name="userManager">An implementation of <see cref="IUserManager"/>.</param>
+    /// <param name="resourceManager">An implementation of <see cref="IResourceManager"/>.</param>
+    public AclManager(
+        IInitialDataSeeder<int, Role<int>> initialDataSeeder,
+        IUserManager userManager,
+        IResourceManager resourceManager
+    )
+        : base(initialDataSeeder, userManager, resourceManager)
     { }
 }
 
@@ -32,9 +75,24 @@ public class AclManager<TKey> : AclManager<TKey, User<TKey>, Role<TKey>, Resourc
     where TKey : IEquatable<TKey>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="AclManager{TKey}"/> class with the provided initial data seeder, user manager, and resource manager.
+    /// Initializes a new instance of the <see cref="AclManager{TKey}"/> class
+    /// with the provided <see cref="IInitialDataSeeder{TKey,TRole}"/>
+    /// and with default <see cref="UserManager{TKey}"/> and <see cref="ResourceManager{TKey}"/>.
     /// </summary>
-    /// <param name="initialDataSeeder">An implementation of <see cref="IInitialDataSeeder{TKey, TRole}"/> used to seed initial role data.</param>
+    /// <param name="initialDataSeeder">An implementation of <see cref="IInitialDataSeeder{TKey,TRole}"/> used to seed initial role data.</param>
+    /// <param name="context">An implementation, or default <see cref="AclDbContext{TKey}"/>.</param>
+    public AclManager(
+        IInitialDataSeeder<TKey, Role<TKey>> initialDataSeeder,
+        AclDbContext<TKey> context
+    )
+        : base(initialDataSeeder, context)
+    { }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AclManager{TKey}"/> class
+    /// with the provided <see cref="IInitialDataSeeder{TKey,TRole}"/>, <see cref="IUserManager{TKey}"/>, and <see cref="IResourceManager{TKey}"/>.
+    /// </summary>
+    /// <param name="initialDataSeeder">An implementation of <see cref="IInitialDataSeeder{TKey,TRole}"/> used to seed initial role data.</param>
     /// <param name="userManager">An implementation of <see cref="IUserManager{TKey}"/>.</param>
     /// <param name="resourceManager">An implementation of <see cref="IResourceManager{TKey}"/>.</param>
     public AclManager(
@@ -66,11 +124,29 @@ public class AclManager<TKey, TUser, TRole, TResource> : IAclManager<TKey, TUser
     protected bool isDisposed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AclManager{TKey, TUser, TRole, TResource}"/> class with the provided initial data seeder, user manager, and resource manager.
+    /// Initializes a new instance of the <see cref="AclManager{TKey,TUser,TRole,TResource}"/> class
+    /// with the provided <see cref="IInitialDataSeeder{TKey,TRole}"/>
+    /// and with default <see cref="UserManager{TKey,TUser,TRole,TResource}"/> and <see cref="ResourceManager{TKey,TUser,TRole,TResource}"/>.
     /// </summary>
     /// <param name="initialDataSeeder">An implementation of <see cref="IInitialDataSeeder{TKey, TRole}"/> used to seed initial role data.</param>
-    /// <param name="userManager">An implementation of <see cref="IUserManager{TKey, TUser, TRole}"/> for user management.</param>
-    /// <param name="resourceManager">An implementation of <see cref="IResourceManager{TKey, TUser, TResource}"/> for resource management.</param>
+    /// <param name="context">An implementation, or default <see cref="AclDbContext{TKey,TUser,TRole,TResource}"/>.</param>
+    public AclManager(
+        IInitialDataSeeder<TKey, TRole> initialDataSeeder,
+        AclDbContext<TKey, TUser, TRole, TResource> context
+    )
+    {
+        this.initialDataSeeder = initialDataSeeder;
+        userManager = new UserManager<TKey, TUser, TRole, TResource>(context);
+        resourceManager = new ResourceManager<TKey, TUser, TRole, TResource>(context, initialDataSeeder);
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AclManager{TKey,TUser,TRole,TResource}"/> class
+    /// with the provided <see cref="IInitialDataSeeder{TKey,TRole}"/>, <see cref="IUserManager{TKey,TUser,TRole}"/>, and <see cref="IResourceManager{TKey,TUser,TResource}"/>.
+    /// </summary>
+    /// <param name="initialDataSeeder">An implementation of <see cref="IInitialDataSeeder{TKey,TRole}"/> used to seed initial role data.</param>
+    /// <param name="userManager">An implementation of <see cref="IUserManager{TKey,TUser,TRole}"/> for user management.</param>
+    /// <param name="resourceManager">An implementation of <see cref="IResourceManager{TKey,TUser,TResource}"/> for resource management.</param>
     public AclManager(
         IInitialDataSeeder<TKey, TRole> initialDataSeeder,
         IUserManager<TKey, TUser, TRole> userManager,
