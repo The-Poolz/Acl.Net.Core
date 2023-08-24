@@ -118,9 +118,9 @@ public class AclManager<TKey, TUser, TRole, TResource> : IAclManager<TKey, TUser
     where TRole : Role<TKey>
     where TResource : Resource<TKey>
 {
-    private readonly IInitialDataSeeder<TKey, TRole> initialDataSeeder;
-    private readonly IUserManager<TKey, TUser, TRole> userManager;
-    private readonly IResourceManager<TKey, TUser, TResource> resourceManager;
+    protected readonly IInitialDataSeeder<TKey, TRole> initialDataSeeder;
+    protected readonly IUserManager<TKey, TUser, TRole> userManager;
+    protected readonly IResourceManager<TKey, TUser, TResource> resourceManager;
     protected bool isDisposed;
 
     /// <summary>
