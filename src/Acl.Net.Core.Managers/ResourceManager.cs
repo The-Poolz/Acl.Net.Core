@@ -52,8 +52,8 @@ public class ResourceManager<TKey, TUser, TRole, TResource> : IResourceManager<T
     where TRole : Role<TKey>
     where TResource : Resource<TKey>
 {
-    private readonly AclDbContext<TKey, TUser, TRole, TResource> context;
-    private readonly IInitialDataSeeder<TKey, TRole> initialDataSeeder;
+    protected readonly AclDbContext<TKey, TUser, TRole, TResource> context;
+    protected readonly IInitialDataSeeder<TKey, TRole> initialDataSeeder;
     protected bool isDisposed;
 
     /// <summary>

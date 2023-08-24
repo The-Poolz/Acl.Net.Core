@@ -47,7 +47,7 @@ public class UserManager<TKey, TUser, TRole, TResource> : IUserManager<TKey, TUs
     where TRole : Role<TKey>
     where TResource : Resource<TKey>
 {
-    private readonly AclDbContext<TKey, TUser, TRole, TResource> context;
+    protected readonly AclDbContext<TKey, TUser, TRole, TResource> context;
     protected bool isDisposed;
 
     /// <summary>
