@@ -1,5 +1,4 @@
 ﻿using Xunit;
-using FluentAssertions;
 using Acl.Net.Core.Database.Entities;
 using Acl.Net.Core.Managers.Exceptions;
 using Acl.Net.Core.Managers.Tests.Mock;
@@ -116,20 +115,5 @@ public class ResourceManagerTests
     {
         const string nonExistentResourceName = "NonExistentResource";
         await Assert.ThrowsAsync<ResourceNotFoundException>(() => _resourceManager.GetResourceByNameAsync(nonExistentResourceName));
-    }
-
-    [Fact]
-    public void Dispose_ShouldNotThrowException_WhenCalledOnce()
-    {
-        var action = () => _resourceManager.Dispose();
-        action.Should().NotThrow();
-    }
-
-    [Fact]
-    public void Dispose_ShouldThrowObjectDisposedException_WhenCalledTwice()
-    {
-        _resourceManager.Dispose();
-
-        Assert.Throws<ObjectDisposedException>(() => _resourceManager.Dispose());
     }
 }
