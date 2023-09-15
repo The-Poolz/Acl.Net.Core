@@ -126,15 +126,16 @@ public class ResourceManager<TKey, TUser, TRole, TResource> : IResourceManager<T
     /// </summary>
     /// <param name="user">The user to check.</param>
     /// <param name="resourceName">The name of the resource.</param>
+    /// <param name="cancellationToken">An optional token to monitor for cancellation requests. The default value is <see cref="CancellationToken.None"/>.</param>
     /// <returns>A task that represents the asynchronous operation.
     /// The task result contains <see langword="true"/> if the user is permitted to access the resource; otherwise, <see langword="false"/>.</returns>
     /// <exception cref="ResourceNotFoundException">
     /// Thrown when the specified resource name does not exist.
     /// </exception>
-    public virtual async Task<bool> IsPermittedAsync(TUser user, string resourceName)
+    public virtual async Task<bool> IsPermittedAsync(TUser user, string resourceName, CancellationToken cancellationToken = default)
     {
-        var resource = await GetResourceByNameAsync(resourceName);
-        return await IsPermittedAsync(user, resource);
+        var resource = await GetResourceByNameAsync(resourceName, cancellationToken);
+        return await IsPermittedAsync(user, resource, cancellationToken);
     }
 
     /// <summary>
@@ -142,12 +143,13 @@ public class ResourceManager<TKey, TUser, TRole, TResource> : IResourceManager<T
     /// </summary>
     /// <param name="user">The user to check.</param>
     /// <param name="resource">The resource to check.</param>
+    /// <param name="cancellationToken">An optional token to monitor for cancellation requests. The default value is <see cref="CancellationToken.None"/>.</param>
     /// <returns>A task that represents the asynchronous operation.
     /// The task result contains <see langword="true"/> if the user is permitted to access the resource; otherwise, <see langword="false"/>.</returns>
-    public virtual async Task<bool> IsPermittedAsync(TUser user, TResource resource)
+    public virtual async Task<bool> IsPermittedAsync(TUser user, TResource resource, CancellationToken cancellationToken = default)
     {
         return user.RoleId.Equals(initialDataSeeder.SeedAdminRole().Id) ||
-            await context.Resources.AnyAsync(r => r.RoleId.Equals(user.RoleId) && r.Id.Equals(resource.Id));
+            await context.Resources.AnyAsync(r => r.RoleId.Equals(user.RoleId) && r.Id.Equals(resource.Id), cancellationToken);
     }
 
     /// <summary>
@@ -155,18 +157,19 @@ public class ResourceManager<TKey, TUser, TRole, TResource> : IResourceManager<T
     /// </summary>
     /// <param name="user">The user to check.</param>
     /// <param name="resourceNames">The names of the resources to check.</param>
+    /// <param name="cancellationToken">An optional token to monitor for cancellation requests. The default value is <see cref="CancellationToken.None"/>.</param>
     /// <returns>A task that represents the asynchronous operation.
     /// The task result contains an enumerable of resources that the user is permitted to access.</returns>
     /// <exception cref="ResourceNotFoundException">
     /// Thrown when one or more of the specified resource names do not exist.
     /// </exception>
-    public virtual async Task<IEnumerable<TResource>> IsPermittedAsync(TUser user, IEnumerable<string> resourceNames)
+    public virtual async Task<IEnumerable<TResource>> IsPermittedAsync(TUser user, IEnumerable<string> resourceNames, CancellationToken cancellationToken = default)
     {
         var permittedResources = new List<TResource>();
         foreach (var resourceName in resourceNames)
         {
-            var resource = await GetResourceByNameAsync(resourceName);
-            if (await IsPermittedAsync(user, resource))
+            var resource = await GetResourceByNameAsync(resourceName, cancellationToken);
+            if (await IsPermittedAsync(user, resource, cancellationToken))
             {
                 permittedResources.Add(resource);
             }
@@ -179,14 +182,15 @@ public class ResourceManager<TKey, TUser, TRole, TResource> : IResourceManager<T
     /// </summary>
     /// <param name="user">The user to check.</param>
     /// <param name="resources">The resources to check.</param>
+    /// <param name="cancellationToken">An optional token to monitor for cancellation requests. The default value is <see cref="CancellationToken.None"/>.</param>
     /// <returns>A task that represents the asynchronous operation.
     /// The task result contains an enumerable of resources that the user is permitted to access.</returns>
-    public virtual async Task<IEnumerable<TResource>> IsPermittedAsync(TUser user, IEnumerable<TResource> resources)
+    public virtual async Task<IEnumerable<TResource>> IsPermittedAsync(TUser user, IEnumerable<TResource> resources, CancellationToken cancellationToken = default)
     {
         var permittedResources = new List<TResource>();
         foreach (var resource in resources)
         {
-            if (await IsPermittedAsync(user, resource))
+            if (await IsPermittedAsync(user, resource, cancellationToken))
             {
                 permittedResources.Add(resource);
             }
@@ -212,14 +216,15 @@ public class ResourceManager<TKey, TUser, TRole, TResource> : IResourceManager<T
     /// Retrieves a resource by its name asynchronously.
     /// </summary>
     /// <param name="resourceName">The name of the resource.</param>
+    /// <param name="cancellationToken">An optional token to monitor for cancellation requests. The default value is <see cref="CancellationToken.None"/>.</param>
     /// <returns>A task that represents the asynchronous operation.
     /// The task result contains the resource with the specified name, or throws <see cref="ResourceNotFoundException"/> if the resource is not found.</returns>
     /// <exception cref="ResourceNotFoundException">
     /// Thrown when the specified resource name does not exist.
     /// </exception>
-    public virtual async Task<TResource> GetResourceByNameAsync(string resourceName)
+    public virtual async Task<TResource> GetResourceByNameAsync(string resourceName, CancellationToken cancellationToken = default)
     {
-        return await context.Resources.FirstOrDefaultAsync(r => r.Name == resourceName)
+        return await context.Resources.FirstOrDefaultAsync(r => r.Name == resourceName, cancellationToken)
             ?? throw new ResourceNotFoundException(resourceName);
     }
 }

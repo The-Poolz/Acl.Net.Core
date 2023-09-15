@@ -42,6 +42,7 @@ public interface IUserManager<TKey, TUser, in TRole>
     /// </summary>
     /// <param name="userName">The user's name.</param>
     /// <param name="roleForNewUsers">The role for new users.</param>
+    /// <param name="cancellationToken">An optional token to monitor for cancellation requests. The default value is <see cref="CancellationToken.None"/>.</param>
     /// <returns>A task that represents the asynchronous operation. The task result returns the retrieved or created user.</returns>
-    public Task<TUser> UserProcessingAsync(string userName, TRole roleForNewUsers);
+    public Task<TUser> UserProcessingAsync(string userName, TRole roleForNewUsers, CancellationToken cancellationToken = default);
 }

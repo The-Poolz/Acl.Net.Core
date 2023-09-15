@@ -81,15 +81,16 @@ public class UserManager<TKey, TUser, TRole, TResource> : IUserManager<TKey, TUs
     /// </summary>
     /// <param name="userName">The user's name.</param>
     /// <param name="roleForNewUsers">The role for new users.</param>
+    /// <param name="cancellationToken">An optional token to monitor for cancellation requests. The default value is <see cref="CancellationToken.None"/>.</param>
     /// <returns>A task that represents the asynchronous operation. The task result returns the retrieved or created user.</returns>
-    public virtual async Task<TUser> UserProcessingAsync(string userName, TRole roleForNewUsers)
+    public virtual async Task<TUser> UserProcessingAsync(string userName, TRole roleForNewUsers, CancellationToken cancellationToken = default)
     {
-        var user = await context.Users.FirstOrDefaultAsync(x => x.Name == userName)
+        var user = await context.Users.FirstOrDefaultAsync(x => x.Name == userName, cancellationToken)
             ?? new TUser { Name = userName, RoleId = roleForNewUsers.Id };
 
         if (!user.Id.Equals(default)) return user;
-        await context.Users.AddAsync(user);
-        await context.SaveChangesAsync();
+        await context.Users.AddAsync(user, cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
 
         return user;
     }

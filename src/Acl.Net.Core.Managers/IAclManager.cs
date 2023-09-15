@@ -74,43 +74,48 @@ public interface IAclManager<TKey, in TUser, TResource>
     /// </summary>
     /// <param name="userName">The user's name.</param>
     /// <param name="resourceName">The name of the resource.</param>
+    /// <param name="cancellationToken">An optional token to monitor for cancellation requests. The default value is <see cref="CancellationToken.None"/>.</param>
     /// <returns>A task that represents the asynchronous operation.
     /// The task result contains <see langword="true"/> if access is permitted; otherwise, <see langword="false"/>.</returns>
-    public Task<bool> IsPermittedAsync(string userName, string resourceName);
+    public Task<bool> IsPermittedAsync(string userName, string resourceName, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Determines asynchronously if a user is permitted to access a specific resource by name.
     /// </summary>
     /// <param name="user">The user.</param>
     /// <param name="resourceName">The name of the resource.</param>
+    /// <param name="cancellationToken">An optional token to monitor for cancellation requests. The default value is <see cref="CancellationToken.None"/>.</param>
     /// <returns>A task that represents the asynchronous operation.
     /// The task result contains <see langword="true"/> if access is permitted; otherwise, <see langword="false"/>.</returns>
-    public Task<bool> IsPermittedAsync(TUser user, string resourceName);
+    public Task<bool> IsPermittedAsync(TUser user, string resourceName, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Determines asynchronously if a user is permitted to access a specific resource.
     /// </summary>
     /// <param name="userName">The user's name.</param>
     /// <param name="resource">The resource.</param>
+    /// <param name="cancellationToken">An optional token to monitor for cancellation requests. The default value is <see cref="CancellationToken.None"/>.</param>
     /// <returns>A task that represents the asynchronous operation.
     /// The task result contains <see langword="true"/> if access is permitted; otherwise, <see langword="false"/>.</returns>
-    public Task<bool> IsPermittedAsync(string userName, TResource resource);
+    public Task<bool> IsPermittedAsync(string userName, TResource resource, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Determines asynchronously if a user is permitted to access a specific resource.
     /// </summary>
     /// <param name="user">The user.</param>
     /// <param name="resource">The resource.</param>
+    /// <param name="cancellationToken">An optional token to monitor for cancellation requests. The default value is <see cref="CancellationToken.None"/>.</param>
     /// <returns>A task that represents the asynchronous operation.
     /// The task result contains <see langword="true"/> if access is permitted; otherwise, <see langword="false"/>.</returns>
-    public Task<bool> IsPermittedAsync(TUser user, TResource resource);
+    public Task<bool> IsPermittedAsync(TUser user, TResource resource, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Determines asynchronously if a user is permitted to access a collection of resources identified by names.
     /// </summary>
     /// <param name="userName">The user's name.</param>
     /// <param name="resourceNames">The names of the resources.</param>
+    /// <param name="cancellationToken">An optional token to monitor for cancellation requests. The default value is <see cref="CancellationToken.None"/>.</param>
     /// <returns>A task that represents the asynchronous operation.
     /// The task result contains a collection of resources that the user has access to.</returns>
-    public Task<IEnumerable<TResource>> IsPermittedAsync(string userName, IEnumerable<string> resourceNames);
+    public Task<IEnumerable<TResource>> IsPermittedAsync(string userName, IEnumerable<string> resourceNames, CancellationToken cancellationToken = default);
 }

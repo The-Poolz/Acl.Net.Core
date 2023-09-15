@@ -230,15 +230,16 @@ public class AclManager<TKey, TUser, TRole, TResource> : IAclManager<TKey, TUser
     /// </summary>
     /// <param name="userName">The name of the user to check permission for.</param>
     /// <param name="resourceName">The name of the resource to check permission against.</param>
+    /// <param name="cancellationToken">An optional token to monitor for cancellation requests. The default value is <see cref="CancellationToken.None"/>.</param>
     /// <returns>A task that represents the asynchronous operation.
     /// The task result contains <see langword="true"/> if the user is permitted to access the resource; otherwise, <see langword="false"/>.</returns>
     /// <exception cref="ResourceNotFoundException">
     /// Thrown when the specified resource name does not exist.
     /// </exception>
-    public virtual async Task<bool> IsPermittedAsync(string userName, string resourceName)
+    public virtual async Task<bool> IsPermittedAsync(string userName, string resourceName, CancellationToken cancellationToken = default)
     {
-        var user = await userManager.UserProcessingAsync(userName, initialDataSeeder.SeedUserRole());
-        return await resourceManager.IsPermittedAsync(user, resourceName);
+        var user = await userManager.UserProcessingAsync(userName, initialDataSeeder.SeedUserRole(), cancellationToken);
+        return await resourceManager.IsPermittedAsync(user, resourceName, cancellationToken);
     }
 
     /// <summary>
@@ -246,14 +247,15 @@ public class AclManager<TKey, TUser, TRole, TResource> : IAclManager<TKey, TUser
     /// </summary>
     /// <param name="user">The user object to check permission for.</param>
     /// <param name="resourceName">The name of the resource to check permission against.</param>
+    /// <param name="cancellationToken">An optional token to monitor for cancellation requests. The default value is <see cref="CancellationToken.None"/>.</param>
     /// <returns>A task that represents the asynchronous operation.
     /// The task result contains <see langword="true"/> if the user is permitted to access the resource; otherwise, <see langword="false"/>.</returns>
     /// <exception cref="ResourceNotFoundException">
     /// Thrown when the specified resource name does not exist.
     /// </exception>
-    public virtual async Task<bool> IsPermittedAsync(TUser user, string resourceName)
+    public virtual async Task<bool> IsPermittedAsync(TUser user, string resourceName, CancellationToken cancellationToken = default)
     {
-        return await resourceManager.IsPermittedAsync(user, resourceName);
+        return await resourceManager.IsPermittedAsync(user, resourceName, cancellationToken);
     }
 
     /// <summary>
@@ -261,12 +263,13 @@ public class AclManager<TKey, TUser, TRole, TResource> : IAclManager<TKey, TUser
     /// </summary>
     /// <param name="userName">The name of the user to check permission for.</param>
     /// <param name="resource">The resource object to check permission against.</param>
+    /// <param name="cancellationToken">An optional token to monitor for cancellation requests. The default value is <see cref="CancellationToken.None"/>.</param>
     /// <returns>A task that represents the asynchronous operation.
     /// The task result contains <see langword="true"/> if the user is permitted to access the resource; otherwise, <see langword="false"/>.</returns>
-    public virtual async Task<bool> IsPermittedAsync(string userName, TResource resource)
+    public virtual async Task<bool> IsPermittedAsync(string userName, TResource resource, CancellationToken cancellationToken = default)
     {
-        var user = await userManager.UserProcessingAsync(userName, initialDataSeeder.SeedUserRole());
-        return await resourceManager.IsPermittedAsync(user, resource);
+        var user = await userManager.UserProcessingAsync(userName, initialDataSeeder.SeedUserRole(), cancellationToken);
+        return await resourceManager.IsPermittedAsync(user, resource, cancellationToken);
     }
 
     /// <summary>
@@ -274,11 +277,12 @@ public class AclManager<TKey, TUser, TRole, TResource> : IAclManager<TKey, TUser
     /// </summary>
     /// <param name="user">The user object to check permission for.</param>
     /// <param name="resource">The resource object to check permission against.</param>
+    /// <param name="cancellationToken">An optional token to monitor for cancellation requests. The default value is <see cref="CancellationToken.None"/>.</param>
     /// <returns>A task that represents the asynchronous operation.
     /// The task result contains <see langword="true"/> if the user is permitted to access the resource; otherwise, <see langword="false"/>.</returns>
-    public virtual async Task<bool> IsPermittedAsync(TUser user, TResource resource)
+    public virtual async Task<bool> IsPermittedAsync(TUser user, TResource resource, CancellationToken cancellationToken = default)
     {
-        return await resourceManager.IsPermittedAsync(user, resource);
+        return await resourceManager.IsPermittedAsync(user, resource, cancellationToken);
     }
 
     /// <summary>
@@ -286,15 +290,16 @@ public class AclManager<TKey, TUser, TRole, TResource> : IAclManager<TKey, TUser
     /// </summary>
     /// <param name="userName">The name of the user to check permission for.</param>
     /// <param name="resourceNames">The collection of resource names to check permissions against.</param>
+    /// <param name="cancellationToken">An optional token to monitor for cancellation requests. The default value is <see cref="CancellationToken.None"/>.</param>
     /// <returns>A task that represents the asynchronous operation.
     /// The task result contains a collection of <see cref="TResource"/> objects that the user is permitted to access;
     /// an empty collection if the user is not permitted to access any of the resources.</returns>
     /// <exception cref="ResourceNotFoundException">
     /// Thrown when one or more of the specified resource names do not exist.
     /// </exception>
-    public virtual async Task<IEnumerable<TResource>> IsPermittedAsync(string userName, IEnumerable<string> resourceNames)
+    public virtual async Task<IEnumerable<TResource>> IsPermittedAsync(string userName, IEnumerable<string> resourceNames, CancellationToken cancellationToken = default)
     {
-        var user = await userManager.UserProcessingAsync(userName, initialDataSeeder.SeedUserRole());
-        return await resourceManager.IsPermittedAsync(user, resourceNames);
+        var user = await userManager.UserProcessingAsync(userName, initialDataSeeder.SeedUserRole(), cancellationToken);
+        return await resourceManager.IsPermittedAsync(user, resourceNames, cancellationToken);
     }
 }
