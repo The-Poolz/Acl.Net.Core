@@ -1,5 +1,19 @@
 # Acl.Net.Core
 
+[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/summary/new_code?id=The-Poolz_Acl.Net.Core)
+
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=The-Poolz_Acl.Net.Core&metric=alert_status&token=ef989df8d43ee416fe8b310fb6b251226d57208b)](https://sonarcloud.io/summary/new_code?id=The-Poolz_Acl.Net.Core)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=The-Poolz_Acl.Net.Core&metric=bugs&token=ef989df8d43ee416fe8b310fb6b251226d57208b)](https://sonarcloud.io/summary/new_code?id=The-Poolz_Acl.Net.Core)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=The-Poolz_Acl.Net.Core&metric=security_rating&token=ef989df8d43ee416fe8b310fb6b251226d57208b)](https://sonarcloud.io/summary/new_code?id=The-Poolz_Acl.Net.Core)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=The-Poolz_Acl.Net.Core&metric=coverage&token=ef989df8d43ee416fe8b310fb6b251226d57208b)](https://sonarcloud.io/summary/new_code?id=The-Poolz_Acl.Net.Core)
+
+[![GitHub Action](https://github.com/The-Poolz/Acl.Net.Core/actions/workflows/sonarcloud.yml/badge.svg)](https://github.com/The-Poolz/Acl.Net.Core/actions/workflows/sonarcloud.yml)
+[![CodeFactor](https://www.codefactor.io/repository/github/the-poolz/acl.net.core/badge)](https://www.codefactor.io/repository/github/the-poolz/acl.net.core)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/The-Poolz/Acl.Net.Core/blob/master/LICENSE)
+
+[![Acl.Net.Core.Database](https://badge.fury.io/nu/Acl.Net.Core.Database.svg)](https://badge.fury.io/nu/Acl.Net.Core.Database)
+[![Acl.Net.Core.Managers](https://badge.fury.io/nu/Acl.Net.Core.Managers.svg)](https://badge.fury.io/nu/Acl.Net.Core.Managers)
+
 Acl.Net.Core is a C# library that provides a simple and flexible way to manage Access Control Lists (ACLs). It is designed to be used with Entity Framework Core and allows you to easily define and manage Users, Roles, and Resources in your application.
 
 > **Note**
@@ -141,6 +155,10 @@ public class RoleDataSeeder : IInitialDataSeeder<int, Role<int>>
 ```
 
 ## Managers
+
+> **Note**
+> 
+> By default, for `AdminRole` allows any resource!
 
 The library provides a `AclManager` class that you can use to manage access control in your application.
 This class provides methods to check if a user is permitted to access a resource or resource list.
