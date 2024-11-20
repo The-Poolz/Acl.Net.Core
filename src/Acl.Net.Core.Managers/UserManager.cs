@@ -47,7 +47,7 @@ public class UserManager<TKey, TUser, TRole, TResource> : IUserManager<TKey, TUs
     where TRole : Role<TKey>
     where TResource : Resource<TKey>
 {
-    protected readonly AclDbContext<TKey, TUser, TRole, TResource> context;
+    protected readonly AclDbContext<TKey, TUser, TRole, TResource> Context;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="UserManager{TKey, TUser, TRole, TResource}"/> class.
@@ -55,7 +55,7 @@ public class UserManager<TKey, TUser, TRole, TResource> : IUserManager<TKey, TUs
     /// <param name="context">The ACL database context.</param>
     public UserManager(AclDbContext<TKey, TUser, TRole, TResource> context)
     {
-        this.context = context;
+        Context = context;
     }
 
     /// <summary>
@@ -66,12 +66,12 @@ public class UserManager<TKey, TUser, TRole, TResource> : IUserManager<TKey, TUs
     /// <returns>The retrieved or created user.</returns>
     public virtual TUser UserProcessing(string userName, TRole roleForNewUsers)
     {
-        var user = context.Users.FirstOrDefault(x => x.Name == userName)
+        var user = Context.Users.FirstOrDefault(x => x.Name == userName)
             ?? new TUser { Name = userName, RoleId = roleForNewUsers.Id };
 
         if (!user.Id.Equals(default)) return user;
-        context.Users.Add(user);
-        context.SaveChanges();
+        Context.Users.Add(user);
+        Context.SaveChanges();
 
         return user;
     }
@@ -84,12 +84,12 @@ public class UserManager<TKey, TUser, TRole, TResource> : IUserManager<TKey, TUs
     /// <returns>A task that represents the asynchronous operation. The task result returns the retrieved or created user.</returns>
     public virtual async Task<TUser> UserProcessingAsync(string userName, TRole roleForNewUsers)
     {
-        var user = await context.Users.FirstOrDefaultAsync(x => x.Name == userName)
+        var user = await Context.Users.FirstOrDefaultAsync(x => x.Name == userName)
             ?? new TUser { Name = userName, RoleId = roleForNewUsers.Id };
 
         if (!user.Id.Equals(default)) return user;
-        await context.Users.AddAsync(user);
-        await context.SaveChangesAsync();
+        await Context.Users.AddAsync(user);
+        await Context.SaveChangesAsync();
 
         return user;
     }

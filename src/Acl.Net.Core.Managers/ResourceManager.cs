@@ -52,8 +52,8 @@ public class ResourceManager<TKey, TUser, TRole, TResource> : IResourceManager<T
     where TRole : Role<TKey>
     where TResource : Resource<TKey>
 {
-    protected readonly AclDbContext<TKey, TUser, TRole, TResource> context;
-    protected readonly IInitialDataSeeder<TKey, TRole> initialDataSeeder;
+    protected readonly AclDbContext<TKey, TUser, TRole, TResource> Context;
+    protected readonly IInitialDataSeeder<TKey, TRole> InitialDataSeeder;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ResourceManager{TKey, TUser, TRole, TResource}"/> class.
@@ -65,8 +65,8 @@ public class ResourceManager<TKey, TUser, TRole, TResource> : IResourceManager<T
         IInitialDataSeeder<TKey, TRole> initialDataSeeder
     )
     {
-        this.context = context;
-        this.initialDataSeeder = initialDataSeeder;
+        Context = context;
+        InitialDataSeeder = initialDataSeeder;
     }
 
     /// <summary>
@@ -92,8 +92,8 @@ public class ResourceManager<TKey, TUser, TRole, TResource> : IResourceManager<T
     /// <returns><see langword="true"/> if the user is permitted to access the resource; otherwise, <see langword="false"/>.</returns>
     public virtual bool IsPermitted(TUser user, TResource resource)
     {
-        return user.RoleId.Equals(initialDataSeeder.SeedAdminRole().Id) ||
-            context.Resources.Any(r => r.RoleId.Equals(user.RoleId) && r.Id.Equals(resource.Id));
+        return user.RoleId.Equals(InitialDataSeeder.SeedAdminRole().Id) ||
+            Context.Resources.Any(r => r.RoleId.Equals(user.RoleId) && r.Id.Equals(resource.Id));
     }
 
     /// <summary>
@@ -146,8 +146,8 @@ public class ResourceManager<TKey, TUser, TRole, TResource> : IResourceManager<T
     /// The task result contains <see langword="true"/> if the user is permitted to access the resource; otherwise, <see langword="false"/>.</returns>
     public virtual async Task<bool> IsPermittedAsync(TUser user, TResource resource)
     {
-        return user.RoleId.Equals(initialDataSeeder.SeedAdminRole().Id) ||
-            await context.Resources.AnyAsync(r => r.RoleId.Equals(user.RoleId) && r.Id.Equals(resource.Id));
+        return user.RoleId.Equals(InitialDataSeeder.SeedAdminRole().Id) ||
+            await Context.Resources.AnyAsync(r => r.RoleId.Equals(user.RoleId) && r.Id.Equals(resource.Id));
     }
 
     /// <summary>
@@ -204,7 +204,7 @@ public class ResourceManager<TKey, TUser, TRole, TResource> : IResourceManager<T
     /// </exception>
     public virtual TResource GetResourceByName(string resourceName)
     {
-        return context.Resources.FirstOrDefault(r => r.Name == resourceName)
+        return Context.Resources.FirstOrDefault(r => r.Name == resourceName)
             ?? throw new ResourceNotFoundException(resourceName);
     }
 
@@ -219,7 +219,7 @@ public class ResourceManager<TKey, TUser, TRole, TResource> : IResourceManager<T
     /// </exception>
     public virtual async Task<TResource> GetResourceByNameAsync(string resourceName)
     {
-        return await context.Resources.FirstOrDefaultAsync(r => r.Name == resourceName)
+        return await Context.Resources.FirstOrDefaultAsync(r => r.Name == resourceName)
             ?? throw new ResourceNotFoundException(resourceName);
     }
 }

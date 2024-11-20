@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents a role within the Access Control List (ACL) system.
 /// </summary>
-public class Role : Role<int> { }
+public class Role : Role<int>;
 
 /// <summary>
 /// Represents a role within the Access Control List (ACL) system, with a specific key type.

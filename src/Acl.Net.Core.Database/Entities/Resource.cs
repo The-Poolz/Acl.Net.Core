@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents a specific resource in the system.
 /// </summary>
-public class Resource : Resource<int> { }
+public class Resource : Resource<int>;
 
 /// <summary>
 /// Represents a specific resource in the system, identified by a generic key type.

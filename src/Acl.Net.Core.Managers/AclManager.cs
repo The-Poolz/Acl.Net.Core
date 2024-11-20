@@ -118,9 +118,9 @@ public class AclManager<TKey, TUser, TRole, TResource> : IAclManager<TKey, TUser
     where TRole : Role<TKey>
     where TResource : Resource<TKey>
 {
-    protected readonly IInitialDataSeeder<TKey, TRole> initialDataSeeder;
-    protected readonly IUserManager<TKey, TUser, TRole> userManager;
-    protected readonly IResourceManager<TKey, TUser, TResource> resourceManager;
+    protected readonly IInitialDataSeeder<TKey, TRole> InitialDataSeeder;
+    protected readonly IUserManager<TKey, TUser, TRole> UserManager;
+    protected readonly IResourceManager<TKey, TUser, TResource> ResourceManager;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AclManager{TKey,TUser,TRole,TResource}"/> class
@@ -134,9 +134,9 @@ public class AclManager<TKey, TUser, TRole, TResource> : IAclManager<TKey, TUser
         AclDbContext<TKey, TUser, TRole, TResource> context
     )
     {
-        this.initialDataSeeder = initialDataSeeder;
-        userManager = new UserManager<TKey, TUser, TRole, TResource>(context);
-        resourceManager = new ResourceManager<TKey, TUser, TRole, TResource>(context, initialDataSeeder);
+        InitialDataSeeder = initialDataSeeder;
+        UserManager = new UserManager<TKey, TUser, TRole, TResource>(context);
+        ResourceManager = new ResourceManager<TKey, TUser, TRole, TResource>(context, initialDataSeeder);
     }
 
     /// <summary>
@@ -152,9 +152,9 @@ public class AclManager<TKey, TUser, TRole, TResource> : IAclManager<TKey, TUser
         IResourceManager<TKey, TUser, TResource> resourceManager
     )
     {
-        this.initialDataSeeder = initialDataSeeder;
-        this.userManager = userManager;
-        this.resourceManager = resourceManager;
+        InitialDataSeeder = initialDataSeeder;
+        UserManager = userManager;
+        ResourceManager = resourceManager;
     }
 
     /// <summary>
@@ -168,8 +168,8 @@ public class AclManager<TKey, TUser, TRole, TResource> : IAclManager<TKey, TUser
     /// </exception>
     public virtual bool IsPermitted(string userName, string resourceName)
     {
-        var user = userManager.UserProcessing(userName, initialDataSeeder.SeedUserRole());
-        return resourceManager.IsPermitted(user, resourceName);
+        var user = UserManager.UserProcessing(userName, InitialDataSeeder.SeedUserRole());
+        return ResourceManager.IsPermitted(user, resourceName);
     }
     
     /// <summary>
@@ -183,7 +183,7 @@ public class AclManager<TKey, TUser, TRole, TResource> : IAclManager<TKey, TUser
     /// </exception>
     public virtual bool IsPermitted(TUser user, string resourceName)
     {
-        return resourceManager.IsPermitted(user, resourceName);
+        return ResourceManager.IsPermitted(user, resourceName);
     }
 
     /// <summary>
@@ -194,8 +194,8 @@ public class AclManager<TKey, TUser, TRole, TResource> : IAclManager<TKey, TUser
     /// <returns><see langword="true"/> if the user is permitted to access the resource; otherwise, <see langword="false"/>.</returns>
     public virtual bool IsPermitted(string userName, TResource resource)
     {
-        var user = userManager.UserProcessing(userName, initialDataSeeder.SeedUserRole());
-        return resourceManager.IsPermitted(user, resource);
+        var user = UserManager.UserProcessing(userName, InitialDataSeeder.SeedUserRole());
+        return ResourceManager.IsPermitted(user, resource);
     }
 
     /// <summary>
@@ -206,7 +206,7 @@ public class AclManager<TKey, TUser, TRole, TResource> : IAclManager<TKey, TUser
     /// <returns><see langword="true"/> if the user is permitted to access the resource; otherwise, <see langword="false"/>.</returns>
     public virtual bool IsPermitted(TUser user, TResource resource)
     {
-        return resourceManager.IsPermitted(user, resource);
+        return ResourceManager.IsPermitted(user, resource);
     }
 
     /// <summary>
@@ -221,8 +221,8 @@ public class AclManager<TKey, TUser, TRole, TResource> : IAclManager<TKey, TUser
     /// </exception>
     public virtual IEnumerable<TResource> IsPermitted(string userName, IEnumerable<string> resourceNames)
     {
-        var user = userManager.UserProcessing(userName, initialDataSeeder.SeedUserRole());
-        return resourceManager.IsPermitted(user, resourceNames);
+        var user = UserManager.UserProcessing(userName, InitialDataSeeder.SeedUserRole());
+        return ResourceManager.IsPermitted(user, resourceNames);
     }
 
     /// <summary>
@@ -237,8 +237,8 @@ public class AclManager<TKey, TUser, TRole, TResource> : IAclManager<TKey, TUser
     /// </exception>
     public virtual async Task<bool> IsPermittedAsync(string userName, string resourceName)
     {
-        var user = await userManager.UserProcessingAsync(userName, initialDataSeeder.SeedUserRole());
-        return await resourceManager.IsPermittedAsync(user, resourceName);
+        var user = await UserManager.UserProcessingAsync(userName, InitialDataSeeder.SeedUserRole());
+        return await ResourceManager.IsPermittedAsync(user, resourceName);
     }
 
     /// <summary>
@@ -253,7 +253,7 @@ public class AclManager<TKey, TUser, TRole, TResource> : IAclManager<TKey, TUser
     /// </exception>
     public virtual async Task<bool> IsPermittedAsync(TUser user, string resourceName)
     {
-        return await resourceManager.IsPermittedAsync(user, resourceName);
+        return await ResourceManager.IsPermittedAsync(user, resourceName);
     }
 
     /// <summary>
@@ -265,8 +265,8 @@ public class AclManager<TKey, TUser, TRole, TResource> : IAclManager<TKey, TUser
     /// The task result contains <see langword="true"/> if the user is permitted to access the resource; otherwise, <see langword="false"/>.</returns>
     public virtual async Task<bool> IsPermittedAsync(string userName, TResource resource)
     {
-        var user = await userManager.UserProcessingAsync(userName, initialDataSeeder.SeedUserRole());
-        return await resourceManager.IsPermittedAsync(user, resource);
+        var user = await UserManager.UserProcessingAsync(userName, InitialDataSeeder.SeedUserRole());
+        return await ResourceManager.IsPermittedAsync(user, resource);
     }
 
     /// <summary>
@@ -278,7 +278,7 @@ public class AclManager<TKey, TUser, TRole, TResource> : IAclManager<TKey, TUser
     /// The task result contains <see langword="true"/> if the user is permitted to access the resource; otherwise, <see langword="false"/>.</returns>
     public virtual async Task<bool> IsPermittedAsync(TUser user, TResource resource)
     {
-        return await resourceManager.IsPermittedAsync(user, resource);
+        return await ResourceManager.IsPermittedAsync(user, resource);
     }
 
     /// <summary>
@@ -294,7 +294,7 @@ public class AclManager<TKey, TUser, TRole, TResource> : IAclManager<TKey, TUser
     /// </exception>
     public virtual async Task<IEnumerable<TResource>> IsPermittedAsync(string userName, IEnumerable<string> resourceNames)
     {
-        var user = await userManager.UserProcessingAsync(userName, initialDataSeeder.SeedUserRole());
-        return await resourceManager.IsPermittedAsync(user, resourceNames);
+        var user = await UserManager.UserProcessingAsync(userName, InitialDataSeeder.SeedUserRole());
+        return await ResourceManager.IsPermittedAsync(user, resourceNames);
     }
 }

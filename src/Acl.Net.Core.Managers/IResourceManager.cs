@@ -5,18 +5,14 @@ namespace Acl.Net.Core.Managers;
 /// <summary>
 /// Manages resource-related operations with a specific integer key type.
 /// </summary>
-public interface IResourceManager : IResourceManager<int>
-{
-}
+public interface IResourceManager : IResourceManager<int>;
 
 /// <summary>
 /// Manages resource-related operations with a specific key type.
 /// </summary>
 /// <typeparam name="TKey">The type of the key.</typeparam>
 public interface IResourceManager<TKey> : IResourceManager<TKey, User<TKey>, Resource<TKey>>
-    where TKey : IEquatable<TKey>
-{
-}
+    where TKey : IEquatable<TKey>;
 
 /// <summary>
 /// Manages resource-related operations with specific user and resource types.
