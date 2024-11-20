@@ -1,12 +1,11 @@
 ﻿using Acl.Net.Core.Database;
 using Acl.Net.Core.Database.Entities;
-using Acl.Net.Core.Managers.Exceptions;
 
 namespace Acl.Net.Core.Managers;
 
 /// <summary>
 /// Manages access control lists (ACLs) using integer keys.
-/// This class provides a simplified interface for managing ACLs with integer keys, by extending the more generic AclManager with TKey.
+/// This class provides a simplified interface for managing ACLs with integer keys, by extending the more generic <see cref="AclManager{TKey}"/> with TKey.
 /// </summary>
 public class AclManager : AclManager<int>, IAclManager
 {
@@ -67,7 +66,7 @@ public class AclManager : AclManager<int>, IAclManager
 }
 
 /// <summary>
-/// Manages access control lists (ACLs) using keys of type TKey.
+/// Manages access control lists (ACLs) using keys of type <see cref="TKey"/>.
 /// This class provides the base functionality for managing ACLs with specified key types.
 /// </summary>
 /// <typeparam name="TKey">The type of the key, which must implement <see cref="IEquatable{TKey}"/>.</typeparam>
@@ -157,141 +156,66 @@ public class AclManager<TKey, TUser, TRole, TResource> : IAclManager<TKey, TUser
         ResourceManager = resourceManager;
     }
 
-    /// <summary>
-    /// Determines if the specified user name is permitted to access the specified resource by name.
-    /// </summary>
-    /// <param name="userName">The name of the user to check permission for.</param>
-    /// <param name="resourceName">The name of the resource to check permission against.</param>
-    /// <returns><see langword="true"/> if the user is permitted to access the resource; otherwise, <see langword="false"/>.</returns>
-    /// <exception cref="ResourceNotFoundException">
-    /// Thrown when the specified resource name does not exist.
-    /// </exception>
+    /// <inheritdoc />
     public virtual bool IsPermitted(string userName, string resourceName)
     {
         var user = UserManager.UserProcessing(userName, InitialDataSeeder.SeedUserRole());
         return ResourceManager.IsPermitted(user, resourceName);
     }
-    
-    /// <summary>
-    /// Determines if the specified user object is permitted to access the specified resource by name.
-    /// </summary>
-    /// <param name="user">The user object to check permission for.</param>
-    /// <param name="resourceName">The name of the resource to check permission against.</param>
-    /// <returns><see langword="true"/> if the user is permitted to access the resource; otherwise, <see langword="false"/>.</returns>
-    /// <exception cref="ResourceNotFoundException">
-    /// Thrown when the specified resource name does not exist.
-    /// </exception>
+
+    /// <inheritdoc />
     public virtual bool IsPermitted(TUser user, string resourceName)
     {
         return ResourceManager.IsPermitted(user, resourceName);
     }
 
-    /// <summary>
-    /// Determines if the specified user name is permitted to access the specified resource object.
-    /// </summary>
-    /// <param name="userName">The name of the user to check permission for.</param>
-    /// <param name="resource">The resource object to check permission against.</param>
-    /// <returns><see langword="true"/> if the user is permitted to access the resource; otherwise, <see langword="false"/>.</returns>
+    /// <inheritdoc />
     public virtual bool IsPermitted(string userName, TResource resource)
     {
         var user = UserManager.UserProcessing(userName, InitialDataSeeder.SeedUserRole());
         return ResourceManager.IsPermitted(user, resource);
     }
 
-    /// <summary>
-    /// Determines if the specified user object is permitted to access the specified resource object.
-    /// </summary>
-    /// <param name="user">The user object to check permission for.</param>
-    /// <param name="resource">The resource object to check permission against.</param>
-    /// <returns><see langword="true"/> if the user is permitted to access the resource; otherwise, <see langword="false"/>.</returns>
+    /// <inheritdoc />
     public virtual bool IsPermitted(TUser user, TResource resource)
     {
         return ResourceManager.IsPermitted(user, resource);
     }
 
-    /// <summary>
-    /// Determines the resources that the specified user name is permitted to access from a collection of resource names.
-    /// </summary>
-    /// <param name="userName">The name of the user to check permission for.</param>
-    /// <param name="resourceNames">The collection of resource names to check permissions against.</param>
-    /// <returns>A collection of <see cref="TResource"/> objects that the user is permitted to access;
-    /// an empty collection if the user is not permitted to access any of the resources.</returns>
-    /// <exception cref="ResourceNotFoundException">
-    /// Thrown when one or more of the specified resource names do not exist.
-    /// </exception>
+    /// <inheritdoc />
     public virtual IEnumerable<TResource> IsPermitted(string userName, IEnumerable<string> resourceNames)
     {
         var user = UserManager.UserProcessing(userName, InitialDataSeeder.SeedUserRole());
         return ResourceManager.IsPermitted(user, resourceNames);
     }
 
-    /// <summary>
-    /// Determines asynchronously if the specified user name is permitted to access the specified resource by name.
-    /// </summary>
-    /// <param name="userName">The name of the user to check permission for.</param>
-    /// <param name="resourceName">The name of the resource to check permission against.</param>
-    /// <returns>A task that represents the asynchronous operation.
-    /// The task result contains <see langword="true"/> if the user is permitted to access the resource; otherwise, <see langword="false"/>.</returns>
-    /// <exception cref="ResourceNotFoundException">
-    /// Thrown when the specified resource name does not exist.
-    /// </exception>
+    /// <inheritdoc />
     public virtual async Task<bool> IsPermittedAsync(string userName, string resourceName)
     {
         var user = await UserManager.UserProcessingAsync(userName, InitialDataSeeder.SeedUserRole());
         return await ResourceManager.IsPermittedAsync(user, resourceName);
     }
 
-    /// <summary>
-    /// Determines asynchronously if the specified user object is permitted to access the specified resource by name.
-    /// </summary>
-    /// <param name="user">The user object to check permission for.</param>
-    /// <param name="resourceName">The name of the resource to check permission against.</param>
-    /// <returns>A task that represents the asynchronous operation.
-    /// The task result contains <see langword="true"/> if the user is permitted to access the resource; otherwise, <see langword="false"/>.</returns>
-    /// <exception cref="ResourceNotFoundException">
-    /// Thrown when the specified resource name does not exist.
-    /// </exception>
+    /// <inheritdoc />
     public virtual async Task<bool> IsPermittedAsync(TUser user, string resourceName)
     {
         return await ResourceManager.IsPermittedAsync(user, resourceName);
     }
 
-    /// <summary>
-    /// Determines asynchronously if the specified user name is permitted to access the specified resource object.
-    /// </summary>
-    /// <param name="userName">The name of the user to check permission for.</param>
-    /// <param name="resource">The resource object to check permission against.</param>
-    /// <returns>A task that represents the asynchronous operation.
-    /// The task result contains <see langword="true"/> if the user is permitted to access the resource; otherwise, <see langword="false"/>.</returns>
+    /// <inheritdoc />
     public virtual async Task<bool> IsPermittedAsync(string userName, TResource resource)
     {
         var user = await UserManager.UserProcessingAsync(userName, InitialDataSeeder.SeedUserRole());
         return await ResourceManager.IsPermittedAsync(user, resource);
     }
 
-    /// <summary>
-    /// Determines asynchronously if the specified user object is permitted to access the specified resource object.
-    /// </summary>
-    /// <param name="user">The user object to check permission for.</param>
-    /// <param name="resource">The resource object to check permission against.</param>
-    /// <returns>A task that represents the asynchronous operation.
-    /// The task result contains <see langword="true"/> if the user is permitted to access the resource; otherwise, <see langword="false"/>.</returns>
+    /// <inheritdoc />
     public virtual async Task<bool> IsPermittedAsync(TUser user, TResource resource)
     {
         return await ResourceManager.IsPermittedAsync(user, resource);
     }
 
-    /// <summary>
-    /// Determines asynchronously the resources that the specified user name is permitted to access from a collection of resource names.
-    /// </summary>
-    /// <param name="userName">The name of the user to check permission for.</param>
-    /// <param name="resourceNames">The collection of resource names to check permissions against.</param>
-    /// <returns>A task that represents the asynchronous operation.
-    /// The task result contains a collection of <see cref="TResource"/> objects that the user is permitted to access;
-    /// an empty collection if the user is not permitted to access any of the resources.</returns>
-    /// <exception cref="ResourceNotFoundException">
-    /// Thrown when one or more of the specified resource names do not exist.
-    /// </exception>
+    /// <inheritdoc />
     public virtual async Task<IEnumerable<TResource>> IsPermittedAsync(string userName, IEnumerable<string> resourceNames)
     {
         var user = await UserManager.UserProcessingAsync(userName, InitialDataSeeder.SeedUserRole());

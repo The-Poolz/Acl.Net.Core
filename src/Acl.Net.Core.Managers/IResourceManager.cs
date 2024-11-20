@@ -1,107 +1,137 @@
 ﻿using Acl.Net.Core.Database.Entities;
+using Acl.Net.Core.Managers.Exceptions;
 
 namespace Acl.Net.Core.Managers;
 
 /// <summary>
-/// Manages resource-related operations with a specific integer key type.
+/// Defines the contract for managing resource-related operations with a specific integer key type.
 /// </summary>
 public interface IResourceManager : IResourceManager<int>;
 
 /// <summary>
-/// Manages resource-related operations with a specific key type.
+/// Defines the contract for managing resource-related operations with a specific key type.
 /// </summary>
 /// <typeparam name="TKey">The type of the key.</typeparam>
 public interface IResourceManager<TKey> : IResourceManager<TKey, User<TKey>, Resource<TKey>>
     where TKey : IEquatable<TKey>;
 
 /// <summary>
-/// Manages resource-related operations with specific user and resource types.
+/// Defines the contract for managing resource-related operations with specific user and resource types.
 /// </summary>
-/// <typeparam name="TKey">The type of the key.</typeparam>
-/// <typeparam name="TUser">The type of the user.</typeparam>
-/// <typeparam name="TResource">The type of the resource.</typeparam>
+/// <typeparam name="TKey">The type of the key, which must implement <see cref="IEquatable{TKey}"/>.</typeparam>
+/// <typeparam name="TUser">The type representing a user, which must inherit from <see cref="User{TKey}"/>.</typeparam>
+/// <typeparam name="TResource">The type representing a resource, which must inherit from <see cref="Resource{TKey}"/>.</typeparam>
 public interface IResourceManager<TKey, in TUser, TResource>
     where TKey : IEquatable<TKey>
     where TUser : User<TKey>
     where TResource : Resource<TKey>
 {
     /// <summary>
-    /// Determines whether the user is permitted to access the specified resource by its name.
+    /// Determines whether the specified user is permitted to access the resource identified by its name.
     /// </summary>
-    /// <param name="user">The user.</param>
-    /// <param name="resourceName">The name of the resource.</param>
-    /// <returns><see langword="true"/> if the user is permitted to access the resource; otherwise, <see langword="false"/>.</returns>
+    /// <param name="user">The user to check permissions for.</param>
+    /// <param name="resourceName">The name of the resource to check.</param>
+    /// <returns>
+    /// <see langword="true"/> if the user is permitted to access the resource; otherwise, <see langword="false"/>.
+    /// </returns>
+    /// <exception cref="ResourceNotFoundException">Thrown when the specified resource name does not exist.</exception>
     public bool IsPermitted(TUser user, string resourceName);
 
     /// <summary>
-    /// Determines whether the user is permitted to access the specified resource.
+    /// Determines whether the specified user is permitted to access the given resource.
     /// </summary>
-    /// <param name="user">The user.</param>
-    /// <param name="resource">The resource.</param>
-    /// <returns><see langword="true"/> if the user is permitted to access the resource; otherwise, <see langword="false"/>.</returns>
+    /// <param name="user">The user to check permissions for.</param>
+    /// <param name="resource">The resource to check.</param>
+    /// <returns>
+    /// <see langword="true"/> if the user is permitted to access the resource; otherwise, <see langword="false"/>.
+    /// </returns>
     public bool IsPermitted(TUser user, TResource resource);
 
     /// <summary>
-    /// Check which resources are allowed for user.
+    /// Determines which resources from a collection of resource names the specified user is permitted to access.
     /// </summary>
-    /// <param name="user">User for whom resources are being checked.</param>
-    /// <param name="resourceNames">Resources that will be checked for the user.</param>
-    /// <returns>Returns the allowed resources for the user.</returns>
+    /// <param name="user">The user to check permissions for.</param>
+    /// <param name="resourceNames">The collection of resource names to check.</param>
+    /// <returns>
+    /// An enumerable of <see cref="TResource"/> that the user is permitted to access.
+    /// </returns>
+    /// <exception cref="ResourceNotFoundException">Thrown when the specified resource name does not exist.</exception>
     public IEnumerable<TResource> IsPermitted(TUser user, IEnumerable<string> resourceNames);
 
     /// <summary>
-    /// Check which resources are allowed for user.
+    /// Determines which resources from a collection the specified user is permitted to access.
     /// </summary>
-    /// <param name="user">User for whom resources are being checked.</param>
-    /// <param name="resources">Resources that will be checked for the user.</param>
-    /// <returns>Returns the allowed resources for the user.</returns>
+    /// <param name="user">The user to check permissions for.</param>
+    /// <param name="resources">The collection of resources to check.</param>
+    /// <returns>
+    /// An enumerable of <see cref="TResource"/> that the user is permitted to access.
+    /// </returns>
     public IEnumerable<TResource> IsPermitted(TUser user, IEnumerable<TResource> resources);
 
     /// <summary>
-    /// Asynchronously determines whether the user is permitted to access the specified resource by its name.
+    /// Asynchronously determines whether the specified user is permitted to access the resource identified by its name.
     /// </summary>
-    /// <param name="user">The user.</param>
-    /// <param name="resourceName">The name of the resource.</param>
-    /// <returns>A task that represents the asynchronous operation.
-    /// The task result is <see langword="true"/> if the user is permitted to access the resource; otherwise, <see langword="false"/>.</returns>
+    /// <param name="user">The user to check permissions for.</param>
+    /// <param name="resourceName">The name of the resource to check.</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation.
+    /// The task result is <see langword="true"/> if the user is permitted to access the resource; otherwise, <see langword="false"/>.
+    /// </returns>
+    /// <exception cref="ResourceNotFoundException">Thrown when the specified resource name does not exist.</exception>
     public Task<bool> IsPermittedAsync(TUser user, string resourceName);
 
     /// <summary>
-    /// Asynchronously determines whether the user is permitted to access the specified resource.
+    /// Asynchronously determines whether the specified user is permitted to access the given resource.
     /// </summary>
-    /// <param name="user">The user.</param>
-    /// <param name="resource">The resource.</param>
-    /// <returns>A task that represents the asynchronous operation.
-    /// The task result is <see langword="true"/> if the user is permitted to access the resource; otherwise, <see langword="false"/>.</returns>
+    /// <param name="user">The user to check permissions for.</param>
+    /// <param name="resource">The resource to check.</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation.
+    /// The task result is <see langword="true"/> if the user is permitted to access the resource; otherwise, <see langword="false"/>.
+    /// </returns>
     public Task<bool> IsPermittedAsync(TUser user, TResource resource);
 
     /// <summary>
-    /// Asynchronously checks which resources are allowed for a user by their names.
+    /// Asynchronously determines which resources from a collection of resource names the specified user is permitted to access.
     /// </summary>
-    /// <param name="user">User for whom resources are being checked.</param>
-    /// <param name="resourceNames">Resources that will be checked for the user.</param>
-    /// <returns>A task that represents the asynchronous operation. The task result returns the allowed resources for the user.</returns>
+    /// <param name="user">The user to check permissions for.</param>
+    /// <param name="resourceNames">The collection of resource names to check.</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation.
+    /// The task result contains an enumerable of <see cref="TResource"/> that the user is permitted to access.
+    /// </returns>
+    /// <exception cref="ResourceNotFoundException">Thrown when the specified resource name does not exist.</exception>
     public Task<IEnumerable<TResource>> IsPermittedAsync(TUser user, IEnumerable<string> resourceNames);
 
     /// <summary>
-    /// Asynchronously checks which resources are allowed for a user.
+    /// Asynchronously determines which resources from a collection the specified user is permitted to access.
     /// </summary>
-    /// <param name="user">User for whom resources are being checked.</param>
-    /// <param name="resources">Resources that will be checked for the user.</param>
-    /// <returns>A task that represents the asynchronous operation. The task result returns the allowed resources for the user.</returns>
+    /// <param name="user">The user to check permissions for.</param>
+    /// <param name="resources">The collection of resources to check.</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation.
+    /// The task result contains an enumerable of <see cref="TResource"/> that the user is permitted to access.
+    /// </returns>
     public Task<IEnumerable<TResource>> IsPermittedAsync(TUser user, IEnumerable<TResource> resources);
 
     /// <summary>
     /// Retrieves a resource by its name.
     /// </summary>
-    /// <param name="resourceName">The name of the resource.</param>
-    /// <returns>The resource with the specified name.</returns>
+    /// <param name="resourceName">The name of the resource to retrieve.</param>
+    /// <returns>
+    /// The <see cref="TResource"/> with the specified name.
+    /// </returns>
+    /// <exception cref="ResourceNotFoundException">Thrown when the specified resource name does not exist.</exception>
     public TResource GetResourceByName(string resourceName);
 
     /// <summary>
-    /// Retrieves a resource by its name asynchronously.
+    /// Asynchronously retrieves a resource by its name.
     /// </summary>
-    /// <param name="resourceName">The name of the resource.</param>
-    /// <returns>A task that represents the asynchronous operation. The task result contains the resource with the specified name.</returns>
+    /// <param name="resourceName">The name of the resource to retrieve.</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation.
+    /// The task result contains the <see cref="TResource"/> with the specified name.
+    /// </returns>
+    /// <exception cref="ResourceNotFoundException">Thrown when the specified resource name does not exist.</exception>
     public Task<TResource> GetResourceByNameAsync(string resourceName);
 }

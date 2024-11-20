@@ -21,7 +21,7 @@ public class UserManager : UserManager<int>, IUserManager
 /// <summary>
 /// Manages user-related operations with a specific key type.
 /// </summary>
-/// <typeparam name="TKey">The type of the key.</typeparam>
+/// <typeparam name="TKey">The type of the key, which must implement <see cref="IEquatable{TKey}"/>.</typeparam>
 public class UserManager<TKey> : UserManager<TKey, User<TKey>, Role<TKey>, Resource<TKey>>, IUserManager<TKey>
     where TKey : IEquatable<TKey>
 {
@@ -37,10 +37,10 @@ public class UserManager<TKey> : UserManager<TKey, User<TKey>, Role<TKey>, Resou
 /// <summary>
 /// Manages user-related operations with specific user, role, and resource types.
 /// </summary>
-/// <typeparam name="TKey">The type of the key.</typeparam>
-/// <typeparam name="TUser">The type of the user.</typeparam>
-/// <typeparam name="TRole">The type of the role.</typeparam>
-/// <typeparam name="TResource">The type of the resource.</typeparam>
+/// <typeparam name="TKey">The type of the key, which must implement <see cref="IEquatable{TKey}"/>.</typeparam>
+/// <typeparam name="TUser">The type of the user, which must inherit from <see cref="User{TKey}"/>.</typeparam>
+/// <typeparam name="TRole">The type of the role, which must inherit from <see cref="Role{TKey}"/>.</typeparam>
+/// <typeparam name="TResource">The type of the resource, which must inherit from <see cref="Resource{TKey}"/>.</typeparam>
 public class UserManager<TKey, TUser, TRole, TResource> : IUserManager<TKey, TUser, TRole>
     where TKey : IEquatable<TKey>
     where TUser : User<TKey>, new()
@@ -58,12 +58,7 @@ public class UserManager<TKey, TUser, TRole, TResource> : IUserManager<TKey, TUs
         Context = context;
     }
 
-    /// <summary>
-    /// Processes a user by either retrieving an existing user or creating a new one with the specified role.
-    /// </summary>
-    /// <param name="userName">The user's name.</param>
-    /// <param name="roleForNewUsers">The role for new users.</param>
-    /// <returns>The retrieved or created user.</returns>
+    /// <inheritdoc />
     public virtual TUser UserProcessing(string userName, TRole roleForNewUsers)
     {
         var user = Context.Users.FirstOrDefault(x => x.Name == userName)
@@ -76,12 +71,7 @@ public class UserManager<TKey, TUser, TRole, TResource> : IUserManager<TKey, TUs
         return user;
     }
 
-    /// <summary>
-    /// Asynchronously processes a user by either retrieving an existing user or creating a new one with the specified role.
-    /// </summary>
-    /// <param name="userName">The user's name.</param>
-    /// <param name="roleForNewUsers">The role for new users.</param>
-    /// <returns>A task that represents the asynchronous operation. The task result returns the retrieved or created user.</returns>
+    /// <inheritdoc />
     public virtual async Task<TUser> UserProcessingAsync(string userName, TRole roleForNewUsers)
     {
         var user = await Context.Users.FirstOrDefaultAsync(x => x.Name == userName)

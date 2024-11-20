@@ -42,10 +42,10 @@ public class ResourceManager<TKey> : ResourceManager<TKey, User<TKey>, Role<TKey
 /// <summary>
 /// Manages resource-related operations with specific user, role, and resource types.
 /// </summary>
-/// <typeparam name="TKey">The type of the key.</typeparam>
-/// <typeparam name="TUser">The type of the user.</typeparam>
-/// <typeparam name="TRole">The type of the role.</typeparam>
-/// <typeparam name="TResource">The type of the resource.</typeparam>
+/// <typeparam name="TKey">The type of the key, which must implement <see cref="IEquatable{TKey}"/>.</typeparam>
+/// <typeparam name="TUser">The type of the user, which must inherit from <see cref="User{TKey}"/>.</typeparam>
+/// <typeparam name="TRole">The type of the role, which must inherit from <see cref="Role{TKey}"/>.</typeparam>
+/// <typeparam name="TResource">The type of the resource, which must inherit from <see cref="Resource{TKey}"/>.</typeparam>
 public class ResourceManager<TKey, TUser, TRole, TResource> : IResourceManager<TKey, TUser, TResource>
     where TKey : IEquatable<TKey>
     where TUser : User<TKey>, new()
@@ -69,97 +69,47 @@ public class ResourceManager<TKey, TUser, TRole, TResource> : IResourceManager<T
         InitialDataSeeder = initialDataSeeder;
     }
 
-    /// <summary>
-    /// Checks if a user has permission to a specific resource by its name.
-    /// </summary>
-    /// <param name="user">The user to check.</param>
-    /// <param name="resourceName">The name of the resource.</param>
-    /// <returns><see langword="true"/> if the user is permitted to access the resource; otherwise, <see langword="false"/>.</returns>
-    /// <exception cref="ResourceNotFoundException">
-    /// Thrown when the specified resource name does not exist.
-    /// </exception>
+    /// <inheritdoc />
     public virtual bool IsPermitted(TUser user, string resourceName)
     {
         var resource = GetResourceByName(resourceName);
         return IsPermitted(user, resource);
     }
 
-    /// <summary>
-    /// Checks if a user has permission to a specific resource.
-    /// </summary>
-    /// <param name="user">The user to check.</param>
-    /// <param name="resource">The resource to check.</param>
-    /// <returns><see langword="true"/> if the user is permitted to access the resource; otherwise, <see langword="false"/>.</returns>
+    /// <inheritdoc />
     public virtual bool IsPermitted(TUser user, TResource resource)
     {
         return user.RoleId.Equals(InitialDataSeeder.SeedAdminRole().Id) ||
             Context.Resources.Any(r => r.RoleId.Equals(user.RoleId) && r.Id.Equals(resource.Id));
     }
 
-    /// <summary>
-    /// Filters resources by names that a user is permitted to access.
-    /// </summary>
-    /// <param name="user">The user to check.</param>
-    /// <param name="resourceNames">The names of the resources to check.</param>
-    /// <returns>An enumerable of resources that the user is permitted to access.</returns>
-    /// <exception cref="ResourceNotFoundException">
-    /// Thrown when one or more of the specified resource names do not exist.
-    /// </exception>
+    /// <inheritdoc />
     public virtual IEnumerable<TResource> IsPermitted(TUser user, IEnumerable<string> resourceNames)
     {
         return resourceNames.Select(GetResourceByName).Where(resource => IsPermitted(user, resource));
     }
 
-    /// <summary>
-    /// Filters resources that a user is permitted to access.
-    /// </summary>
-    /// <param name="user">The user to check.</param>
-    /// <param name="resources">The resources to check.</param>
-    /// <returns>An enumerable of resources that the user is permitted to access.</returns>
+    /// <inheritdoc />
     public virtual IEnumerable<TResource> IsPermitted(TUser user, IEnumerable<TResource> resources)
     {
         return resources.Where(resource => IsPermitted(user, resource));
     }
 
-    /// <summary>
-    /// Asynchronously checks if a user has permission to a specific resource by its name.
-    /// </summary>
-    /// <param name="user">The user to check.</param>
-    /// <param name="resourceName">The name of the resource.</param>
-    /// <returns>A task that represents the asynchronous operation.
-    /// The task result contains <see langword="true"/> if the user is permitted to access the resource; otherwise, <see langword="false"/>.</returns>
-    /// <exception cref="ResourceNotFoundException">
-    /// Thrown when the specified resource name does not exist.
-    /// </exception>
+    /// <inheritdoc />
     public virtual async Task<bool> IsPermittedAsync(TUser user, string resourceName)
     {
         var resource = await GetResourceByNameAsync(resourceName);
         return await IsPermittedAsync(user, resource);
     }
 
-    /// <summary>
-    /// Asynchronously checks if a user has permission to a specific resource.
-    /// </summary>
-    /// <param name="user">The user to check.</param>
-    /// <param name="resource">The resource to check.</param>
-    /// <returns>A task that represents the asynchronous operation.
-    /// The task result contains <see langword="true"/> if the user is permitted to access the resource; otherwise, <see langword="false"/>.</returns>
+    /// <inheritdoc />
     public virtual async Task<bool> IsPermittedAsync(TUser user, TResource resource)
     {
         return user.RoleId.Equals(InitialDataSeeder.SeedAdminRole().Id) ||
             await Context.Resources.AnyAsync(r => r.RoleId.Equals(user.RoleId) && r.Id.Equals(resource.Id));
     }
 
-    /// <summary>
-    /// Asynchronously filters resources by names that a user is permitted to access.
-    /// </summary>
-    /// <param name="user">The user to check.</param>
-    /// <param name="resourceNames">The names of the resources to check.</param>
-    /// <returns>A task that represents the asynchronous operation.
-    /// The task result contains an enumerable of resources that the user is permitted to access.</returns>
-    /// <exception cref="ResourceNotFoundException">
-    /// Thrown when one or more of the specified resource names do not exist.
-    /// </exception>
+    /// <inheritdoc />
     public virtual async Task<IEnumerable<TResource>> IsPermittedAsync(TUser user, IEnumerable<string> resourceNames)
     {
         var permittedResources = new List<TResource>();
@@ -174,13 +124,7 @@ public class ResourceManager<TKey, TUser, TRole, TResource> : IResourceManager<T
         return permittedResources.AsEnumerable();
     }
 
-    /// <summary>
-    /// Asynchronously filters resources that a user is permitted to access.
-    /// </summary>
-    /// <param name="user">The user to check.</param>
-    /// <param name="resources">The resources to check.</param>
-    /// <returns>A task that represents the asynchronous operation.
-    /// The task result contains an enumerable of resources that the user is permitted to access.</returns>
+    /// <inheritdoc />
     public virtual async Task<IEnumerable<TResource>> IsPermittedAsync(TUser user, IEnumerable<TResource> resources)
     {
         var permittedResources = new List<TResource>();
@@ -194,29 +138,14 @@ public class ResourceManager<TKey, TUser, TRole, TResource> : IResourceManager<T
         return permittedResources.AsEnumerable();
     }
 
-    /// <summary>
-    /// Retrieves a resource by its name.
-    /// </summary>
-    /// <param name="resourceName">The name of the resource.</param>
-    /// <returns>The resource with the specified name, or throws <see cref="ResourceNotFoundException"/> if the resource is not found.</returns>
-    /// <exception cref="ResourceNotFoundException">
-    /// Thrown when the specified resource name does not exist.
-    /// </exception>
+    /// <inheritdoc />
     public virtual TResource GetResourceByName(string resourceName)
     {
         return Context.Resources.FirstOrDefault(r => r.Name == resourceName)
             ?? throw new ResourceNotFoundException(resourceName);
     }
 
-    /// <summary>
-    /// Retrieves a resource by its name asynchronously.
-    /// </summary>
-    /// <param name="resourceName">The name of the resource.</param>
-    /// <returns>A task that represents the asynchronous operation.
-    /// The task result contains the resource with the specified name, or throws <see cref="ResourceNotFoundException"/> if the resource is not found.</returns>
-    /// <exception cref="ResourceNotFoundException">
-    /// Thrown when the specified resource name does not exist.
-    /// </exception>
+    /// <inheritdoc />
     public virtual async Task<TResource> GetResourceByNameAsync(string resourceName)
     {
         return await Context.Resources.FirstOrDefaultAsync(r => r.Name == resourceName)
