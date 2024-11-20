@@ -5,18 +5,14 @@ namespace Acl.Net.Core.Managers;
 /// <summary>
 /// Defines the basic contract for Access Control List (ACL) management.
 /// </summary>
-public interface IAclManager : IAclManager<int>
-{
-}
+public interface IAclManager : IAclManager<int>;
 
 /// <summary>
 /// Defines the contract for Access Control List (ACL) management with support for a specific key type.
 /// </summary>
 /// <typeparam name="TKey">The type of key used to identify users and resources.</typeparam>
 public interface IAclManager<TKey> : IAclManager<TKey, User<TKey>, Resource<TKey>>
-    where TKey : IEquatable<TKey>
-{
-}
+    where TKey : IEquatable<TKey>;
 
 /// <summary>
 /// Defines the contract for Access Control List (ACL) management with support for specific key, user, and resource types.

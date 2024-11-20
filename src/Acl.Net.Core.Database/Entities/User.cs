@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents a user in the system.
 /// </summary>
-public class User : User<int> { }
+public class User : User<int>;
 
 /// <summary>
 /// Represents a user in the system, identified by a generic key type.

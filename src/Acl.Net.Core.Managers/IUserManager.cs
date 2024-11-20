@@ -5,18 +5,14 @@ namespace Acl.Net.Core.Managers;
 /// <summary>
 /// Defines the contract for managing user-related operations using integer keys.
 /// </summary>
-public interface IUserManager : IUserManager<int>
-{
-}
+public interface IUserManager : IUserManager<int>;
 
 /// <summary>
 /// Defines the contract for managing user-related operations with a specific key type.
 /// </summary>
 /// <typeparam name="TKey">The type of the key.</typeparam>
 public interface IUserManager<TKey> : IUserManager<TKey, User<TKey>, Role<TKey>>
-    where TKey : IEquatable<TKey>
-{
-}
+    where TKey : IEquatable<TKey>;
 
 /// <summary>
 /// Defines the contract for managing user-related operations with specific user and role types.

@@ -62,7 +62,7 @@ public abstract class AclDbContext<TKey, TUser, TRole, TResource> : DbContext
     where TRole : Role<TKey>
     where TResource : Resource<TKey>
 {
-    private readonly IInitialDataSeeder<TKey, TRole> seeder;
+    private readonly IInitialDataSeeder<TKey, TRole> _seeder;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AclDbContext{TKey, TUser, TRole, TResource}"/> class with the provided data seeder.
@@ -70,7 +70,7 @@ public abstract class AclDbContext<TKey, TUser, TRole, TResource> : DbContext
     /// <param name="seeder">The initial data seeder.</param>
     protected AclDbContext(IInitialDataSeeder<TKey, TRole> seeder)
     {
-        this.seeder = seeder;
+        _seeder = seeder;
     }
 
     /// <summary>
@@ -80,7 +80,7 @@ public abstract class AclDbContext<TKey, TUser, TRole, TResource> : DbContext
     /// <param name="seeder">The initial data seeder.</param>
     protected AclDbContext(DbContextOptions options, IInitialDataSeeder<TKey, TRole> seeder) : base(options)
     {
-        this.seeder = seeder;
+        _seeder = seeder;
     }
 
     /// <summary>
@@ -122,7 +122,7 @@ public abstract class AclDbContext<TKey, TUser, TRole, TResource> : DbContext
 
             entity.HasMany<TResource>().WithOne().HasForeignKey(res => res.RoleId).IsRequired();
 
-            entity.HasData(seeder.SeedAdminRole(), seeder.SeedUserRole());
+            entity.HasData(_seeder.SeedAdminRole(), _seeder.SeedUserRole());
         });
 
         modelBuilder.Entity<TResource>(entity =>
