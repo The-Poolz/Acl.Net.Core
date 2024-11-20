@@ -46,7 +46,7 @@ public class ResourceManager<TKey> : ResourceManager<TKey, User<TKey>, Role<TKey
 /// <typeparam name="TUser">The type of the user, which must inherit from <see cref="User{TKey}"/>.</typeparam>
 /// <typeparam name="TRole">The type of the role, which must inherit from <see cref="Role{TKey}"/>.</typeparam>
 /// <typeparam name="TResource">The type of the resource, which must inherit from <see cref="Resource{TKey}"/>.</typeparam>
-public class ResourceManager<TKey, TUser, TRole, TResource> : IResourceManager<TKey, TUser, TResource>
+public class ResourceManager<TKey, TUser, TRole, TResource> : IResourceManager<TKey, TUser, TRole, TResource>
     where TKey : IEquatable<TKey>
     where TUser : User<TKey>, new()
     where TRole : Role<TKey>
@@ -67,6 +67,20 @@ public class ResourceManager<TKey, TUser, TRole, TResource> : IResourceManager<T
     {
         Context = context;
         InitialDataSeeder = initialDataSeeder;
+    }
+
+    /// <inheritdoc />
+    public bool IsPermitted(TRole role, string resourceName)
+    {
+        var resource = GetResourceByName(resourceName);
+        return IsPermitted(role, resource);
+    }
+
+    /// <inheritdoc />
+    public bool IsPermitted(TRole role, TResource resource)
+    {
+        return role.Id.Equals(InitialDataSeeder.SeedAdminRole().Id) ||
+            Context.Resources.Any(r => r.RoleId.Equals(role.Id) && r.Id.Equals(resource.Id));
     }
 
     /// <inheritdoc />
