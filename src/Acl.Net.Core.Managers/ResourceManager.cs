@@ -115,58 +115,9 @@ public class ResourceManager<TKey, TUser, TRole, TResource> : IResourceManager<T
     }
 
     /// <inheritdoc />
-    public virtual async Task<bool> IsPermittedAsync(TUser user, string resourceName)
-    {
-        var resource = await GetResourceByNameAsync(resourceName);
-        return await IsPermittedAsync(user, resource);
-    }
-
-    /// <inheritdoc />
-    public virtual async Task<bool> IsPermittedAsync(TUser user, TResource resource)
-    {
-        return await Task.FromResult(IsPermitted(user, resource));
-    }
-
-    /// <inheritdoc />
-    public virtual async Task<IEnumerable<TResource>> IsPermittedAsync(TUser user, IEnumerable<string> resourceNames)
-    {
-        var permittedResources = new List<TResource>();
-        foreach (var resourceName in resourceNames)
-        {
-            var resource = await GetResourceByNameAsync(resourceName);
-            if (await IsPermittedAsync(user, resource))
-            {
-                permittedResources.Add(resource);
-            }
-        }
-        return permittedResources.AsEnumerable();
-    }
-
-    /// <inheritdoc />
-    public virtual async Task<IEnumerable<TResource>> IsPermittedAsync(TUser user, IEnumerable<TResource> resources)
-    {
-        var permittedResources = new List<TResource>();
-        foreach (var resource in resources)
-        {
-            if (await IsPermittedAsync(user, resource))
-            {
-                permittedResources.Add(resource);
-            }
-        }
-        return permittedResources.AsEnumerable();
-    }
-
-    /// <inheritdoc />
     public virtual TResource GetResourceByName(string resourceName)
     {
         return Context.Resources.FirstOrDefault(r => r.Name == resourceName)
-            ?? throw new ResourceNotFoundException(resourceName);
-    }
-
-    /// <inheritdoc />
-    public virtual async Task<TResource> GetResourceByNameAsync(string resourceName)
-    {
-        return await Context.Resources.FirstOrDefaultAsync(r => r.Name == resourceName)
             ?? throw new ResourceNotFoundException(resourceName);
     }
 }

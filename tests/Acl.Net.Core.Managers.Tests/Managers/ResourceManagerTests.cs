@@ -62,30 +62,6 @@ public class ResourceManagerTests
     }
 
     [Fact]
-    public async Task IsPermittedAsync_ShouldReturnTrue_WhenAdminAccessPrivateResource()
-    {
-        Assert.True(await _resourceManager.IsPermittedAsync(_adminUser, _privateResource));
-    }
-
-    [Fact]
-    public async Task IsPermittedAsync_ShouldReturnFalse_WhenUserAccessPrivateResource()
-    {
-        Assert.False(await _resourceManager.IsPermittedAsync(_normalUser, _privateResource));
-    }
-
-    [Fact]
-    public async Task IsPermittedAsync_ShouldReturnPermittedResources_WhenGivenResourceNames()
-    {
-        Assert.Single(await _resourceManager.IsPermittedAsync(_adminUser, new[] { "PrivateResource" }));
-    }
-
-    [Fact]
-    public async Task IsPermittedAsync_ShouldReturnPermittedResources_WhenGivenResources()
-    {
-        Assert.Single(await _resourceManager.IsPermittedAsync(_adminUser, new[] { _privateResource }));
-    }
-
-    [Fact]
     public void GetResourceByName_ShouldReturnResource_WhenResourceExists()
     {
         const string expectedResourceName = "PrivateResource";
@@ -99,21 +75,5 @@ public class ResourceManagerTests
     {
         const string nonExistentResourceName = "NonExistentResource";
         Assert.Throws<ResourceNotFoundException>(() => _resourceManager.GetResourceByName(nonExistentResourceName));
-    }
-
-    [Fact]
-    public async Task GetResourceByNameAsync_ShouldReturnResource_WhenResourceExists()
-    {
-        const string expectedResourceName = "PrivateResource";
-        var resource = await _resourceManager.GetResourceByNameAsync(expectedResourceName);
-        Assert.NotNull(resource);
-        Assert.Equal(expectedResourceName, resource.Name);
-    }
-
-    [Fact]
-    public async Task GetResourceByNameAsync_ShouldThrowResourceNotFoundException_WhenResourceDoesNotExist()
-    {
-        const string nonExistentResourceName = "NonExistentResource";
-        await Assert.ThrowsAsync<ResourceNotFoundException>(() => _resourceManager.GetResourceByNameAsync(nonExistentResourceName));
     }
 }

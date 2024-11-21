@@ -92,52 +92,6 @@ public interface IResourceManager<TKey, in TUser, in TRole, TResource>
     public IEnumerable<TResource> IsPermitted(TUser user, IEnumerable<TResource> resources);
 
     /// <summary>
-    /// Asynchronously determines whether the specified user is permitted to access the resource identified by its name.
-    /// </summary>
-    /// <param name="user">The user to check permissions for.</param>
-    /// <param name="resourceName">The name of the resource to check.</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation.
-    /// The task result is <see langword="true"/> if the user is permitted to access the resource; otherwise, <see langword="false"/>.
-    /// </returns>
-    /// <exception cref="ResourceNotFoundException">Thrown when the specified resource name does not exist.</exception>
-    public Task<bool> IsPermittedAsync(TUser user, string resourceName);
-
-    /// <summary>
-    /// Asynchronously determines whether the specified user is permitted to access the given resource.
-    /// </summary>
-    /// <param name="user">The user to check permissions for.</param>
-    /// <param name="resource">The resource to check.</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation.
-    /// The task result is <see langword="true"/> if the user is permitted to access the resource; otherwise, <see langword="false"/>.
-    /// </returns>
-    public Task<bool> IsPermittedAsync(TUser user, TResource resource);
-
-    /// <summary>
-    /// Asynchronously determines which resources from a collection of resource names the specified user is permitted to access.
-    /// </summary>
-    /// <param name="user">The user to check permissions for.</param>
-    /// <param name="resourceNames">The collection of resource names to check.</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation.
-    /// The task result contains an enumerable of <see cref="TResource"/> that the user is permitted to access.
-    /// </returns>
-    /// <exception cref="ResourceNotFoundException">Thrown when the specified resource name does not exist.</exception>
-    public Task<IEnumerable<TResource>> IsPermittedAsync(TUser user, IEnumerable<string> resourceNames);
-
-    /// <summary>
-    /// Asynchronously determines which resources from a collection the specified user is permitted to access.
-    /// </summary>
-    /// <param name="user">The user to check permissions for.</param>
-    /// <param name="resources">The collection of resources to check.</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation.
-    /// The task result contains an enumerable of <see cref="TResource"/> that the user is permitted to access.
-    /// </returns>
-    public Task<IEnumerable<TResource>> IsPermittedAsync(TUser user, IEnumerable<TResource> resources);
-
-    /// <summary>
     /// Retrieves a resource by its name.
     /// </summary>
     /// <param name="resourceName">The name of the resource to retrieve.</param>
@@ -146,15 +100,4 @@ public interface IResourceManager<TKey, in TUser, in TRole, TResource>
     /// </returns>
     /// <exception cref="ResourceNotFoundException">Thrown when the specified resource name does not exist.</exception>
     public TResource GetResourceByName(string resourceName);
-
-    /// <summary>
-    /// Asynchronously retrieves a resource by its name.
-    /// </summary>
-    /// <param name="resourceName">The name of the resource to retrieve.</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation.
-    /// The task result contains the <see cref="TResource"/> with the specified name.
-    /// </returns>
-    /// <exception cref="ResourceNotFoundException">Thrown when the specified resource name does not exist.</exception>
-    public Task<TResource> GetResourceByNameAsync(string resourceName);
 }
