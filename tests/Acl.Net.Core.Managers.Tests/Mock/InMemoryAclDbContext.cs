@@ -50,6 +50,7 @@ internal static class InMemoryAclDbContext
 
         context.Users.AddRange(Users);
         context.Resources.AddRange(Resources);
+        context.Roles.AddRange(AdminRole, UserRole);
 
         context.SaveChanges();
 
