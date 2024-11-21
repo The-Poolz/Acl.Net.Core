@@ -3,7 +3,7 @@
 namespace Acl.Net.Core.Database;
 
 /// <summary>
-/// Provides methods for seeding the initial administrative and user roles within the system.
+/// Provides methods for seeding the initial roles within the system.
 /// </summary>
 /// <typeparam name="TKey">The type of the key used to identify the role.</typeparam>
 /// <typeparam name="TRole">The type of the role being seeded.</typeparam>
@@ -16,10 +16,4 @@ public interface IInitialDataSeeder<TKey, out TRole>
     /// </summary>
     /// <returns>A <see cref="TRole"/> representing the administrative role.</returns>
     public TRole SeedAdminRole();
-
-    /// <summary>
-    /// Seeds the user role within the system.
-    /// </summary>
-    /// <returns>A <see cref="TRole"/> representing the user role.</returns>
-    public TRole SeedUserRole();
 }

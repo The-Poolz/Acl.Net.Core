@@ -88,15 +88,20 @@ public class AclManager<TKey, TUser, TRole, TResource> : IAclManager<TKey, TUser
         Context = context;
     }
 
-    /// <inheritdoc />
-    public bool IsPermitted(TRole role, TResource resource)
+    public bool IsPermitted(string userName, string resourceName)
     {
-        return IsAdmin(role) || Context.Resources.Any(r => r.RoleId.Equals(role.Id) && r.Id.Equals(resource.Id));
+        var user = GetUserByName(userName);
+        return IsAdmin(user) || GetUserRoles(user.Name).Any(role => IsPermitted(role, GetResourceByName(resourceName)));
     }
 
     public bool IsPermitted(TUser user, TResource resource)
     {
         return IsAdmin(user) || GetUserRoles(user.Name).Any(role => IsPermitted(role, resource));
+    }
+
+    public bool IsPermitted(TRole role, TResource resource)
+    {
+        return IsAdmin(role) || Context.Resources.Any(r => r.RoleId.Equals(role.Id) && r.Id.Equals(resource.Id));
     }
 
     public bool IsAdmin(TKey roleId) => roleId.Equals(InitialDataSeeder.SeedAdminRole().Id);

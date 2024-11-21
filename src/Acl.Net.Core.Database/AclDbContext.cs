@@ -123,7 +123,7 @@ public abstract class AclDbContext<TKey, TUser, TRole, TResource> : DbContext
 
             entity.HasMany<TResource>().WithOne().HasForeignKey(res => res.RoleId).IsRequired();
 
-            entity.HasData(_seeder.SeedAdminRole(), _seeder.SeedUserRole());
+            entity.HasData(_seeder.SeedAdminRole());
         });
 
         modelBuilder.Entity<TResource>(entity =>
