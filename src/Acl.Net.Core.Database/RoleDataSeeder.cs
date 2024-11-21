@@ -8,6 +8,6 @@ public class RoleDataSeeder : IInitialDataSeeder<int, Role<int>>
     /// <inheritdoc cref="IInitialDataSeeder{TKey,TRole}.SeedAdminRole()" />
     public Role<int> SeedAdminRole()
     {
-        return new Role<int> { Id = 1, Name = "AdminRole" };
+        return new Role<int> { Id = 1, Name = "Admin" };
     }
 }
