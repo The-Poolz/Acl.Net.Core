@@ -1,5 +1,6 @@
 ﻿using Acl.Net.Core.Database;
 using Acl.Net.Core.Database.Entities;
+using Acl.Net.Core.Managers.Exceptions;
 
 namespace Acl.Net.Core.Managers;
 
@@ -10,9 +11,7 @@ namespace Acl.Net.Core.Managers;
 public class AclManager : AclManager<int>, IAclManager
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="AclManager"/> class
-    /// with the default <see cref="RoleDataSeeder"/>
-    /// and with default <see cref="UserManager"/> and <see cref="ResourceManager"/>.
+    /// Initializes a new instance of the <see cref="AclManager"/> class and with the default <see cref="RoleDataSeeder"/>.
     /// </summary>
     /// <param name="context">An implementation, or default <see cref="AclDbContext"/>.</param>
     public AclManager(
@@ -22,9 +21,8 @@ public class AclManager : AclManager<int>, IAclManager
     { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AclManager"/> class
-    /// with the provided <see cref="IInitialDataSeeder{TKey,TRole}"/>
-    /// and with default <see cref="UserManager"/> and <see cref="ResourceManager"/>.
+    /// Initializes a new instance of the <see cref="AclManager{TKey}"/> class
+    /// with the provided <see cref="IInitialDataSeeder{TKey,TRole}"/> and <see cref="AclDbContext{TKey}"/>.
     /// </summary>
     /// <param name="initialDataSeeder">An implementation of <see cref="IInitialDataSeeder{TKey,TRole}"/> used to seed initial role data.</param>
     /// <param name="context">An implementation, or default <see cref="AclDbContext"/>.</param>
@@ -33,35 +31,6 @@ public class AclManager : AclManager<int>, IAclManager
         AclDbContext context
     )
         : base(initialDataSeeder, context)
-    { }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="AclManager"/> class
-    /// with the default <see cref="RoleDataSeeder"/>
-    /// and with the provided <see cref="IUserManager"/>, and <see cref="IResourceManager"/>.
-    /// </summary>
-    /// <param name="userManager">An implementation of <see cref="IUserManager"/>.</param>
-    /// <param name="resourceManager">An implementation of <see cref="IResourceManager"/>.</param>
-    public AclManager(
-        IUserManager userManager,
-        IResourceManager resourceManager
-    )
-        : base(new RoleDataSeeder(), userManager, resourceManager)
-    { }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="AclManager"/> class
-    /// with the provided <see cref="IInitialDataSeeder{TKey,TRole}"/>, <see cref="IUserManager"/>, and <see cref="IResourceManager"/>.
-    /// </summary>
-    /// <param name="initialDataSeeder">An implementation of <see cref="IInitialDataSeeder{TKey,TRole}"/> used to seed initial role data.</param>
-    /// <param name="userManager">An implementation of <see cref="IUserManager"/>.</param>
-    /// <param name="resourceManager">An implementation of <see cref="IResourceManager"/>.</param>
-    public AclManager(
-        IInitialDataSeeder<int, Role<int>> initialDataSeeder,
-        IUserManager userManager,
-        IResourceManager resourceManager
-    )
-        : base(initialDataSeeder, userManager, resourceManager)
     { }
 }
 
@@ -75,8 +44,7 @@ public class AclManager<TKey> : AclManager<TKey, User<TKey>, Role<TKey>, Resourc
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="AclManager{TKey}"/> class
-    /// with the provided <see cref="IInitialDataSeeder{TKey,TRole}"/>
-    /// and with default <see cref="UserManager{TKey}"/> and <see cref="ResourceManager{TKey}"/>.
+    /// with the provided <see cref="IInitialDataSeeder{TKey,TRole}"/> and <see cref="AclDbContext{TKey}"/>.
     /// </summary>
     /// <param name="initialDataSeeder">An implementation of <see cref="IInitialDataSeeder{TKey,TRole}"/> used to seed initial role data.</param>
     /// <param name="context">An implementation, or default <see cref="AclDbContext{TKey}"/>.</param>
@@ -85,21 +53,6 @@ public class AclManager<TKey> : AclManager<TKey, User<TKey>, Role<TKey>, Resourc
         AclDbContext<TKey> context
     )
         : base(initialDataSeeder, context)
-    { }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="AclManager{TKey}"/> class
-    /// with the provided <see cref="IInitialDataSeeder{TKey,TRole}"/>, <see cref="IUserManager{TKey}"/>, and <see cref="IResourceManager{TKey}"/>.
-    /// </summary>
-    /// <param name="initialDataSeeder">An implementation of <see cref="IInitialDataSeeder{TKey,TRole}"/> used to seed initial role data.</param>
-    /// <param name="userManager">An implementation of <see cref="IUserManager{TKey}"/>.</param>
-    /// <param name="resourceManager">An implementation of <see cref="IResourceManager{TKey}"/>.</param>
-    public AclManager(
-        IInitialDataSeeder<TKey, Role<TKey>> initialDataSeeder,
-        IUserManager<TKey> userManager,
-        IResourceManager<TKey> resourceManager
-    )
-        : base(initialDataSeeder, userManager, resourceManager)
     { }
 }
 
@@ -118,13 +71,11 @@ public class AclManager<TKey, TUser, TRole, TResource> : IAclManager<TKey, TUser
     where TResource : Resource<TKey>
 {
     protected readonly IInitialDataSeeder<TKey, TRole> InitialDataSeeder;
-    protected readonly IUserManager<TKey, TUser, TRole> UserManager;
-    protected readonly IResourceManager<TKey, TUser, TRole, TResource> ResourceManager;
+    protected readonly AclDbContext<TKey, TUser, TRole, TResource> Context;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AclManager{TKey,TUser,TRole,TResource}"/> class
-    /// with the provided <see cref="IInitialDataSeeder{TKey,TRole}"/>
-    /// and with default <see cref="UserManager{TKey,TUser,TRole,TResource}"/> and <see cref="ResourceManager{TKey,TUser,TRole,TResource}"/>.
+    /// with the provided <see cref="IInitialDataSeeder{TKey,TRole}"/> and <see cref="AclDbContext{TKey,TUser,TRole,TResource}"/>.
     /// </summary>
     /// <param name="initialDataSeeder">An implementation of <see cref="IInitialDataSeeder{TKey, TRole}"/> used to seed initial role data.</param>
     /// <param name="context">An implementation, or default <see cref="AclDbContext{TKey,TUser,TRole,TResource}"/>.</param>
@@ -134,58 +85,41 @@ public class AclManager<TKey, TUser, TRole, TResource> : IAclManager<TKey, TUser
     )
     {
         InitialDataSeeder = initialDataSeeder;
-        UserManager = new UserManager<TKey, TUser, TRole, TResource>(context);
-        ResourceManager = new ResourceManager<TKey, TUser, TRole, TResource>(context, initialDataSeeder, UserManager);
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="AclManager{TKey,TUser,TRole,TResource}"/> class
-    /// with the provided <see cref="IInitialDataSeeder{TKey,TRole}"/>, <see cref="IUserManager{TKey,TUser,TRole}"/>, and <see cref="IResourceManager{TKey,TUser,TRole,TResource}"/>.
-    /// </summary>
-    /// <param name="initialDataSeeder">An implementation of <see cref="IInitialDataSeeder{TKey,TRole}"/> used to seed initial role data.</param>
-    /// <param name="userManager">An implementation of <see cref="IUserManager{TKey,TUser,TRole}"/> for user management.</param>
-    /// <param name="resourceManager">An implementation of <see cref="IResourceManager{TKey,TUser,TRole,TResource}"/> for resource management.</param>
-    public AclManager(
-        IInitialDataSeeder<TKey, TRole> initialDataSeeder,
-        IUserManager<TKey, TUser, TRole> userManager,
-        IResourceManager<TKey, TUser, TRole, TResource> resourceManager
-    )
-    {
-        InitialDataSeeder = initialDataSeeder;
-        UserManager = userManager;
-        ResourceManager = resourceManager;
+        Context = context;
     }
 
     /// <inheritdoc />
-    public virtual bool IsPermitted(string userName, string resourceName)
+    public bool IsPermitted(TRole role, TResource resource)
     {
-        var user = UserManager.UserProcessing(userName, InitialDataSeeder.SeedUserRole());
-        return ResourceManager.IsPermitted(user, resourceName);
+        return IsAdmin(role) || Context.Resources.Any(r => r.RoleId.Equals(role.Id) && r.Id.Equals(resource.Id));
     }
 
-    /// <inheritdoc />
-    public virtual bool IsPermitted(TUser user, string resourceName)
+    public bool IsPermitted(TUser user, TResource resource)
     {
-        return ResourceManager.IsPermitted(user, resourceName);
+        return IsAdmin(user) || GetUserRoles(user.Name).Any(role => IsPermitted(role, resource));
     }
 
-    /// <inheritdoc />
-    public virtual bool IsPermitted(string userName, TResource resource)
+    public bool IsAdmin(TKey roleId) => roleId.Equals(InitialDataSeeder.SeedAdminRole().Id);
+    public bool IsAdmin(TUser user) => IsAdmin(user.RoleId);
+    public bool IsAdmin(TRole role) => IsAdmin(role.Id);
+
+    public IEnumerable<TRole> GetUserRoles(string userName)
     {
-        var user = UserManager.UserProcessing(userName, InitialDataSeeder.SeedUserRole());
-        return ResourceManager.IsPermitted(user, resource);
+        return Context.Roles
+            .Where(r => Context.Users
+                .Where(u => u.Name == userName)
+                .Select(u => u.RoleId)
+                .Contains(r.Id))
+            .ToArray();
     }
 
-    /// <inheritdoc />
-    public virtual bool IsPermitted(TUser user, TResource resource)
+    private TResource GetResourceByName(string resourceName)
     {
-        return ResourceManager.IsPermitted(user, resource);
+        return Context.Resources.FirstOrDefault(r => r.Name == resourceName) ?? throw new ResourceNotFoundException(resourceName);
     }
 
-    /// <inheritdoc />
-    public virtual IEnumerable<TResource> IsPermitted(string userName, IEnumerable<string> resourceNames)
+    private TUser GetUserByName(string userName)
     {
-        var user = UserManager.UserProcessing(userName, InitialDataSeeder.SeedUserRole());
-        return ResourceManager.IsPermitted(user, resourceNames);
+        return Context.Users.FirstOrDefault(r => r.Name == userName) ?? throw new UserNotFoundException(userName);
     }
 }

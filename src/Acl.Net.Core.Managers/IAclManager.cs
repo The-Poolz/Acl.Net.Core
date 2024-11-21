@@ -35,7 +35,7 @@ public interface IAclManager<TKey, in TUser, TResource>
     /// <see langword="true"/> if the user is permitted to access the resource; otherwise, <see langword="false"/>.
     /// </returns>
     /// <exception cref="ResourceNotFoundException">Thrown when the specified resource name does not exist.</exception>
-    public bool IsPermitted(string userName, string resourceName);
+    //public bool IsPermitted(string userName, string resourceName);
 
     /// <summary>
     /// Determines if the specified user object is permitted to access the specified resource by name.
@@ -46,7 +46,7 @@ public interface IAclManager<TKey, in TUser, TResource>
     /// <see langword="true"/> if the user is permitted to access the resource; otherwise, <see langword="false"/>.
     /// </returns>
     /// <exception cref="ResourceNotFoundException">Thrown when the specified resource name does not exist.</exception>
-    public bool IsPermitted(TUser user, string resourceName);
+    //public bool IsPermitted(TUser user, string resourceName);
 
     /// <summary>
     /// Determines if the specified user by name is permitted to access the specified resource object.
@@ -56,7 +56,7 @@ public interface IAclManager<TKey, in TUser, TResource>
     /// <returns>
     /// <see langword="true"/> if the user is permitted to access the resource; otherwise, <see langword="false"/>.
     /// </returns>
-    public bool IsPermitted(string userName, TResource resource);
+    //public bool IsPermitted(string userName, TResource resource);
 
     /// <summary>
     /// Determines if the specified user object is permitted to access the specified resource object.
@@ -66,7 +66,7 @@ public interface IAclManager<TKey, in TUser, TResource>
     /// <returns>
     /// <see langword="true"/> if the user is permitted to access the resource; otherwise, <see langword="false"/>.
     /// </returns>
-    public bool IsPermitted(TUser user, TResource resource);
+    //public bool IsPermitted(TUser user, TResource resource);
 
     /// <summary>
     /// Determines the resources that the specified user by name is permitted to access from a collection of resource names.
@@ -78,5 +78,5 @@ public interface IAclManager<TKey, in TUser, TResource>
     /// an empty collection if the user is not permitted to access any of the resources.
     /// </returns>
     /// <exception cref="ResourceNotFoundException">Thrown when one or more of the specified resource names do not exist.</exception>
-    public IEnumerable<TResource> IsPermitted(string userName, IEnumerable<string> resourceNames);
+    //public IEnumerable<TResource> IsPermitted(string userName, IEnumerable<string> resourceNames);
 }
