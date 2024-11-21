@@ -119,7 +119,7 @@ public class AclManager<TKey, TUser, TRole, TResource> : IAclManager<TKey, TUser
 {
     protected readonly IInitialDataSeeder<TKey, TRole> InitialDataSeeder;
     protected readonly IUserManager<TKey, TUser, TRole> UserManager;
-    protected readonly IResourceManager<TKey, TUser, TResource> ResourceManager;
+    protected readonly IResourceManager<TKey, TUser, TRole, TResource> ResourceManager;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AclManager{TKey,TUser,TRole,TResource}"/> class
@@ -135,20 +135,20 @@ public class AclManager<TKey, TUser, TRole, TResource> : IAclManager<TKey, TUser
     {
         InitialDataSeeder = initialDataSeeder;
         UserManager = new UserManager<TKey, TUser, TRole, TResource>(context);
-        ResourceManager = new ResourceManager<TKey, TUser, TRole, TResource>(context, initialDataSeeder);
+        ResourceManager = new ResourceManager<TKey, TUser, TRole, TResource>(context, initialDataSeeder, UserManager);
     }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AclManager{TKey,TUser,TRole,TResource}"/> class
-    /// with the provided <see cref="IInitialDataSeeder{TKey,TRole}"/>, <see cref="IUserManager{TKey,TUser,TRole}"/>, and <see cref="IResourceManager{TKey,TUser,TResource}"/>.
+    /// with the provided <see cref="IInitialDataSeeder{TKey,TRole}"/>, <see cref="IUserManager{TKey,TUser,TRole}"/>, and <see cref="IResourceManager{TKey,TUser,TRole,TResource}"/>.
     /// </summary>
     /// <param name="initialDataSeeder">An implementation of <see cref="IInitialDataSeeder{TKey,TRole}"/> used to seed initial role data.</param>
     /// <param name="userManager">An implementation of <see cref="IUserManager{TKey,TUser,TRole}"/> for user management.</param>
-    /// <param name="resourceManager">An implementation of <see cref="IResourceManager{TKey,TUser,TResource}"/> for resource management.</param>
+    /// <param name="resourceManager">An implementation of <see cref="IResourceManager{TKey,TUser,TRole,TResource}"/> for resource management.</param>
     public AclManager(
         IInitialDataSeeder<TKey, TRole> initialDataSeeder,
         IUserManager<TKey, TUser, TRole> userManager,
-        IResourceManager<TKey, TUser, TResource> resourceManager
+        IResourceManager<TKey, TUser, TRole, TResource> resourceManager
     )
     {
         InitialDataSeeder = initialDataSeeder;

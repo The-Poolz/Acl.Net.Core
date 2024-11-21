@@ -15,7 +15,7 @@ public class ResourceManager : ResourceManager<int>, IResourceManager
     /// </summary>
     /// <param name="context">The database context.</param>
     public ResourceManager(AclDbContext context)
-        : base(context, new RoleDataSeeder())
+        : base(context, new RoleDataSeeder(), new UserManager(context))
     { }
 }
 
@@ -31,11 +31,13 @@ public class ResourceManager<TKey> : ResourceManager<TKey, User<TKey>, Role<TKey
     /// </summary>
     /// <param name="context">The database context.</param>
     /// <param name="initialDataSeeder">The initial data seeder.</param>
+    /// <param name="userManager">An implementation of <see cref="IUserManager"/>.</param>
     public ResourceManager(
         AclDbContext<TKey> context,
-        IInitialDataSeeder<TKey, Role<TKey>> initialDataSeeder
+        IInitialDataSeeder<TKey, Role<TKey>> initialDataSeeder,
+        IUserManager<TKey, User<TKey>, Role<TKey>> userManager
     )
-        : base(context, initialDataSeeder)
+        : base(context, initialDataSeeder, userManager)
     { }
 }
 
@@ -54,19 +56,23 @@ public class ResourceManager<TKey, TUser, TRole, TResource> : IResourceManager<T
 {
     protected readonly AclDbContext<TKey, TUser, TRole, TResource> Context;
     protected readonly IInitialDataSeeder<TKey, TRole> InitialDataSeeder;
+    protected readonly IUserManager<TKey, TUser, TRole> UserManager;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ResourceManager{TKey, TUser, TRole, TResource}"/> class.
     /// </summary>
     /// <param name="context">The database context.</param>
     /// <param name="initialDataSeeder">The initial data seeder for roles.</param>
+    /// <param name="userManager">An implementation of <see cref="IUserManager"/>.</param>
     public ResourceManager(
         AclDbContext<TKey, TUser, TRole, TResource> context,
-        IInitialDataSeeder<TKey, TRole> initialDataSeeder
+        IInitialDataSeeder<TKey, TRole> initialDataSeeder,
+        IUserManager<TKey, TUser, TRole> userManager
     )
     {
         Context = context;
         InitialDataSeeder = initialDataSeeder;
+        UserManager = userManager;
     }
 
     /// <inheritdoc />
@@ -93,14 +99,13 @@ public class ResourceManager<TKey, TUser, TRole, TResource> : IResourceManager<T
     /// <inheritdoc />
     public virtual bool IsPermitted(TUser user, TResource resource)
     {
-        return user.RoleId.Equals(InitialDataSeeder.SeedAdminRole().Id) ||
-            Context.Resources.Any(r => r.RoleId.Equals(user.RoleId) && r.Id.Equals(resource.Id));
+        return UserManager.GetUserRoles(user).Any(u => IsPermitted(u, resource));
     }
 
     /// <inheritdoc />
     public virtual IEnumerable<TResource> IsPermitted(TUser user, IEnumerable<string> resourceNames)
     {
-        return resourceNames.Select(GetResourceByName).Where(resource => IsPermitted(user, resource));
+        return IsPermitted(user, resourceNames.Select(GetResourceByName));
     }
 
     /// <inheritdoc />
@@ -119,8 +124,7 @@ public class ResourceManager<TKey, TUser, TRole, TResource> : IResourceManager<T
     /// <inheritdoc />
     public virtual async Task<bool> IsPermittedAsync(TUser user, TResource resource)
     {
-        return user.RoleId.Equals(InitialDataSeeder.SeedAdminRole().Id) ||
-            await Context.Resources.AnyAsync(r => r.RoleId.Equals(user.RoleId) && r.Id.Equals(resource.Id));
+        return await Task.FromResult(IsPermitted(user, resource));
     }
 
     /// <inheritdoc />

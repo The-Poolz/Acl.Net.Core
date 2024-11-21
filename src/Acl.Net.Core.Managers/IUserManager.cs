@@ -22,11 +22,15 @@ public interface IUserManager<TKey> : IUserManager<TKey, User<TKey>, Role<TKey>>
 /// <typeparam name="TKey">The type of the key, which must implement <see cref="IEquatable{TKey}"/>.</typeparam>
 /// <typeparam name="TUser">The type representing a user, which must inherit from <see cref="User{TKey}"/>.</typeparam>
 /// <typeparam name="TRole">The type representing a role, which must inherit from <see cref="Role{TKey}"/>.</typeparam>
-public interface IUserManager<TKey, TUser, in TRole>
+public interface IUserManager<TKey, TUser, TRole>
     where TKey : IEquatable<TKey>
     where TUser : User<TKey>
     where TRole : Role<TKey>
 {
+    public IEnumerable<TRole> GetUserRoles(string userName);
+
+    public IEnumerable<TRole> GetUserRoles(TUser user);
+
     /// <summary>
     /// Retrieves an existing user by name or creates a new one with the specified role if it doesn't exist.
     /// </summary>

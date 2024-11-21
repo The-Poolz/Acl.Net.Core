@@ -58,6 +58,18 @@ public class UserManager<TKey, TUser, TRole, TResource> : IUserManager<TKey, TUs
         Context = context;
     }
 
+    public IEnumerable<TRole> GetUserRoles(TUser user) => GetUserRoles(user.Name);
+
+    public IEnumerable<TRole> GetUserRoles(string userName)
+    {
+        return Context.Roles
+            .Where(r => Context.Users
+                .Where(u => u.Name == userName)
+                .Select(u => u.RoleId)
+                .Contains(r.Id))
+            .ToArray();
+    }
+
     /// <inheritdoc />
     public virtual TUser UserProcessing(string userName, TRole roleForNewUsers)
     {
