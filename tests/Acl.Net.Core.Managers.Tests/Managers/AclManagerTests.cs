@@ -30,7 +30,7 @@ public class AclManagerTests
 
     public class IsPermitted
     {
-        private readonly IAclManager _aclManager = new AclManager(InMemoryAclDbContext.CreateContext());
+        private readonly AclManager _aclManager = new(InMemoryAclDbContext.CreateContext());
 
         [Theory]
         [InlineData("AdminAccount", true, false, "NotExistResource")]
