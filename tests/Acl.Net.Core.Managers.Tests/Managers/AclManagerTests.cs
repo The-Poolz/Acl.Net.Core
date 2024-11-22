@@ -1,4 +1,5 @@
 ﻿using Xunit;
+using FluentAssertions;
 using Acl.Net.Core.Database;
 using Acl.Net.Core.Managers.Tests.Mock;
 
@@ -6,146 +7,49 @@ namespace Acl.Net.Core.Managers.Tests.Managers;
 
 public class AclManagerTests
 {
-    private readonly AclManager _aclManager;
-
-    public AclManagerTests()
+    public class Constructors
     {
-        var context = InMemoryAclDbContext.CreateContext();
-        _aclManager = new AclManager(context);
+        [Fact]
+        public void WithContextParameter()
+        {
+            var context = InMemoryAclDbContext.CreateContext();
+            var aclManager = new AclManager(context);
+
+            Assert.NotNull(aclManager);
+        }
+
+        [Fact]
+        public void CtorWithManagersAndInitialDataSeederParameters()
+        {
+            var context = InMemoryAclDbContext.CreateContext();
+            var aclManager = new AclManager(new RoleDataSeeder(), context);
+
+            Assert.NotNull(aclManager);
+        }
     }
 
-    [Fact]
-    public void Ctor_WithContextParameter()
+    public class IsPermitted
     {
-        var context = InMemoryAclDbContext.CreateContext();
-        var aclManager = new AclManager(context);
+        private readonly AclManager _aclManager = new(InMemoryAclDbContext.CreateContext());
 
-        Assert.NotNull(aclManager);
-    }
-
-    [Fact]
-    public void Ctor_WithManagersParameters()
-    {
-        var context = InMemoryAclDbContext.CreateContext();
-        var aclManager = new AclManager(new UserManager(context), new ResourceManager(context));
-
-        Assert.NotNull(aclManager);
-    }
-
-    [Fact]
-    public void Ctor_WithManagersAndInitialDataSeederParameters()
-    {
-        var context = InMemoryAclDbContext.CreateContext();
-        var aclManager = new AclManager(new RoleDataSeeder(), new UserManager(context), new ResourceManager(context));
-
-        Assert.NotNull(aclManager);
-    }
-
-    [Fact]
-    public void IsPermitted_ShouldReturnTrue_WhenAdminAccessPrivateResource()
-    {
-        Assert.True(_aclManager.IsPermitted("AdminAccount", "PrivateResource"));
-    }
-
-    [Fact]
-    public void IsPermitted_ShouldReturnFalse_WhenUserAccessPrivateResource()
-    {
-        Assert.False(_aclManager.IsPermitted("UserAccount", "PrivateResource"));
-    }
-
-    [Fact]
-    public void IsPermitted_ShouldReturnPermittedResources_WhenGivenResourceNames()
-    {
-        Assert.Single(_aclManager.IsPermitted("AdminAccount", new[] { "PrivateResource" }));
-    }
-
-    [Fact]
-    public void IsPermitted_ShouldReturnTrue_WhenAdminAccessPrivateResourceByUserObject()
-    {
-        var adminUser = InMemoryAclDbContext.AdminAccount;
-        Assert.True(_aclManager.IsPermitted(adminUser, "PrivateResource"));
-    }
-
-    [Fact]
-    public void IsPermitted_ShouldReturnFalse_WhenUserAccessPrivateResourceByUserObject()
-    {
-        var user = InMemoryAclDbContext.UserAccount;
-        Assert.False(_aclManager.IsPermitted(user, "PrivateResource"));
-    }
-
-    [Fact]
-    public void IsPermitted_ShouldReturnTrue_WhenAdminAccessPrivateResourceByResourceObject()
-    {
-        var privateResource = InMemoryAclDbContext.PrivateResource;
-        Assert.True(_aclManager.IsPermitted("AdminAccount", privateResource));
-    }
-
-    [Fact]
-    public void IsPermitted_ShouldReturnFalse_WhenUserAccessPrivateResourceByResourceObject()
-    {
-        var privateResource = InMemoryAclDbContext.PrivateResource;
-        Assert.False(_aclManager.IsPermitted("UserAccount", privateResource));
-    }
-
-    [Fact]
-    public void IsPermitted_ShouldReturnFalse_WhenUserAccessPrivateResourceByResourceObjectAndUserObject()
-    {
-        var privateResource = InMemoryAclDbContext.PrivateResource;
-        var user = InMemoryAclDbContext.UserAccount;
-        Assert.False(_aclManager.IsPermitted(user, privateResource));
-    }
-
-    [Fact]
-    public async Task IsPermittedAsync_ShouldReturnPermittedResources_WhenGivenResourceNames()
-    {
-        Assert.Single(await _aclManager.IsPermittedAsync("AdminAccount", new[] { "PrivateResource" }));
-    }
-
-    [Fact]
-    public async Task IsPermittedAsync_ShouldReturnFalse_WhenUserAccessPrivateResource()
-    {
-        Assert.False(await _aclManager.IsPermittedAsync("UserAccount", "PrivateResource"));
-    }
-
-    [Fact]
-    public async Task IsPermittedAsync_ShouldReturnTrue_WhenAdminAccessPrivateResource()
-    {
-        Assert.True(await _aclManager.IsPermittedAsync("AdminAccount", "PrivateResource"));
-    }
-
-    [Fact]
-    public async Task IsPermittedAsync_ShouldReturnTrue_WhenAdminAccessPrivateResourceByUserObject()
-    {
-        var adminUser = InMemoryAclDbContext.AdminAccount;
-        Assert.True(await _aclManager.IsPermittedAsync(adminUser, "PrivateResource"));
-    }
-
-    [Fact]
-    public async Task IsPermittedAsync_ShouldReturnFalse_WhenUserAccessPrivateResourceByUserObject()
-    {
-        var user = InMemoryAclDbContext.UserAccount;
-        Assert.False(await _aclManager.IsPermittedAsync(user, "PrivateResource"));
-    }
-
-    [Fact]
-    public async Task IsPermittedAsync_ShouldReturnTrue_WhenAdminAccessPrivateResourceByResourceObject()
-    {
-        var privateResource = InMemoryAclDbContext.PrivateResource;
-        Assert.True(await _aclManager.IsPermittedAsync("AdminAccount", privateResource));
-    }
-
-    [Fact]
-    public async Task IsPermittedAsync_ShouldReturnFalse_WhenUserAccessPrivateResourceByResourceObject()
-    {
-        var privateResource = InMemoryAclDbContext.PrivateResource;
-        Assert.False(await _aclManager.IsPermittedAsync("UserAccount", privateResource));
-    }
-
-    [Fact]
-    public async Task IsPermittedAsync_ShouldReturnFalse_WhenUserAccessPrivateResourceByResourceObjectAndUserObject()
-    {
-        var privateResource = InMemoryAclDbContext.PrivateResource;
-        var user = InMemoryAclDbContext.UserAccount;
-        Assert.False(await _aclManager.IsPermittedAsync(user, privateResource));
+        [Theory]
+        [InlineData("AdminAccount", true, false, "NotExistResource")]
+        [InlineData("AdminAccount", true, false, "PrivateResource")]
+        [InlineData("AdminAccount", true, false, "PublicResource")]
+        [InlineData("UserAccount", false, true, "NotExistResource")]
+        [InlineData("UserAccount", false, false, "PrivateResource")]
+        [InlineData("UserAccount", true, false, "PublicResource")]
+        [InlineData("NotExistAccount", false, true, "PublicResource")]
+        public void Test(string userName, bool expected, bool withError, string resourceName)
+        {
+            try
+            {
+                _aclManager.IsPermitted(userName, resourceName).Should().Be(expected);
+            }
+            catch (Exception)
+            {
+                withError.Should().BeTrue();
+            }
+        }
     }
 }

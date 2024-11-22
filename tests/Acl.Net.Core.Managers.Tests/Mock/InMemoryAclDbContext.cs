@@ -7,8 +7,12 @@ namespace Acl.Net.Core.Managers.Tests.Mock;
 internal static class InMemoryAclDbContext
 {
     private static readonly RoleDataSeeder RoleDataSeeder = new();
-    private static readonly Role<int> UserRole = RoleDataSeeder.SeedUserRole();
     private static readonly Role<int> AdminRole = RoleDataSeeder.SeedAdminRole();
+    private static readonly Role<int> UserRole = new()
+    {
+        Id = 2,
+        Name = "User"
+    };
 
     internal static User UserAccount = new()
     {
@@ -50,6 +54,7 @@ internal static class InMemoryAclDbContext
 
         context.Users.AddRange(Users);
         context.Resources.AddRange(Resources);
+        context.Roles.AddRange(AdminRole, UserRole);
 
         context.SaveChanges();
 
