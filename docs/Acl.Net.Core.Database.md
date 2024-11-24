@@ -1,11 +1,11 @@
 # Acl.Net.Core.Database
 
-The `Acl.Net.Core.Database` library is a part of the Acl.Net.Core namespace and provides the database handling components to manage Access Control Lists (ACLs) within your application.
+The `Acl.Net.Core.Database` library is a part of the `Acl.Net.Core` namespace and provides the database handling components to manage Access Control Lists (ACLs) within your application.
 It is designed to be used with Entity Framework Core, allowing you to define and manage entities such as Users, Roles, and Resources.
 
 ## Installation
 
-To use Acl.Net.Core.Database, you will need to add it as a dependency to your project.
+To use `Acl.Net.Core.Database`, you will need to add it as a dependency to your project.
 You can do this by adding it as a NuGet package:
 
 ### .NET CLI
@@ -77,18 +77,16 @@ public interface IInitialDataSeeder<TKey, out TRole>
     where TRole : Role<TKey>
 {
     TRole SeedAdminRole();
-    TRole SeedUserRole();
 }
 ```
 
 `RoleDataSeeder` Class
-A default implementation of `IInitialDataSeeder` is provided, which seeds two roles: `AdminRole` and `UserRole`.
+A default implementation of `IInitialDataSeeder` is provided, which seeds role: `AdminRole`.
 
 ```csharp
 public class RoleDataSeeder : IInitialDataSeeder<int, Role<int>>
 {
-    public Role<int> SeedAdminRole() { return new Role<int> { Id = 1, Name = "AdminRole" }; }
-    public Role<int> SeedUserRole() { return new Role<int> { Id = 2, Name = "UserRole" }; }
+    public Role<int> SeedAdminRole() { return new Role<int> { Id = 1, Name = "Admin" }; }
 }
 ```
 
