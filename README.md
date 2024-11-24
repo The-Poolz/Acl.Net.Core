@@ -25,7 +25,7 @@ Acl.Net.Core is a C# library that provides a simple and flexible way to manage A
 To use `Acl.Net.Core`, need to install one of two package `Acl.Net.Core.Database` or `Acl.Net.Core.Managers`
 
 - `Acl.Net.Core.Database`: provides EFCore DbContext for ACL system.
-- `Acl.Net.Core.Managers`: provides managers for AclDbContext.
+- `Acl.Net.Core.Managers`: provides AclManager for AclDbContext.
 
 .NET CLI
 ```powershell
@@ -100,7 +100,7 @@ The `AclDbContext` class also has a generic version that allows you to specify t
 This can be useful if you want to use your own entity classes that inherit from the provided entities.
 
 The `AclDbContext` class uses an `IInitialDataSeeder` to seed initial data into the database.
-The library provides a `RoleDataSeeder` class that seeds two roles: `AdminRole` and `UserRole`.
+The library provides a `RoleDataSeeder` class that seeds two roles: `Admin` and `User`.
 
 **Example using generic version**
 ```csharp
