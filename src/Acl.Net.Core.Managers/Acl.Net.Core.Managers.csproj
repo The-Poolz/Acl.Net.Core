@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Title>A comprehensive .NET Core library for managing Access Control Lists (ACL) designed to be used with Entity Framework Core.</Title>
-    <Version>1.0.1</Version>
+    <Version>2.0.0</Version>
     <Authors>Lomet, ArdenHide</Authors>
     <Company>The-Poolz</Company>
     <Description>Part of package representing managers of ACL system.</Description>
@@ -15,7 +15,9 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>ACL, EFCore, Access Control Lists</PackageTags>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <PackageReleaseNotes>- Remove implementation of IDisposable interface in each manager.</PackageReleaseNotes>
+    <PackageReleaseNotes>https://github.com/The-Poolz/Acl.Net.Core/releases/tag/v2.0.0</PackageReleaseNotes>
+    <IncludeSymbols>True</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>

@@ -14,8 +14,10 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>ACL, EFCore, Access Control Lists</PackageTags>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <Version>1.0.1</Version>
-    <PackageReleaseNotes>- Using the `7.0.14` version of `Microsoft.EntityFrameworkCore` package.</PackageReleaseNotes>
+    <Version>2.0.0</Version>
+    <PackageReleaseNotes>https://github.com/The-Poolz/Acl.Net.Core/releases/tag/v2.0.0</PackageReleaseNotes>
+    <IncludeSymbols>True</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>
