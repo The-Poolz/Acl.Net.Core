@@ -25,7 +25,7 @@ Acl.Net.Core is a C# library that provides a simple and flexible way to manage A
 To use `Acl.Net.Core`, need to install one of two package `Acl.Net.Core.Database` or `Acl.Net.Core.Managers`
 
 - `Acl.Net.Core.Database`: provides EFCore DbContext for ACL system.
-- `Acl.Net.Core.Managers`: provides managers for AclDbContext.
+- `Acl.Net.Core.Managers`: provides AclManager for AclDbContext.
 
 .NET CLI
 ```powershell
@@ -100,7 +100,7 @@ The `AclDbContext` class also has a generic version that allows you to specify t
 This can be useful if you want to use your own entity classes that inherit from the provided entities.
 
 The `AclDbContext` class uses an `IInitialDataSeeder` to seed initial data into the database.
-The library provides a `RoleDataSeeder` class that seeds two roles: `AdminRole` and `UserRole`.
+The library provides a `RoleDataSeeder` class that seeds two roles: `Admin` and `User`.
 
 **Example using generic version**
 ```csharp
@@ -118,13 +118,13 @@ In this example, `MyDbContext` is a subclass of `AclDbContext` that uses `Guid` 
 
 The `IInitialDataSeeder` interface is a crucial part of the `Acl.Net.Core` library.
 It is used to seed initial data into the database when the migrations applied.
-The library provides a default implementation, `RoleDataSeeder`, which seeds two roles: `AdminRole` and `UserRole`.
+The library provides a default implementation, `RoleDataSeeder`, which seeds role: `Admin`.
 
 The `IInitialDataSeeder` interface is used in the `AclDbContext` and `AclManager` classes to seed the initial roles and to check permissions.
-In the `AclManager` class, if a user has the `AdminRole`, they are allowed access to any resource.
+In the `AclManager` class, if a user has the `Admin` role, they are allowed access to any resource.
 
-The `IInitialDataSeeder` interface defines two methods: `SeedAdminRole` and `SeedUserRole`.
-These methods return instances of the `Role` entity that represent the admin and user roles, respectively.
+The `IInitialDataSeeder` interface defines method: `SeedAdminRole`.
+These methods return instances of the `Role` entity that represent the admin role, respectively.
 
 ```csharp
 public interface IInitialDataSeeder<TKey, out TRole>
@@ -132,24 +132,17 @@ public interface IInitialDataSeeder<TKey, out TRole>
     where TRole : Role<TKey>
 {
     TRole SeedAdminRole();
-    TRole SeedUserRole();
 }
 ```
 
-In the `RoleDataSeeder` class, the `SeedAdminRole` method returns a new `Role` with Id set to 1 and `Name` set to "AdminRole",
-and the `SeedUserRole` method returns a new `Role` with `Id` set to 2 and `Name` set to "UserRole".
+In the `RoleDataSeeder` class, the `SeedAdminRole` method returns a new `Role` with Id set to 1 and `Name` set to "Admin".
 
 ```csharp
 public class RoleDataSeeder : IInitialDataSeeder<int, Role<int>>
 {
     public Role<int> SeedAdminRole()
     {
-        return new Role<int> { Id = 1, Name = "AdminRole" };
-    }
-
-    public Role<int> SeedUserRole()
-    {
-        return new Role<int> { Id = 2, Name = "UserRole" };
+        return new Role<int> { Id = 1, Name = "Admin" };
     }
 }
 ```
@@ -158,7 +151,7 @@ public class RoleDataSeeder : IInitialDataSeeder<int, Role<int>>
 
 > **Note**
 > 
-> By default, for `AdminRole` allows any resource!
+> By default, for `Admin` allows any resource!
 
 The library provides a `AclManager` class that you can use to manage access control in your application.
 This class provides methods to check if a user is permitted to access a resource or resource list.
@@ -166,27 +159,14 @@ This class provides methods to check if a user is permitted to access a resource
 The `AclManager` class also has a generic version that allows you to specify the types of the entities.
 This can be useful if you want to use your own entity classes that inherit from the provided entities.
 
-The `AclManager` class uses a `UserManager` and a `ResourceManager` to manage users and resources.
-These classes provide methods to process users and resources, and to check if a user is permitted to access a resource.
+The `AclManager` class provide methods to process users and resources, and to check if a user is permitted to access a resource.
 
 ```csharp
 // Check if user "userName" permitted for call "resourceName"
-using var aclManager = new AclManager<Guid, MyUser, MyRole, MyResource>(seeder, userManager, resourceManager);
+var context = new MyDbContext();
+var aclManager = new AclManager<Guid, MyUser, MyRole, MyResource>(context);
 bool isPermitted = aclManager.IsPermitted("userName", "resourceName");
-
-// Check if user "userName" permitted for call "resourceName1" and "resourceName2"
-using var aclManager = new AclManager<Guid, MyUser, MyRole, MyResource>(seeder, userManager, resourceManager);
-List<MyResource> permittedResources = aclManager.IsPermitted("userName", new[] { "resourceName1", "resourceName2" });
 ```
-
-In first example, `userName` is the name of the user and `resourceName` is the name of the resource.
-The `IsPermitted` method returns `true` if the user is permitted to access the resource, and `false` otherwise.
-
-## Conclusion
-
-`Acl.Net.Core` is a powerful and flexible library for managing access control in C# applications.
-It provides a simple and intuitive API, and it integrates seamlessly with Entity Framework Core.
-Whether you are building a small application or a large enterprise system, `Acl.Net.Core` can help you manage access control effectively and efficiently.
 
 ## Other documentation
 
