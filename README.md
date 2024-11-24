@@ -163,7 +163,7 @@ The `AclManager` class provide methods to process users and resources, and to ch
 
 ```csharp
 // Check if user "userName" permitted for call "resourceName"
-var context = new MyAclDbContext();
+var context = new MyDbContext();
 var aclManager = new AclManager<Guid, MyUser, MyRole, MyResource>(context);
 bool isPermitted = aclManager.IsPermitted("userName", "resourceName");
 ```
